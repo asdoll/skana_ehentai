@@ -1,91 +1,15 @@
-![platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Windows%20%7C%20MacOS%20%7C%20Linux-brightgreen)
-![last-commit](https://img.shields.io/github/last-commit/jiangtian616/JHenTai)
-[![downloads](https://img.shields.io/github/downloads/jiangtian616/JHenTai/total)](https://github.com/jiangtian616/JHenTai/releases)
-[![downloads](https://img.shields.io/github/downloads/jiangtian616/JHenTai/latest/total)](https://github.com/jiangtian616/JHenTai/releases)
-![star](https://img.shields.io/github/stars/jiangtian616/JHenTai)
-[![issue](https://img.shields.io/badge/chat-issue-brightgreen)](https://github.com/jiangtian616/JHenTai/issues/new)
-[![telegram](https://img.shields.io/badge/chat-telegram(Chinese_Mainly)-brightgreen)](https://t.me/+PindoE9yvIpmOWI9)
 
-# JHenTai
-
-English | [简体中文](https://github.com/jiangtian616/JHenTai/blob/master/README_cn.md) | [한국어](https://github.com/jiangtian616/JHenTai/blob/master/README_kr.md)
-
-[Q&A](https://github.com/jiangtian616/JHenTai/wiki/Common-Questions)
+# SkanaEh
 
 ## Description
 
-A manga app for E-Hentai, supporting Android & iOS & Windows & MacOS & Linux.
-
-Still in development stage, welcome to submit issues or feature requests.
-
-## Download & Install
-
-[Download](https://github.com/jiangtian616/JHenTai/releases)
-
-Install for Android: download .apk according to your device architecture and install.
-
-- arm64-v8a：Suitable for Android phones with 8th generation ARM processor(common choice)
-- armeabiv-v7a：Suitable for Android phones with 7th generation ARM processor
-- x86_64：rare
-
-Install for iOS: download .ipa, then use [AltStore](https://altstore.io) or SideLoadly to sign.
-
-Install for Windows: download Windows_xxx.zip, then unpack it.
-
-- If you use a proxy server, set proxy address at network setting page.
-- If you're using Windows 11 and can't launch app, try to run jhentai.exe in compatibility mode.
-- If it's blocked by Windows Defender, Please trust it.
-
-Install for MacOS(No maintenance): download .dmg.
-
-- Trust it in system setting.
-- If you use a proxy server, set proxy address at network setting page.
-
-Install for Linux(No maintenance): download Linux-amd64.deb or Linux-x86_64.AppImage due to your platform, then install
-or execute it (You may need to install webkit2gtk-4.1).
-
-
-- If you use a proxy server, set proxy address at network setting page.
-
-## Update
-
-Update for Android: download .apk according to your device architecture and install.
-
-Update for iOS: download .ipa, then use [AltStore](https://altstore.io) or SideLoadly to sign.
-
-Update for Windows: Delete old unpacked directory directly, then download latest Windows_xxx.zip, unpack it.
-
-Update for MacOS(No maintenance): download .dmg.
-
-Update for Linux(No maintenance): Delete old and download the latest product.
-
-## Help With Translation
-
-Please submit a PR if you want to help with translation.
-
-[steps](https://github.com/jiangtian616/JHenTai#Translation)
-
-## Develop Motivation
-
-My first project With Flutter. I aim at getting familiar with Flutter during development. Devices I use include Android
-phone, Ipad and Windows computer. E-hentai apps I used before have several bugs, and I don't understand source code
-because I have no development
-experience with Android or ios, so I choose JHenTai to become my first Flutter Project.
-
-2022.08.20 After five months of development, JHenTai has gradually become more and more strong, and I have completely
-refactored some codes for gallery page, reading page, download, etc.
-which are written at the beginning stage. I tried my best to extract the commonality between different page and style to
-reduce coupling,
-in order to benefit the development of new features. I would be very grateful if any kind of you could give me some
-advice on coding style,
-design patterns and anything related to Flutter development or participate in the development of JHenTai.
-
-2022.10.29 I have been more familiar with basic Flutter development, and I'll focus on another area from now on.
-So updates for JHenTai will be less than previous, but I'll still handle bugs or issues in time。
+A moded UI for Jhentai.
 
 ## References & Thanks
 
 Layout and style references:
+
+- [Jhentai](https://github.com/jiangtian616/JHenTai)
 
 - [FEhviewer](https://github.com/honjow/FEhViewer) : Mainly
 - [EHPanda](https://github.com/tatsuz0u/EhPanda)
