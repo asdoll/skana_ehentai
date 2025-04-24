@@ -3,7 +3,7 @@ name: skana_ehentai
 description: A flutter app for E-Hentai/EXHentai
 
 publish_to: 'none'
-version: 8.0.6+285
+version: 8.0.6+286
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
