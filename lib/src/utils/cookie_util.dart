@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
 
 import '../service/log.dart';
 

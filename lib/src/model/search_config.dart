@@ -1,5 +1,5 @@
-import 'package:jhentai/src/consts/eh_consts.dart';
-import 'package:jhentai/src/database/database.dart';
+import 'package:skana_ehentai/src/consts/eh_consts.dart';
+import 'package:skana_ehentai/src/database/database.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 enum SearchType {

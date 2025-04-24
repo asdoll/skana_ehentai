@@ -1,4 +1,4 @@
-import 'package:jhentai/src/enum/config_type_enum.dart';
+import 'package:skana_ehentai/src/enum/config_type_enum.dart';
 
 class CloudConfig {
   final int id;

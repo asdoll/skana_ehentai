@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get/get_rx/src/rx_workers/rx_workers.dart';
-import 'package:jhentai/src/consts/archive_bot_consts.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/setting/archive_bot_setting.dart';
+import 'package:skana_ehentai/src/consts/archive_bot_consts.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/setting/archive_bot_setting.dart';
 
 import '../service/isolate_service.dart';
 import '../service/jh_service.dart';

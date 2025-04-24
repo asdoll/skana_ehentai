@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:jhentai/src/database/database.dart';
+import 'package:skana_ehentai/src/database/database.dart';
 
 class DioCacheDao {
   static Future<DioCacheData?> selectByCacheKey(String cacheKey) {

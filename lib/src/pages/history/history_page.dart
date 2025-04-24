@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/service/history_service.dart';
 
 import '../base/base_page.dart';
 import 'history_page_logic.dart';
 import 'history_page_state.dart';
 
 class HistoryPage extends BasePage {
+  // ignore: prefer_const_constructors_in_immutables, use_super_parameters
   HistoryPage({
     Key? key,
     bool showMenuButton = false,

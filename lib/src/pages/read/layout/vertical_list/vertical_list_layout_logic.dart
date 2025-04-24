@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/pages/read/layout/vertical_list/vertical_list_layout_state.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/pages/read/layout/vertical_list/vertical_list_layout_state.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../setting/read_setting.dart';

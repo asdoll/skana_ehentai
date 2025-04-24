@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
 
 import '../network/eh_request.dart';
 import '../utils/route_util.dart';

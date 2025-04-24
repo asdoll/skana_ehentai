@@ -1,4 +1,4 @@
-import 'package:jhentai/src/model/gallery_count.dart';
+import 'package:skana_ehentai/src/model/gallery_count.dart';
 
 import 'gallery.dart';
 

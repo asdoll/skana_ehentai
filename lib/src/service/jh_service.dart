@@ -1,8 +1,7 @@
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/service/local_config_service.dart';
-import 'package:jhentai/src/service/path_service.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/service/local_config_service.dart';
+import 'package:skana_ehentai/src/service/path_service.dart';
 
-import '../main.dart';
 import 'log.dart';
 
 abstract interface class JHLifeCircleBean {

@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/service/local_config_service.dart';
-import 'package:jhentai/src/service/storage_service.dart';
-import 'package:jhentai/src/service/tag_translation_service.dart';
-import 'package:jhentai/src/utils/convert_util.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/service/local_config_service.dart';
+import 'package:skana_ehentai/src/service/tag_translation_service.dart';
+import 'package:skana_ehentai/src/utils/convert_util.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:throttling/throttling.dart';
 
 import '../../config/ui_config.dart';

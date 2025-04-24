@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
 
 double get fullScreenWidth => Get.width;
 

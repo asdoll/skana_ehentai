@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
-import 'package:jhentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
 
 import '../utils/route_util.dart';
 

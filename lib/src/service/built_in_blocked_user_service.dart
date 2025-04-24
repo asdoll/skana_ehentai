@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/setting/preference_setting.dart';
-import 'package:jhentai/src/utils/eh_spider_parser.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/setting/preference_setting.dart';
+import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
 import 'package:retry/retry.dart';
 
 import '../network/eh_request.dart';

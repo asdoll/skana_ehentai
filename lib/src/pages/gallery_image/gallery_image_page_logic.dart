@@ -3,21 +3,18 @@ import 'dart:collection';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/model/gallery_image_page_url.dart';
-import 'package:jhentai/src/model/gallery_url.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/pages/details/details_page_logic.dart';
-import 'package:jhentai/src/pages/gallery_image/gallery_image_page_state.dart';
-import 'package:jhentai/src/routes/routes.dart';
-import 'package:jhentai/src/service/gallery_download_service.dart';
-import 'package:jhentai/src/service/storage_service.dart';
-import 'package:jhentai/src/service/super_resolution_service.dart';
-import 'package:jhentai/src/service/tag_translation_service.dart';
-import 'package:jhentai/src/utils/eh_spider_parser.dart';
-import 'package:jhentai/src/utils/route_util.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/model/gallery_image_page_url.dart';
+import 'package:skana_ehentai/src/model/gallery_url.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/pages/details/details_page_logic.dart';
+import 'package:skana_ehentai/src/pages/gallery_image/gallery_image_page_state.dart';
+import 'package:skana_ehentai/src/routes/routes.dart';
+import 'package:skana_ehentai/src/service/tag_translation_service.dart';
+import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../config/ui_config.dart';
 import '../../exception/eh_site_exception.dart';
@@ -118,7 +115,7 @@ class GalleryImagePageLogic extends GetxController {
 
     await tagTranslationService.translateTagsIfNeeded(detailsPageInfo.galleryDetails.tags);
 
-    _addColor2WatchedTags(detailsPageInfo.galleryDetails!.tags);
+    _addColor2WatchedTags(detailsPageInfo.galleryDetails.tags);
 
     if (isClosed) {
       return;

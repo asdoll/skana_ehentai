@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/setting/download_setting.dart';
-import 'package:jhentai/src/utils/route_util.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
 
 import 'eh_group_name_selector.dart';
 
@@ -15,13 +14,13 @@ class EHDownloadDialog extends StatefulWidget {
   final bool downloadOriginalImage;
 
   const EHDownloadDialog({
-    Key? key,
+    super.key,
     required this.title,
     this.currentGroup,
     required this.candidates,
     this.showDownloadOriginalImageCheckBox = false,
     this.downloadOriginalImage = false,
-  }) : super(key: key);
+  });
 
   @override
   State<EHDownloadDialog> createState() => _EHDownloadDialogState();

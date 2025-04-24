@@ -1,4 +1,4 @@
-import 'package:jhentai/src/service/log.dart';
+import 'package:skana_ehentai/src/service/log.dart';
 
 Future<void> recordTimeCost(String name, Function function) async {
   DateTime startTime = DateTime.now();

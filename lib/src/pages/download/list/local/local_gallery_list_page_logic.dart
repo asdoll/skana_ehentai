@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:jhentai/src/mixin/scroll_to_top_logic_mixin.dart';
+import 'package:skana_ehentai/src/mixin/scroll_to_top_logic_mixin.dart';
 import '../../../../mixin/scroll_to_top_state_mixin.dart';
 import '../../../../service/local_gallery_service.dart';
 import '../../mixin/local/local_gallery_download_page_logic_mixin.dart';

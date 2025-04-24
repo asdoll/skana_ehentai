@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/search/desktop/desktop_search_page_tab_logic.dart';
-import 'package:jhentai/src/pages/search/desktop/desktop_search_page_tab_state.dart';
+import 'package:skana_ehentai/src/pages/search/desktop/desktop_search_page_tab_logic.dart';
+import 'package:skana_ehentai/src/pages/search/desktop/desktop_search_page_tab_state.dart';
 
 import '../../../config/ui_config.dart';
 import '../../base/base_page.dart';

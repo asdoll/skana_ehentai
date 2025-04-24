@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/model/tab_bar_icon.dart';
-import 'package:jhentai/src/service/tag_search_order_service.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/model/tab_bar_icon.dart';
+import 'package:skana_ehentai/src/service/tag_search_order_service.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../consts/locale_consts.dart';
@@ -17,7 +17,7 @@ import '../../../utils/route_util.dart';
 import '../../../widget/loading_state_indicator.dart';
 
 class SettingPreferencePage extends StatelessWidget {
-  const SettingPreferencePage({Key? key}) : super(key: key);
+  const SettingPreferencePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +73,8 @@ class SettingPreferencePage extends StatelessWidget {
             .keys
             .keys
             .map((localeCode) => DropdownMenuItem(
-                  child: Text(LocaleConsts.localeCode2Description[localeCode]!),
                   value: localeCode2Locale(localeCode),
+                  child: Text(LocaleConsts.localeCode2Description[localeCode]!),
                 ))
             .toList(),
       ),
@@ -169,24 +169,24 @@ class SettingPreferencePage extends StatelessWidget {
         onChanged: (TabBarIconNameEnum? newValue) => preferenceSetting.saveDefaultTab(newValue!),
         items: [
           DropdownMenuItem(
-            child: Text(TabBarIconNameEnum.home.name.tr),
             value: TabBarIconNameEnum.home,
+            child: Text(TabBarIconNameEnum.home.name.tr),
           ),
           DropdownMenuItem(
-            child: Text(TabBarIconNameEnum.popular.name.tr),
             value: TabBarIconNameEnum.popular,
+            child: Text(TabBarIconNameEnum.popular.name.tr),
           ),
           DropdownMenuItem(
-            child: Text(TabBarIconNameEnum.ranklist.name.tr),
             value: TabBarIconNameEnum.ranklist,
+            child: Text(TabBarIconNameEnum.ranklist.name.tr),
           ),
           DropdownMenuItem(
-            child: Text(TabBarIconNameEnum.favorite.name.tr),
             value: TabBarIconNameEnum.favorite,
+            child: Text(TabBarIconNameEnum.favorite.name.tr),
           ),
           DropdownMenuItem(
-            child: Text(TabBarIconNameEnum.watched.name.tr),
             value: TabBarIconNameEnum.watched,
+            child: Text(TabBarIconNameEnum.watched.name.tr),
           ),
         ],
       ),
@@ -220,20 +220,20 @@ class SettingPreferencePage extends StatelessWidget {
         onChanged: (Scroll2TopButtonModeEnum? newValue) => preferenceSetting.saveHideScroll2TopButton(newValue!),
         items: [
           DropdownMenuItem(
-            child: Text('whenScrollUp'.tr),
             value: Scroll2TopButtonModeEnum.scrollUp,
+            child: Text('whenScrollUp'.tr),
           ),
           DropdownMenuItem(
-            child: Text('whenScrollDown'.tr),
             value: Scroll2TopButtonModeEnum.scrollDown,
+            child: Text('whenScrollDown'.tr),
           ),
           DropdownMenuItem(
-            child: Text('never'.tr),
             value: Scroll2TopButtonModeEnum.never,
+            child: Text('never'.tr),
           ),
           DropdownMenuItem(
-            child: Text('always'.tr),
             value: Scroll2TopButtonModeEnum.always,
+            child: Text('always'.tr),
           ),
         ],
       ),
@@ -389,16 +389,16 @@ class SettingPreferencePage extends StatelessWidget {
         onChanged: (SearchBehaviour? newValue) => preferenceSetting.saveTagSearchConfig(newValue!),
         items: [
           DropdownMenuItem(
-            child: Text('inheritAll'.tr),
             value: SearchBehaviour.inheritAll,
+            child: Text('inheritAll'.tr),
           ),
           DropdownMenuItem(
-            child: Text('inheritPartially'.tr),
             value: SearchBehaviour.inheritPartially,
+            child: Text('inheritPartially'.tr),
           ),
           DropdownMenuItem(
-            child: Text('none'.tr),
             value: SearchBehaviour.none,
+            child: Text('none'.tr),
           ),
         ],
       ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/database/database.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/pages/download_search/download_search_state.dart';
-import 'package:jhentai/src/service/archive_download_service.dart';
-import 'package:jhentai/src/widget/eh_image.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/database/database.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/pages/download_search/download_search_state.dart';
+import 'package:skana_ehentai/src/service/archive_download_service.dart';
+import 'package:skana_ehentai/src/widget/eh_image.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../config/ui_config.dart';
@@ -103,7 +103,7 @@ class DownloadSearchPage extends StatelessWidget {
       child: GetBuilder<GalleryDownloadService>(
         id: '${galleryDownloadService.galleryDownloadProgressId}::${gallery.gid}',
         builder: (_) {
-          GalleryImage? cover = galleryDownloadService.galleryDownloadInfos[gallery.gid]?.images[0];
+          //GalleryImage? cover = galleryDownloadService.galleryDownloadInfos[gallery.gid]?.images[0];
           GalleryDownloadProgress? downloadProgress = galleryDownloadService.galleryDownloadInfos[gallery.gid]?.downloadProgress;
           String? groupName = galleryDownloadService.galleryDownloadInfos[gallery.gid]?.group;
 

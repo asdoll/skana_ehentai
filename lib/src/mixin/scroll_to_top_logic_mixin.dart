@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/mixin/scroll_to_top_state_mixin.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/mixin/scroll_to_top_state_mixin.dart';
 
 import '../setting/preference_setting.dart';
 

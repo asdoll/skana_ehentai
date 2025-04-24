@@ -1,18 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/model/archive_bot_response/balance_vo.dart';
-import 'package:jhentai/src/model/archive_bot_response/check_in_vo.dart';
-import 'package:jhentai/src/network/archive_bot_request.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/setting/archive_bot_setting.dart';
-import 'package:jhentai/src/utils/archive_bot_response_parser.dart';
-import 'package:jhentai/src/utils/snack_util.dart';
-import 'package:jhentai/src/widget/eh_archive_bot_setting_dialog.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/model/archive_bot_response/balance_vo.dart';
+import 'package:skana_ehentai/src/model/archive_bot_response/check_in_vo.dart';
+import 'package:skana_ehentai/src/network/archive_bot_request.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/setting/archive_bot_setting.dart';
+import 'package:skana_ehentai/src/utils/archive_bot_response_parser.dart';
+import 'package:skana_ehentai/src/utils/snack_util.dart';
+import 'package:skana_ehentai/src/widget/eh_archive_bot_setting_dialog.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../model/archive_bot_response/archive_bot_response.dart';
@@ -116,17 +115,17 @@ class _ArchiveBotSettingsPageState extends State<ArchiveBotSettingsPage> {
     );
   }
 
-  Widget _buildUseProxyServer() {
-    return SwitchListTile(
-      title: Text('useProxyServer'.tr),
-      subtitle: Text('useProxyServerHint'.tr),
-      value: archiveBotSetting.useProxyServer.value,
-      onChanged: (bool value) async {
-        await archiveBotSetting.saveUseProxyServer(value);
-        setStateSafely(() {});
-      },
-    );
-  }
+  // Widget _buildUseProxyServer() {
+  //   return SwitchListTile(
+  //     title: Text('useProxyServer'.tr),
+  //     subtitle: Text('useProxyServerHint'.tr),
+  //     value: archiveBotSetting.useProxyServer.value,
+  //     onChanged: (bool value) async {
+  //       await archiveBotSetting.saveUseProxyServer(value);
+  //       setStateSafely(() {});
+  //     },
+  //   );
+  // }
 
   Future<void> _showApiKeyDialog() async {
     bool? result = await showDialog(

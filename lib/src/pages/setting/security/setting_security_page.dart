@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/setting/security_setting.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
-import 'package:jhentai/src/widget/eh_app_password_setting_dialog.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/setting/security_setting.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/widget/eh_app_password_setting_dialog.dart';
 
 class SettingSecurityPage extends StatelessWidget {
   const SettingSecurityPage({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:jhentai/src/mixin/scroll_status_listener_state.dart';
+import 'package:skana_ehentai/src/mixin/scroll_status_listener_state.dart';
 
 mixin ScrollStatusListener {
   ScrollStatusListerState get scrollStatusListerState;

@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:jhentai/src/l18n/en_US.dart';
-import 'package:jhentai/src/l18n/zh_CN.dart';
-import 'package:jhentai/src/l18n/zh_TW.dart';
-import 'package:jhentai/src/l18n/pt_BR.dart';
-import 'package:jhentai/src/l18n/ko_KR.dart';
-import 'package:jhentai/src/l18n/ru_RU.dart';
+import 'package:skana_ehentai/src/l18n/en_US.dart';
+import 'package:skana_ehentai/src/l18n/zh_CN.dart';
+import 'package:skana_ehentai/src/l18n/zh_TW.dart';
+import 'package:skana_ehentai/src/l18n/pt_BR.dart';
+import 'package:skana_ehentai/src/l18n/ko_KR.dart';
+import 'package:skana_ehentai/src/l18n/ru_RU.dart';
 
 class LocaleText extends Translations {
   @override

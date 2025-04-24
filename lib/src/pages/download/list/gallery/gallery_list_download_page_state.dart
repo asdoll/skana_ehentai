@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:jhentai/src/mixin/scroll_to_top_state_mixin.dart';
-import 'package:jhentai/src/pages/download/mixin/gallery/gallery_download_page_state_mixin.dart';
+import 'package:skana_ehentai/src/mixin/scroll_to_top_state_mixin.dart';
+import 'package:skana_ehentai/src/pages/download/mixin/gallery/gallery_download_page_state_mixin.dart';
 
 import '../../../../database/database.dart';
 import '../../../../widget/grouped_list.dart';

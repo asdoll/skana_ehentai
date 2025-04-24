@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/service/log.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/service/log.dart';
 
 import '../service/jh_service.dart';
 

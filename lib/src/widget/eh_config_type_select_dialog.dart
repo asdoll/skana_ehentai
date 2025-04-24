@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_type_enum.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/enum/config_type_enum.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
 
 import '../utils/route_util.dart';
 

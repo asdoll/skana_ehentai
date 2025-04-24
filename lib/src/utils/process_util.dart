@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:path/path.dart';
 
 import '../setting/read_setting.dart';
@@ -16,6 +16,7 @@ void openThirdPartyViewer(String dirPath) {
     [dirPath],
     workingDirectory: dirname(viewerPath),
     runInShell: true,
+  // ignore: body_might_complete_normally_catch_error
   ).catchError((e) {
     toast('internalError'.tr + e.toString());
     log.error(e);

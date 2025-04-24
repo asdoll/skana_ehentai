@@ -1,8 +1,8 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/widget/eh_image.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/widget/eh_image.dart';
 
 class SingleImagePage extends StatelessWidget {
   const SingleImagePage({Key? key}) : super(key: key);

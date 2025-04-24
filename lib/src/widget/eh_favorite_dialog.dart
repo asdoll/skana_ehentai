@@ -3,12 +3,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/model/gallery_note.dart';
-import 'package:jhentai/src/setting/preference_setting.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/model/gallery_note.dart';
+import 'package:skana_ehentai/src/setting/preference_setting.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../exception/eh_site_exception.dart';
 import '../setting/favorite_setting.dart';

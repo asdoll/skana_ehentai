@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/service/local_config_service.dart';
-import 'package:jhentai/src/utils/screen_size_util.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/service/local_config_service.dart';
+import 'package:skana_ehentai/src/utils/screen_size_util.dart';
 
 import '../../../../service/gallery_download_service.dart';
 import '../../../../setting/read_setting.dart';

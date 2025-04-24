@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:jhentai/src/service/local_gallery_service.dart';
+import 'package:skana_ehentai/src/service/local_gallery_service.dart';
 
 import '../../../../mixin/scroll_to_top_state_mixin.dart';
 

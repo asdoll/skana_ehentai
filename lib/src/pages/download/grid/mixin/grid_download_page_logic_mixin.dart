@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
 
 import '../../../../mixin/scroll_to_top_logic_mixin.dart';
 import '../../../../service/local_gallery_service.dart';

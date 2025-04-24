@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:jhentai/src/consts/jh_consts.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/network/jh_cookie_manager.dart';
+import 'package:skana_ehentai/src/consts/jh_consts.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/network/jh_cookie_manager.dart';
 
 import '../service/isolate_service.dart';
 import '../service/jh_service.dart';

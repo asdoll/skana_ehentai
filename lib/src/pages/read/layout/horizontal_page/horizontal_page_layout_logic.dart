@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/setting/read_setting.dart';
+import 'package:skana_ehentai/src/setting/read_setting.dart';
 
 import '../base/base_layout_logic.dart';
 import 'horizontal_page_layout_state.dart';

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:jhentai/src/consts/jh_consts.dart';
-import 'package:jhentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/consts/jh_consts.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
 
 import '../utils/cookie_util.dart';
 

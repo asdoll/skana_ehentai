@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_draggable_gridview/flutter_draggable_gridview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/extension/string_extension.dart';
-import 'package:jhentai/src/model/gallery_image.dart';
-import 'package:jhentai/src/widget/eh_image.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
-import 'package:jhentai/src/service/super_resolution_service.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/extension/string_extension.dart';
+import 'package:skana_ehentai/src/model/gallery_image.dart';
+import 'package:skana_ehentai/src/widget/eh_image.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/service/super_resolution_service.dart';
 
 import '../../../../mixin/scroll_to_top_logic_mixin.dart';
 import '../../../../mixin/scroll_to_top_page_mixin.dart';

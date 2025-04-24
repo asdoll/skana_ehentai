@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/pages/base/base_page_logic.dart';
-import 'package:jhentai/src/pages/gallerys/dashboard/dashboard_page_state.dart';
-import 'package:jhentai/src/pages/ranklist/ranklist_page_state.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/pages/base/base_page_logic.dart';
+import 'package:skana_ehentai/src/pages/gallerys/dashboard/dashboard_page_state.dart';
+import 'package:skana_ehentai/src/pages/ranklist/ranklist_page_state.dart';
 
 import '../../../consts/eh_consts.dart';
 import '../../../exception/eh_site_exception.dart';

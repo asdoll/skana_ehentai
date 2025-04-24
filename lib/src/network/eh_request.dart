@@ -9,23 +9,23 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:intl/intl.dart';
 import 'package:j_downloader/j_downloader.dart';
-import 'package:jhentai/src/consts/eh_consts.dart';
-import 'package:jhentai/src/database/database.dart';
-import 'package:jhentai/src/exception/eh_site_exception.dart';
-import 'package:jhentai/src/model/gallery_page.dart';
-import 'package:jhentai/src/model/search_config.dart';
-import 'package:jhentai/src/network/eh_ip_provider.dart';
-import 'package:jhentai/src/network/eh_timeout_translator.dart';
-import 'package:jhentai/src/pages/ranklist/ranklist_page_state.dart';
-import 'package:jhentai/src/service/isolate_service.dart';
-import 'package:jhentai/src/service/path_service.dart';
-import 'package:jhentai/src/setting/eh_setting.dart';
-import 'package:jhentai/src/setting/preference_setting.dart';
-import 'package:jhentai/src/setting/user_setting.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/utils/eh_spider_parser.dart';
-import 'package:jhentai/src/utils/proxy_util.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/consts/eh_consts.dart';
+import 'package:skana_ehentai/src/database/database.dart';
+import 'package:skana_ehentai/src/exception/eh_site_exception.dart';
+import 'package:skana_ehentai/src/model/gallery_page.dart';
+import 'package:skana_ehentai/src/model/search_config.dart';
+import 'package:skana_ehentai/src/network/eh_ip_provider.dart';
+import 'package:skana_ehentai/src/network/eh_timeout_translator.dart';
+import 'package:skana_ehentai/src/pages/ranklist/ranklist_page_state.dart';
+import 'package:skana_ehentai/src/service/isolate_service.dart';
+import 'package:skana_ehentai/src/service/path_service.dart';
+import 'package:skana_ehentai/src/setting/eh_setting.dart';
+import 'package:skana_ehentai/src/setting/preference_setting.dart';
+import 'package:skana_ehentai/src/setting/user_setting.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
+import 'package:skana_ehentai/src/utils/proxy_util.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
 import 'package:http_parser/http_parser.dart' show MediaType;
 import 'package:path/path.dart';
 import 'package:webview_flutter/webview_flutter.dart' show WebViewCookieManager;
@@ -420,8 +420,6 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
       case RanklistType.allTime:
         tl = 11;
         break;
-      default:
-        tl = 15;
     }
 
     Response response = await _getWithErrorHandler('${EHConsts.ERanklist}?tl=$tl&p=$pageNo');

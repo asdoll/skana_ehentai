@@ -762,7 +762,6 @@ class pt_BR {
       'import': 'Import',
       'save2Local': 'Save to Local',
       'readIndexRecord': 'Read Progress',
-      'quickSearch': 'Quick Search Config',
       'blockRules': 'Block Rules',
       'searchHistory': 'Search History',
       'galleryHistory': 'Gallery History',

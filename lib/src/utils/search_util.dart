@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/search/mixin/new_search_argument.dart';
-import 'package:jhentai/src/service/quick_search_service.dart';
-import 'package:jhentai/src/utils/route_util.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/pages/search/mixin/new_search_argument.dart';
+import 'package:skana_ehentai/src/service/quick_search_service.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../model/jh_layout.dart';
 import '../model/search_config.dart';

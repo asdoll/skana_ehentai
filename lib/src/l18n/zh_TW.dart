@@ -765,7 +765,6 @@ favnote：配對收藏備註
       'import': '匯入',
       'save2Local': '儲存至本機',
       'readIndexRecord': '閱讀進度',
-      'quickSearch': '快速搜尋設定',
       'blockRules': '本機隱藏規則',
       'searchHistory': '搜尋紀錄',
       'galleryHistory': '畫廊瀏覽紀錄',

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/routes/routes.dart';
-import 'package:jhentai/src/service/windows_service.dart';
-import 'package:jhentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/routes/routes.dart';
+import 'package:skana_ehentai/src/service/windows_service.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
 
 import '../../../mixin/double_tap_to_refresh_logic_mixin.dart';
 import '../../home_page.dart';

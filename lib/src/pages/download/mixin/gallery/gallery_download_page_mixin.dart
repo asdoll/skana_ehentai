@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jhentai/src/pages/download/mixin/basic/multi_select/multi_select_download_page_mixin.dart';
-import 'package:jhentai/src/pages/download/mixin/gallery/gallery_download_page_state_mixin.dart';
+import 'package:skana_ehentai/src/pages/download/mixin/basic/multi_select/multi_select_download_page_mixin.dart';
+import 'package:skana_ehentai/src/pages/download/mixin/gallery/gallery_download_page_state_mixin.dart';
 
 import '../../../../mixin/scroll_to_top_logic_mixin.dart';
 import '../../../../mixin/scroll_to_top_page_mixin.dart';

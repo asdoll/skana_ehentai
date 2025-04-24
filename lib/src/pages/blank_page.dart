@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jhentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
 
 class BlankPage extends StatelessWidget {
   const BlankPage({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/watched/watched_page_state.dart';
+import 'package:skana_ehentai/src/pages/watched/watched_page_state.dart';
 
 import '../base/base_page.dart';
 import 'watched_page_logic.dart';

@@ -3,12 +3,12 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/model/tag_set.dart';
-import 'package:jhentai/src/pages/setting/eh/tagsets/tag_sets_page_logic.dart';
-import 'package:jhentai/src/pages/setting/eh/tagsets/tag_sets_page_state.dart';
-import 'package:jhentai/src/utils/search_util.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/model/tag_set.dart';
+import 'package:skana_ehentai/src/pages/setting/eh/tagsets/tag_sets_page_logic.dart';
+import 'package:skana_ehentai/src/pages/setting/eh/tagsets/tag_sets_page_state.dart';
+import 'package:skana_ehentai/src/utils/search_util.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
 
 import '../../../../utils/route_util.dart';
 import '../../../../utils/text_input_formatter.dart';

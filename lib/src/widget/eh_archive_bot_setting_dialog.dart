@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:telegram/telegram.dart';
 
 import '../setting/archive_bot_setting.dart';

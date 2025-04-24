@@ -2,11 +2,10 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/service/local_config_service.dart';
-import 'package:jhentai/src/service/storage_service.dart';
-import 'package:jhentai/src/utils/snack_util.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/service/local_config_service.dart';
+import 'package:skana_ehentai/src/utils/snack_util.dart';
 
 import '../../../../service/local_block_rule_service.dart';
 import 'blocking_rule_page_state.dart';

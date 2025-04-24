@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/widget/fade_slide_widget.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/widget/fade_slide_widget.dart';
 
 import 'eh_wheel_speed_controller.dart';
 
@@ -106,41 +106,41 @@ class _GroupedListState<G, E> extends State<GroupedList<G, E>> {
     return _buildInCustomScrollView(context);
   }
 
-  EHWheelSpeedController _buildInListView() {
-    return EHWheelSpeedController(
-      controller: scrollController,
-      child: ListView.builder(
-        controller: scrollController,
-        cacheExtent: 200,
-        itemCount: _groups.length + widget.elements.length,
-        itemBuilder: (context, index) {
-          int i = 0;
-          int groupIndex = 0;
-          while (true) {
-            G group = _groups.keys.elementAt(groupIndex);
+  // EHWheelSpeedController _buildInListView() {
+  //   return EHWheelSpeedController(
+  //     controller: scrollController,
+  //     child: ListView.builder(
+  //       controller: scrollController,
+  //       cacheExtent: 200,
+  //       itemCount: _groups.length + widget.elements.length,
+  //       itemBuilder: (context, index) {
+  //         int i = 0;
+  //         int groupIndex = 0;
+  //         while (true) {
+  //           G group = _groups.keys.elementAt(groupIndex);
 
-            if (i == index) {
-              return _buildGroup(group, context);
-            }
+  //           if (i == index) {
+  //             return _buildGroup(group, context);
+  //           }
 
-            List<E> elements = _group2Elements[group] ?? [];
+  //           List<E> elements = _group2Elements[group] ?? [];
 
-            if (i + 1 + elements.length > index) {
-              return _buildElement(
-                context,
-                elements[index - i - 1],
-                group,
-                elements.length <= maxGalleryNum4Animation,
-              );
-            }
+  //           if (i + 1 + elements.length > index) {
+  //             return _buildElement(
+  //               context,
+  //               elements[index - i - 1],
+  //               group,
+  //               elements.length <= maxGalleryNum4Animation,
+  //             );
+  //           }
 
-            i += 1 + elements.length;
-            groupIndex++;
-          }
-        },
-      ),
-    );
-  }
+  //           i += 1 + elements.length;
+  //           groupIndex++;
+  //         }
+  //       },
+  //     ),
+  //   );
+  // }
 
   EHWheelSpeedController _buildInCustomScrollView(BuildContext context) {
     return EHWheelSpeedController(

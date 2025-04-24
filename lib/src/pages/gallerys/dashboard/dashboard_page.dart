@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/pages/base/base_page.dart';
-import 'package:jhentai/src/pages/gallerys/dashboard/dashboard_page_state.dart';
-import 'package:jhentai/src/routes/routes.dart';
-import 'package:jhentai/src/utils/route_util.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
-import 'package:jhentai/src/widget/eh_dashboard_card.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/pages/base/base_page.dart';
+import 'package:skana_ehentai/src/pages/gallerys/dashboard/dashboard_page_state.dart';
+import 'package:skana_ehentai/src/routes/routes.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/widget/eh_dashboard_card.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../../config/ui_config.dart';
 import '../../layout/mobile_v2/mobile_layout_page_v2_state.dart';

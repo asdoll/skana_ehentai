@@ -1,33 +1,33 @@
 import 'dart:math';
 
-import 'package:animate_do/animate_do.dart';
+import 'package:animate_do/animate_do.dart' show FadeIn;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/enum/eh_namespace.dart';
-import 'package:jhentai/src/extension/string_extension.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/mixin/scroll_to_top_page_mixin.dart';
-import 'package:jhentai/src/model/gallery_image.dart';
-import 'package:jhentai/src/model/gallery_tag.dart';
-import 'package:jhentai/src/pages/details/comment/eh_comment.dart';
-import 'package:jhentai/src/pages/download/download_base_page.dart';
-import 'package:jhentai/src/routes/routes.dart';
-import 'package:jhentai/src/service/archive_download_service.dart';
-import 'package:jhentai/src/utils/uuid_util.dart';
-import 'package:jhentai/src/widget/eh_alert_dialog.dart';
-import 'package:jhentai/src/widget/eh_gallery_detail_dialog.dart';
-import 'package:jhentai/src/widget/eh_image.dart';
-import 'package:jhentai/src/widget/eh_tag.dart';
-import 'package:jhentai/src/widget/eh_thumbnail.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
-import 'package:jhentai/src/widget/icon_text_button.dart';
-import 'package:jhentai/src/widget/keep_alive.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/enum/eh_namespace.dart';
+import 'package:skana_ehentai/src/extension/string_extension.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/mixin/scroll_to_top_page_mixin.dart';
+import 'package:skana_ehentai/src/model/gallery_image.dart';
+import 'package:skana_ehentai/src/model/gallery_tag.dart';
+import 'package:skana_ehentai/src/pages/details/comment/eh_comment.dart';
+import 'package:skana_ehentai/src/pages/download/download_base_page.dart';
+import 'package:skana_ehentai/src/routes/routes.dart';
+import 'package:skana_ehentai/src/service/archive_download_service.dart';
+import 'package:skana_ehentai/src/utils/uuid_util.dart';
+import 'package:skana_ehentai/src/widget/eh_alert_dialog.dart';
+import 'package:skana_ehentai/src/widget/eh_gallery_detail_dialog.dart';
+import 'package:skana_ehentai/src/widget/eh_image.dart';
+import 'package:skana_ehentai/src/widget/eh_tag.dart';
+import 'package:skana_ehentai/src/widget/eh_thumbnail.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/widget/icon_text_button.dart';
+import 'package:skana_ehentai/src/widget/keep_alive.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../database/database.dart';
 import '../../mixin/scroll_to_top_logic_mixin.dart';
@@ -1159,30 +1159,30 @@ class DetailsPage extends StatelessWidget with Scroll2TopPageMixin {
     );
   }
 
-  Widget _buildStatisticButton(BuildContext context) {
-    return GetBuilder<DetailsPageLogic>(
-      id: DetailsPageLogic.detailsId,
-      global: false,
-      init: logic,
-      builder: (_) {
-        bool disabled = state.galleryDetails == null;
+  // Widget _buildStatisticButton(BuildContext context) {
+  //   return GetBuilder<DetailsPageLogic>(
+  //     id: DetailsPageLogic.detailsId,
+  //     global: false,
+  //     init: logic,
+  //     builder: (_) {
+  //       bool disabled = state.galleryDetails == null;
 
-        return IconTextButton(
-          width: UIConfig.detailsPageActionExtent,
-          icon: Icon(Icons.analytics, color: disabled ? UIConfig.detailsPageActionDisabledIconColor(context) : UIConfig.detailsPageActionIconColor(context)),
-          text: Text(
-            'statistic'.tr,
-            style: TextStyle(
-              fontSize: UIConfig.detailsPageActionTextSize,
-              color: disabled ? UIConfig.detailsPageActionDisabledIconColor(context) : UIConfig.detailsPageActionTextColor(context),
-              height: 1,
-            ),
-          ),
-          onPressed: state.galleryDetails == null ? null : logic.handleTapStatistic,
-        );
-      },
-    );
-  }
+  //       return IconTextButton(
+  //         width: UIConfig.detailsPageActionExtent,
+  //         icon: Icon(Icons.analytics, color: disabled ? UIConfig.detailsPageActionDisabledIconColor(context) : UIConfig.detailsPageActionIconColor(context)),
+  //         text: Text(
+  //           'statistic'.tr,
+  //           style: TextStyle(
+  //             fontSize: UIConfig.detailsPageActionTextSize,
+  //             color: disabled ? UIConfig.detailsPageActionDisabledIconColor(context) : UIConfig.detailsPageActionTextColor(context),
+  //             height: 1,
+  //           ),
+  //         ),
+  //         onPressed: state.galleryDetails == null ? null : logic.handleTapStatistic,
+  //       );
+  //     },
+  //   );
+  //}
 
   Widget buildLoadingDetailsIndicator() {
     return SliverToBoxAdapter(

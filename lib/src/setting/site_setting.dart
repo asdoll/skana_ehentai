@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/setting/user_setting.dart';
-import 'package:jhentai/src/utils/eh_spider_parser.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/setting/user_setting.dart';
+import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
 import 'package:retry/retry.dart';
 
 import '../exception/eh_site_exception.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:jhentai/src/database/database.dart';
+import 'package:skana_ehentai/src/database/database.dart';
 
 class DownloadSearchState {
   DownloadSearchConfigTypeEnum searchType = DownloadSearchConfigTypeEnum.simple;

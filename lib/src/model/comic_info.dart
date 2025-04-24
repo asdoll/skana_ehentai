@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:jhentai/src/database/database.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/database/database.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
 import 'package:xml/xml.dart';
 
 abstract interface class ComicInfo {
@@ -319,7 +319,6 @@ class EHGalleryComicInfo extends ComicInfo {
   final String? uploader;
   final String publishTime;
   final String? languageAbbreviation;
-  @override
   final List<TagData> tagDatas;
   final double rating;
 

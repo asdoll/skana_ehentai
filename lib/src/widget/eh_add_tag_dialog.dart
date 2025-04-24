@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/extension/list_extension.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/pages/search/mixin/search_page_mixin.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/extension/list_extension.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/pages/search/mixin/search_page_mixin.dart';
 import 'package:throttling/throttling.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -79,10 +79,10 @@ class EHAddTagDialog extends StatelessWidget {
           textAlignVertical: TextAlignVertical.center,
           controller: TextEditingController.fromValue(
             TextEditingValue(
-              text: state.keyword ?? '',
+              text: state.keyword,
 
               /// make cursor stay at last letter
-              selection: TextSelection.fromPosition(TextPosition(offset: state.keyword.length ?? 0)),
+              selection: TextSelection.fromPosition(TextPosition(offset: state.keyword.length)),
             ),
           ),
           onChanged: (text) {

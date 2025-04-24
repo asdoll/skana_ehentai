@@ -4,7 +4,7 @@ import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
 
 import '../config/theme_config.dart';
 import '../config/ui_config.dart';

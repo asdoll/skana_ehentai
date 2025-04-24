@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:jhentai/src/mixin/scroll_to_top_state_mixin.dart';
-import 'package:jhentai/src/model/gallery_count.dart';
-import 'package:jhentai/src/model/search_config.dart';
-import 'package:jhentai/src/utils/uuid_util.dart';
+import 'package:skana_ehentai/src/mixin/scroll_to_top_state_mixin.dart';
+import 'package:skana_ehentai/src/model/gallery_count.dart';
+import 'package:skana_ehentai/src/model/search_config.dart';
+import 'package:skana_ehentai/src/utils/uuid_util.dart';
 
 import '../../model/gallery.dart';
 import '../../model/gallery_page.dart';

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
-import 'package:jhentai/src/utils/screen_size_util.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/utils/screen_size_util.dart';
 
 import '../config/ui_config.dart';
 

@@ -765,7 +765,6 @@ favnote：匹配收藏备注
       'import': '导入',
       'save2Local': '保存至本地',
       'readIndexRecord': '阅读进度',
-      'quickSearch': '快速搜索配置',
       'blockRules': '本地屏蔽规则',
       'searchHistory': '搜索历史',
       'galleryHistory': '画廊浏览历史',

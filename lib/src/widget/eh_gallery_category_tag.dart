@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jhentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
 
 class EHGalleryCategoryTag extends StatelessWidget {
   final String category;

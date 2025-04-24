@@ -15,23 +15,23 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:intl/intl.dart';
-import 'package:jhentai/src/database/dao/gallery_dao.dart';
-import 'package:jhentai/src/database/dao/gallery_group_dao.dart';
-import 'package:jhentai/src/database/database.dart';
-import 'package:jhentai/src/exception/eh_image_exception.dart';
-import 'package:jhentai/src/exception/eh_parse_exception.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/extension/list_extension.dart';
-import 'package:jhentai/src/model/gallery_thumbnail.dart';
-import 'package:jhentai/src/model/gallery_url.dart';
-import 'package:jhentai/src/service/super_resolution_service.dart';
-import 'package:jhentai/src/setting/download_setting.dart';
-import 'package:jhentai/src/setting/site_setting.dart';
-import 'package:jhentai/src/setting/user_setting.dart';
-import 'package:jhentai/src/utils/convert_util.dart';
-import 'package:jhentai/src/utils/speed_computer.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/database/dao/gallery_dao.dart';
+import 'package:skana_ehentai/src/database/dao/gallery_group_dao.dart';
+import 'package:skana_ehentai/src/database/database.dart';
+import 'package:skana_ehentai/src/exception/eh_image_exception.dart';
+import 'package:skana_ehentai/src/exception/eh_parse_exception.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/extension/list_extension.dart';
+import 'package:skana_ehentai/src/model/gallery_thumbnail.dart';
+import 'package:skana_ehentai/src/model/gallery_url.dart';
+import 'package:skana_ehentai/src/service/super_resolution_service.dart';
+import 'package:skana_ehentai/src/setting/download_setting.dart';
+import 'package:skana_ehentai/src/setting/site_setting.dart';
+import 'package:skana_ehentai/src/setting/user_setting.dart';
+import 'package:skana_ehentai/src/utils/convert_util.dart';
+import 'package:skana_ehentai/src/utils/speed_computer.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
 import 'package:retry/retry.dart';
@@ -718,12 +718,12 @@ class GalleryDownloadService extends GetxController with GridBasePageServiceMixi
   }
 
   /// shutdown executor
-  Future<void> _shutdownExecutor() async {
-    log.info('Shutdown download executor');
+  // Future<void> _shutdownExecutor() async {
+  //   log.info('Shutdown download executor');
 
-    await pauseAllDownloadGallery();
-    executor.close();
-  }
+  //   await pauseAllDownloadGallery();
+  //   executor.close();
+  // }
 
   void _submitTask({
     required int gid,
@@ -738,6 +738,7 @@ class GalleryDownloadService extends GetxController with GridBasePageServiceMixi
         log.error('Executor exception!', e, stackTrace);
         log.uploadError(e);
       }
+      return null;
     });
   }
 

@@ -6,15 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:jhentai/src/consts/eh_consts.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/setting/user_setting.dart';
-import 'package:jhentai/src/utils/cookie_util.dart';
-import 'package:jhentai/src/utils/snack_util.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/consts/eh_consts.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/setting/user_setting.dart';
+import 'package:skana_ehentai/src/utils/cookie_util.dart';
+import 'package:skana_ehentai/src/utils/snack_util.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../../../exception/eh_site_exception.dart';
 import '../../../../network/eh_ip_provider.dart';
@@ -172,7 +172,7 @@ class _CookiePageState extends State<CookiePage> {
         _refreshIgneousState = LoadingState.error;
       });
       return;
-    } catch (e, s) {
+    } catch (e) {
       log.error('Refresh igneous failed: $e');
       snack('refreshIgneousFailed'.tr, e.toString());
       setStateSafely(() {

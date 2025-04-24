@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:jhentai/src/database/dao/block_rule_dao.dart';
-import 'package:jhentai/src/database/database.dart';
-import 'package:jhentai/src/model/gallery.dart';
+import 'package:skana_ehentai/src/database/dao/block_rule_dao.dart';
+import 'package:skana_ehentai/src/database/database.dart';
+import 'package:skana_ehentai/src/model/gallery.dart';
 
 import '../model/gallery_comment.dart';
 import '../model/gallery_tag.dart';

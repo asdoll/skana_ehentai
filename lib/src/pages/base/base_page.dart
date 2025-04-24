@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/layout/mobile_v2/notification/tap_menu_button_notification.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/pages/layout/mobile_v2/notification/tap_menu_button_notification.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
 
 import '../../config/ui_config.dart';
 import '../../mixin/scroll_to_top_logic_mixin.dart';

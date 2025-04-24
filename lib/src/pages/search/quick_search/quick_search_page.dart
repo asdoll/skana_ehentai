@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/model/search_config.dart';
-import 'package:jhentai/src/service/quick_search_service.dart';
-import 'package:jhentai/src/utils/search_util.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/model/search_config.dart';
+import 'package:skana_ehentai/src/service/quick_search_service.dart';
+import 'package:skana_ehentai/src/utils/search_util.dart';
 
 class QuickSearchPage extends StatelessWidget {
   final bool automaticallyImplyLeading;

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:jhentai/src/database/table/gallery_downloaded.dart';
+import 'package:skana_ehentai/src/database/table/gallery_downloaded.dart';
 
 class Image extends Table {
   @override

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:jhentai/src/consts/locale_consts.dart';
+import 'package:skana_ehentai/src/consts/locale_consts.dart';
 
 Locale localeCode2Locale(String localeCode) {
   List<String> parts = localeCode.split('_');

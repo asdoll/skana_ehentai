@@ -5,9 +5,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/setting/download_setting.dart';
-import 'package:jhentai/src/service/log.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/setting/download_setting.dart';
+import 'package:skana_ehentai/src/service/log.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:path/path.dart';
 

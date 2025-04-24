@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/utils/screen_size_util.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/utils/screen_size_util.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
 import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
 

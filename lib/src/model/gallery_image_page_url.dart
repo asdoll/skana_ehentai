@@ -1,4 +1,4 @@
-import 'package:jhentai/src/exception/internal_exception.dart';
+import 'package:skana_ehentai/src/exception/internal_exception.dart';
 
 class GalleryImagePageUrl {
   final bool isEH;

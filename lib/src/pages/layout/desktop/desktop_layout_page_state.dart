@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/list_extension.dart';
-import 'package:jhentai/src/pages/download/download_base_page.dart';
-import 'package:jhentai/src/pages/gallerys/simple/gallerys_page_logic.dart';
-import 'package:jhentai/src/pages/history/history_page.dart';
-import 'package:jhentai/src/pages/gallerys/simple/gallerys_page.dart';
-import 'package:jhentai/src/pages/popular/popular_page.dart';
-import 'package:jhentai/src/pages/setting/setting_page.dart';
-import 'package:jhentai/src/pages/watched/watched_page.dart';
-import 'package:jhentai/src/routes/routes.dart';
-import 'package:jhentai/src/setting/preference_setting.dart';
+import 'package:skana_ehentai/src/extension/list_extension.dart';
+import 'package:skana_ehentai/src/pages/download/download_base_page.dart';
+import 'package:skana_ehentai/src/pages/gallerys/simple/gallerys_page_logic.dart';
+import 'package:skana_ehentai/src/pages/history/history_page.dart';
+import 'package:skana_ehentai/src/pages/gallerys/simple/gallerys_page.dart';
+import 'package:skana_ehentai/src/pages/popular/popular_page.dart';
+import 'package:skana_ehentai/src/pages/setting/setting_page.dart';
+import 'package:skana_ehentai/src/pages/watched/watched_page.dart';
+import 'package:skana_ehentai/src/routes/routes.dart';
+import 'package:skana_ehentai/src/setting/preference_setting.dart';
 
 import '../../../mixin/double_tap_to_refresh_state_mixin.dart';
 import '../../../model/tab_bar_icon.dart';

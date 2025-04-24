@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:jhentai/src/database/database.dart';
+import 'package:skana_ehentai/src/database/database.dart';
 
 enum EHTagStatus { confidence, skepticism, incorrect }
 

@@ -8,15 +8,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/model/config.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/service/cloud_service.dart';
-import 'package:jhentai/src/setting/advanced_setting.dart';
-import 'package:jhentai/src/service/path_service.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/model/config.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/service/cloud_service.dart';
+import 'package:skana_ehentai/src/setting/advanced_setting.dart';
+import 'package:skana_ehentai/src/service/path_service.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:path/path.dart';
 
 import '../../../config/ui_config.dart';
@@ -24,15 +24,14 @@ import '../../../enum/config_type_enum.dart';
 import '../../../routes/routes.dart';
 import '../../../service/isolate_service.dart';
 import '../../../utils/byte_util.dart';
-import '../../../utils/permission_util.dart';
 import '../../../utils/route_util.dart';
 import '../../../widget/eh_config_type_select_dialog.dart';
 
 class SettingAdvancedPage extends StatefulWidget {
-  const SettingAdvancedPage({Key? key}) : super(key: key);
+  const SettingAdvancedPage({super.key});
 
   @override
-  _SettingAdvancedPageState createState() => _SettingAdvancedPageState();
+  State<SettingAdvancedPage> createState() => _SettingAdvancedPageState();
 }
 
 class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
@@ -193,7 +192,7 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
         try {
           await const AndroidIntent(
             action: 'android.settings.APP_OPEN_BY_DEFAULT_SETTINGS',
-            data: 'package:top.jtmonster.jhentai',
+            data: 'package:com.skanaone.skana_ehentai',
           ).launch();
         } on Exception catch (e) {
           log.error(e);

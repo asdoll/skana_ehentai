@@ -29,8 +29,8 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace 'top.jtmonster.jhentai'
-    compileSdkVersion 34
+    namespace 'com.skanaone.skana_ehentai'
+    compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -46,9 +46,9 @@ android {
     }
 
     defaultConfig {
-        applicationId "top.jtmonster.jhentai"
-        minSdkVersion 21
-        targetSdkVersion 34
+        applicationId "com.skanaone.skana_ehentai"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

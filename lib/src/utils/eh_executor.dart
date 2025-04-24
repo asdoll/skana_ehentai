@@ -5,7 +5,7 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:executor/executor.dart';
-import 'package:jhentai/src/service/log.dart';
+import 'package:skana_ehentai/src/service/log.dart';
 
 import '../exception/cancel_exception.dart';
 

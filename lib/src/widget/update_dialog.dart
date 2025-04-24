@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/service/local_config_service.dart';
-import 'package:jhentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/service/local_config_service.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class UpdateDialog extends StatelessWidget {

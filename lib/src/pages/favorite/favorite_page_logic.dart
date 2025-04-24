@@ -4,14 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/model/gallery_page.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/widget/eh_favorite_sort_order_dialog.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/model/gallery_page.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/widget/eh_favorite_sort_order_dialog.dart';
 
 import '../../enum/config_enum.dart';
 import '../../exception/eh_site_exception.dart';
-import '../../model/gallery.dart';
 import '../../model/search_config.dart';
 import '../../service/local_config_service.dart';
 import '../../utils/eh_spider_parser.dart';

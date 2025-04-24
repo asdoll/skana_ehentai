@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/enum/config_type_enum.dart';
-import 'package:jhentai/src/model/config.dart';
-import 'package:jhentai/src/service/isolate_service.dart';
-import 'package:jhentai/src/service/local_config_service.dart';
-import 'package:jhentai/src/service/quick_search_service.dart';
-import 'package:jhentai/src/service/search_history_service.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/enum/config_type_enum.dart';
+import 'package:skana_ehentai/src/model/config.dart';
+import 'package:skana_ehentai/src/service/isolate_service.dart';
+import 'package:skana_ehentai/src/service/local_config_service.dart';
+import 'package:skana_ehentai/src/service/quick_search_service.dart';
+import 'package:skana_ehentai/src/service/search_history_service.dart';
 
 import '../database/database.dart';
 import 'history_service.dart';

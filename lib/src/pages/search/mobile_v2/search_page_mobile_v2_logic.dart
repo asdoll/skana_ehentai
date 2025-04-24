@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/search/mixin/new_search_argument.dart';
-import 'package:jhentai/src/pages/search/mobile_v2/search_page_mobile_v2_state.dart';
+import 'package:skana_ehentai/src/pages/search/mixin/new_search_argument.dart';
+import 'package:skana_ehentai/src/pages/search/mobile_v2/search_page_mobile_v2_state.dart';
 
 import '../../../enum/config_enum.dart';
 import '../../../model/search_config.dart';

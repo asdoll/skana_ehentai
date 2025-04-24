@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/pages/setting/account/login/login_page_logic.dart';
-import 'package:jhentai/src/pages/setting/account/login/login_page_state.dart';
-import 'package:jhentai/src/widget/icon_text_button.dart';
-import 'package:jhentai/src/widget/loading_state_indicator.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/pages/setting/account/login/login_page_logic.dart';
+import 'package:skana_ehentai/src/pages/setting/account/login/login_page_state.dart';
+import 'package:skana_ehentai/src/widget/icon_text_button.dart';
+import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../../../utils/screen_size_util.dart';
 

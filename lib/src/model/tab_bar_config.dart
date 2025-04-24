@@ -1,4 +1,4 @@
-import 'package:jhentai/src/model/search_config.dart';
+import 'package:skana_ehentai/src/model/search_config.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()

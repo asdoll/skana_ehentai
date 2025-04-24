@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/read/layout/horizontal_list/horizontal_list_layout_state.dart';
+import 'package:skana_ehentai/src/pages/read/layout/horizontal_list/horizontal_list_layout_state.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:zoom_view/zoom_view.dart';
 
 import '../../../../model/read_page_info.dart';
 import '../../../../setting/read_setting.dart';

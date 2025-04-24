@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/list_extension.dart';
-import 'package:jhentai/src/pages/home_page.dart';
-import 'package:jhentai/src/routes/eh_page.dart';
-import 'package:jhentai/src/routes/routes.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/extension/list_extension.dart';
+import 'package:skana_ehentai/src/pages/home_page.dart';
+import 'package:skana_ehentai/src/routes/eh_page.dart';
+import 'package:skana_ehentai/src/routes/routes.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
 
 import '../model/jh_layout.dart';
 import '../pages/layout/desktop/desktop_layout_page_logic.dart';

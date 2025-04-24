@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/pages/setting/preference/block_rule/add_block_rule/configure_blocking_rule_page_logic.dart';
-import 'package:jhentai/src/service/local_block_rule_service.dart';
-import 'package:jhentai/src/widget/eh_alert_dialog.dart';
-import 'package:jhentai/src/widget/grouped_list.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/pages/setting/preference/block_rule/add_block_rule/configure_blocking_rule_page_logic.dart';
+import 'package:skana_ehentai/src/service/local_block_rule_service.dart';
+import 'package:skana_ehentai/src/widget/eh_alert_dialog.dart';
+import 'package:skana_ehentai/src/widget/grouped_list.dart';
 import '../../../../config/ui_config.dart';
 import '../../../../routes/routes.dart';
 import '../../../../utils/route_util.dart';

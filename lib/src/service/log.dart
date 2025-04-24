@@ -5,9 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:jhentai/src/exception/eh_site_exception.dart';
-import 'package:jhentai/src/setting/advanced_setting.dart';
-import 'package:jhentai/src/service/path_service.dart';
+import 'package:skana_ehentai/src/exception/eh_site_exception.dart';
+import 'package:skana_ehentai/src/setting/advanced_setting.dart';
+import 'package:skana_ehentai/src/service/path_service.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as path;
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:dio/dio.dart';
@@ -10,24 +9,22 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/network/eh_request.dart';
-import 'package:jhentai/src/service/gallery_download_service.dart';
-import 'package:jhentai/src/setting/download_setting.dart';
-import 'package:jhentai/src/setting/user_setting.dart';
-import 'package:jhentai/src/utils/permission_util.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/network/eh_request.dart';
+import 'package:skana_ehentai/src/service/gallery_download_service.dart';
+import 'package:skana_ehentai/src/setting/download_setting.dart';
+import 'package:skana_ehentai/src/setting/user_setting.dart';
+import 'package:skana_ehentai/src/utils/permission_util.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:path/path.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../exception/eh_image_exception.dart';
 import '../../../../model/gallery_image.dart';
-import '../../../../service/path_service.dart';
 import '../../../../setting/read_setting.dart';
 import '../../../../service/log.dart';
 import '../../../../utils/route_util.dart';
@@ -383,24 +380,24 @@ abstract class BaseLayoutLogic extends GetxController with GetTickerProviderStat
     );
   }
 
-  Alignment _computeAlignmentByTapOffset(Offset offset) {
-    return Alignment((offset.dx - Get.size.width / 2) / (Get.size.width / 2), (offset.dy - Get.size.height / 2) / (Get.size.height / 2));
-  }
+  // Alignment _computeAlignmentByTapOffset(Offset offset) {
+  //   return Alignment((offset.dx - Get.size.width / 2) / (Get.size.width / 2), (offset.dy - Get.size.height / 2) / (Get.size.height / 2));
+  // }
 
-  Future<bool> _saveImage2Album(Uint8List imageData, String fileName) async {
-    await requestAlbumPermission();
+  // Future<bool> _saveImage2Album(Uint8List imageData, String fileName) async {
+  //   await requestAlbumPermission();
 
-    SaveResult saveResult = await SaverGallery.saveImage(
-      imageData,
-      name: fileName,
-      androidRelativePath: "Pictures/JHenTai",
-      androidExistNotSave: false,
-    );
+  //   SaveResult saveResult = await SaverGallery.saveImage(
+  //     imageData,
+  //     name: fileName,
+  //     androidRelativePath: "Pictures/JHenTai",
+  //     androidExistNotSave: false,
+  //   );
 
-    log.info('Save image to album: $saveResult');
+  //   log.info('Save image to album: $saveResult');
 
-    return saveResult.isSuccess;
-  }
+  //   return saveResult.isSuccess;
+  // }
 
   Future<bool> _saveFile2Album(String filePath, String fileName) async {
     await requestAlbumPermission();

@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/dio_exception_extension.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/mixin/scroll_to_top_logic_mixin.dart';
-import 'package:jhentai/src/pages/details/details_page_logic.dart';
-import 'package:jhentai/src/pages/details/details_page_state.dart';
-import 'package:jhentai/src/pages/details/thumbnails/thumbnails_page_state.dart';
+import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/mixin/scroll_to_top_logic_mixin.dart';
+import 'package:skana_ehentai/src/pages/details/details_page_logic.dart';
+import 'package:skana_ehentai/src/pages/details/details_page_state.dart';
+import 'package:skana_ehentai/src/pages/details/thumbnails/thumbnails_page_state.dart';
 
 import '../../../exception/eh_site_exception.dart';
 import '../../../mixin/scroll_to_top_state_mixin.dart';

@@ -1,13 +1,13 @@
-import 'package:animate_do/animate_do.dart';
+import 'package:animate_do/animate_do.dart' show FadeIn;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/model/gallery_image.dart';
-import 'package:jhentai/src/setting/advanced_setting.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/model/gallery_image.dart';
+import 'package:skana_ehentai/src/setting/advanced_setting.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
 import 'dart:io' as io;
 
 import '../service/gallery_download_service.dart';
@@ -137,7 +137,7 @@ class EHImage extends StatelessWidget {
           case LoadState.failed:
             return failedWidgetBuilder?.call(state) ??
                 Center(
-                  child: GestureDetector(child: const Icon(Icons.sentiment_very_dissatisfied), onTap: state.reLoadImage),
+                  child: GestureDetector(onTap: state.reLoadImage, child: const Icon(Icons.sentiment_very_dissatisfied)),
                 );
           case LoadState.completed:
             state.returnLoadStateChangedWidget = true;
@@ -145,11 +145,11 @@ class EHImage extends StatelessWidget {
             Widget child = completedWidgetBuilder?.call(state) ?? _buildExtendedRawImage(state);
 
             if (borderRadius != BorderRadius.zero) {
-              child = ClipRRect(child: child, borderRadius: borderRadius);
+              child = ClipRRect(borderRadius: borderRadius, child: child);
             }
 
             if (state.slidePageState != null) {
-              child = ExtendedImageSlidePageHandler(child: child, extendedImageSlidePageState: state.slidePageState);
+              child = ExtendedImageSlidePageHandler(extendedImageSlidePageState: state.slidePageState, child: child);
             }
 
             child = Center(
@@ -183,7 +183,7 @@ class EHImage extends StatelessWidget {
       enableLoadState: loadingWidgetBuilder != null || failedWidgetBuilder != null || completedWidgetBuilder != null,
       enableSlideOutPage: enableSlideOutPage,
       borderRadius: borderRadius,
-      shape: borderRadius != null ? BoxShape.rectangle : null,
+      shape: borderRadius != BorderRadius.zero ? BoxShape.rectangle : null,
       clearMemoryCacheWhenDispose: clearMemoryCacheWhenDispose,
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
@@ -192,19 +192,19 @@ class EHImage extends StatelessWidget {
           case LoadState.failed:
             return failedWidgetBuilder?.call(state) ??
                 Center(
-                  child: GestureDetector(child: const Icon(Icons.sentiment_very_dissatisfied), onTap: state.reLoadImage),
+                  child: GestureDetector(onTap: state.reLoadImage, child: const Icon(Icons.sentiment_very_dissatisfied)),
                 );
           case LoadState.completed:
             state.returnLoadStateChangedWidget = true;
 
             Widget child = completedWidgetBuilder?.call(state) ?? _buildExtendedRawImage(state);
 
-            if (borderRadius != null) {
-              child = ClipRRect(child: child, borderRadius: borderRadius);
+            if (borderRadius != BorderRadius.zero) {
+              child = ClipRRect(borderRadius: borderRadius, child: child);
             }
 
             if (state.slidePageState != null) {
-              child = ExtendedImageSlidePageHandler(child: child, extendedImageSlidePageState: state.slidePageState);
+              child = ExtendedImageSlidePageHandler(extendedImageSlidePageState: state.slidePageState, child: child);
             }
 
             return FadeIn(

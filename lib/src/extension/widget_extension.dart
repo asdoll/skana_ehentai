@@ -1,8 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/widget/eh_keyboard_listener.dart';
-import 'package:jhentai/src/widget/eh_mouse_button_listener.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/widget/eh_keyboard_listener.dart';
+import 'package:skana_ehentai/src/widget/eh_mouse_button_listener.dart';
 
 import '../utils/route_util.dart';
 
@@ -16,7 +16,7 @@ extension WidgetExtension on Widget {
   }
 
   Widget fadeOut([Key? key]) {
-    return FadeOut(key: key, child: this, animate: true);
+    return FadeOut(key: key, animate: true, child: this);
   }
 
   Widget withListTileTheme(BuildContext context) {
@@ -52,6 +52,7 @@ extension WidgetExtension on Widget {
 extension StateExtension on State {
   void setStateSafely(VoidCallback fn) {
     if (mounted) {
+      // ignore: invalid_use_of_protected_member
       setState(fn);
     }
   }

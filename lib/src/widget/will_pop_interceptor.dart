@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/pages/home_page.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
-import 'package:jhentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/pages/home_page.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
 
 import '../utils/toast_util.dart';
 

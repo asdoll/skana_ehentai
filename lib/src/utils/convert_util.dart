@@ -2,9 +2,9 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/model/gallery_detail.dart';
-import 'package:jhentai/src/model/gallery_history_model.dart';
-import 'package:jhentai/src/model/gallery_image.dart';
+import 'package:skana_ehentai/src/model/gallery_detail.dart';
+import 'package:skana_ehentai/src/model/gallery_history_model.dart';
+import 'package:skana_ehentai/src/model/gallery_image.dart';
 
 import '../database/database.dart';
 import '../model/gallery.dart';

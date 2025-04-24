@@ -1,4 +1,4 @@
-import 'package:jhentai/src/pages/base/base_page_state.dart';
+import 'package:skana_ehentai/src/pages/base/base_page_state.dart';
 
 import '../../../../routes/routes.dart';
 

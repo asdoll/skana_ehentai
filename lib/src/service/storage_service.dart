@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:get_storage/get_storage.dart';
-import 'package:jhentai/src/service/path_service.dart';
+import 'package:skana_ehentai/src/service/path_service.dart';
 import 'package:path/path.dart';
 
 import 'log.dart';

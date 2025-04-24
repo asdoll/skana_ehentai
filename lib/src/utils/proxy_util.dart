@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:http_proxy/http_proxy.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
 import 'package:system_network_proxy/system_network_proxy.dart';
 
 import '../setting/network_setting.dart';

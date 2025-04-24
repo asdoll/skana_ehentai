@@ -8,27 +8,27 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
-import 'package:jhentai/src/model/eh_raw_tag.dart';
-import 'package:jhentai/src/model/gallery_archive.dart';
-import 'package:jhentai/src/model/gallery_comment.dart';
-import 'package:jhentai/src/model/gallery_count.dart';
-import 'package:jhentai/src/model/gallery_detail.dart';
-import 'package:jhentai/src/model/gallery_hh_archive.dart';
-import 'package:jhentai/src/model/gallery_hh_info.dart';
-import 'package:jhentai/src/model/gallery_image.dart';
-import 'package:jhentai/src/model/gallery_image_page_url.dart';
-import 'package:jhentai/src/model/gallery_note.dart';
-import 'package:jhentai/src/model/gallery_page.dart';
-import 'package:jhentai/src/model/gallery_stats.dart';
-import 'package:jhentai/src/model/gallery_tag.dart';
-import 'package:jhentai/src/model/gallery_thumbnail.dart';
-import 'package:jhentai/src/model/gallery_torrent.dart';
-import 'package:jhentai/src/model/gallery_url.dart';
-import 'package:jhentai/src/model/profile.dart';
-import 'package:jhentai/src/model/tag_set.dart';
-import 'package:jhentai/src/setting/site_setting.dart';
-import 'package:jhentai/src/utils/color_util.dart';
-import 'package:jhentai/src/utils/string_uril.dart';
+import 'package:skana_ehentai/src/model/eh_raw_tag.dart';
+import 'package:skana_ehentai/src/model/gallery_archive.dart';
+import 'package:skana_ehentai/src/model/gallery_comment.dart';
+import 'package:skana_ehentai/src/model/gallery_count.dart';
+import 'package:skana_ehentai/src/model/gallery_detail.dart';
+import 'package:skana_ehentai/src/model/gallery_hh_archive.dart';
+import 'package:skana_ehentai/src/model/gallery_hh_info.dart';
+import 'package:skana_ehentai/src/model/gallery_image.dart';
+import 'package:skana_ehentai/src/model/gallery_image_page_url.dart';
+import 'package:skana_ehentai/src/model/gallery_note.dart';
+import 'package:skana_ehentai/src/model/gallery_page.dart';
+import 'package:skana_ehentai/src/model/gallery_stats.dart';
+import 'package:skana_ehentai/src/model/gallery_tag.dart';
+import 'package:skana_ehentai/src/model/gallery_thumbnail.dart';
+import 'package:skana_ehentai/src/model/gallery_torrent.dart';
+import 'package:skana_ehentai/src/model/gallery_url.dart';
+import 'package:skana_ehentai/src/model/profile.dart';
+import 'package:skana_ehentai/src/model/tag_set.dart';
+import 'package:skana_ehentai/src/setting/site_setting.dart';
+import 'package:skana_ehentai/src/utils/color_util.dart';
+import 'package:skana_ehentai/src/utils/string_uril.dart';
 
 import '../config/ui_config.dart';
 import '../consts/eh_consts.dart';
@@ -515,7 +515,7 @@ class EHSpiderParser {
     String note = document.querySelector('#galpop > div > div:nth-child(3) > textarea')!.text;
 
     /// 1 / 1000 favorite note slots used. [?]
-    String usedSlotDesc = document.querySelector('#galpop > div > div:nth-child(3) > div:nth-child(6)')!.text;
+    //String usedSlotDesc = document.querySelector('#galpop > div > div:nth-child(3) > div:nth-child(6)')!.text;
 
     return GalleryNote(note: note);
   }

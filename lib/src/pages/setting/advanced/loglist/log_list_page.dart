@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/widget_extension.dart';
-import 'package:jhentai/src/service/log.dart';
-import 'package:jhentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
 import 'package:path/path.dart';
 
 import '../../../../routes/routes.dart';

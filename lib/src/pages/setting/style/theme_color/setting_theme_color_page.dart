@@ -1,13 +1,13 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/config/theme_config.dart';
-import 'package:jhentai/src/config/ui_config.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/pages/setting/style/theme_color/preview_page/detail_preview_page.dart';
-import 'package:jhentai/src/setting/style_setting.dart';
-import 'package:jhentai/src/utils/route_util.dart';
-import 'package:jhentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/config/theme_config.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/pages/setting/style/theme_color/preview_page/detail_preview_page.dart';
+import 'package:skana_ehentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/utils/toast_util.dart';
 
 class SettingThemeColorPage extends StatefulWidget {
   const SettingThemeColorPage({Key? key}) : super(key: key);

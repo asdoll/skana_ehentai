@@ -70,7 +70,7 @@ jobs:
       - name: Setup Android keystore
         if: matrix.target == 'Android'
         run: |
-          echo "${{ secrets.ENCODED_KEYSTORE }}" | base64 -di > android/app/upload-keystore.jks
+          echo "${{ secrets.ENCODED_KEYSTORE }}" | base64 -di > android/app/key.jks
           echo "${{ secrets.KEY_PROPERTIES }}" > android/key.properties
       # Setup Flutter
       - name: Setup Flutter
@@ -123,97 +123,97 @@ jobs:
           mv app-arm64-v8a-release.apk JHenTai-${{ steps.get_version.outputs.version }}-arm64-v8a.apk
           mv app-armeabi-v7a-release.apk JHenTai-${{ steps.get_version.outputs.version }}-armeabi-v7a.apk
           mv app-x86_64-release.apk JHenTai-${{ steps.get_version.outputs.version }}-x64.apk
-      # Build iOS .ipa
-      - name: Build iOS
-        if: matrix.target == 'ios'
-        run: |
-          flutter precache --ios
-          cd ios
-          pod update
-          cd ..
-          flutter build ios -t lib/src/main.dart --release --no-codesign
-          sh thin-payload.sh build/ios/iphoneos/*.app
-          cd build
-          mkdir -p Payload
-          mv ios/iphoneos/*.app Payload
-          zip -9 JHenTai_${{ steps.get_version.outputs.version }}.ipa -r Payload
-      # Build macOS .dmg
-      - name: Build macOS
-        if: matrix.target == 'macOS'
-        run: |
-          flutter precache --macos
-          cd macos
-          pod update
-          cd ..
-          sh dmg.sh
-      # Build Windows .zip
-      - name: Build Windows
-        if: matrix.target == 'Windows'
-        run: |
-          flutter build windows -t lib/src/main.dart --release
-          $DestDir = "build\windows\JHenTai_${{ steps.get_version.outputs.version }}"
-          $SrcDir = "build\windows\x64\runner\Release"
-          New-Item -Path $DestDir -ItemType Directory
-          Copy-Item $SrcDir\* -Recurse $DestDir
-          Copy-Item -Filter *.dll -Path windows\* -Destination $DestDir -Force
-          Compress-Archive $DestDir build\windows\JHenTai_${{ steps.get_version.outputs.version }}_Windows.zip
-      # Build Linux .deb
-      - name: Build Linux deb
-        if: matrix.target == 'Linux-x64-deb' || matrix.target == 'Linux-arm64-deb'
-        run: |
-          # Prepare build depends
-          sudo apt-get update -y
-          sudo apt-get install -y ninja-build libfuse2 webkit2gtk-4.1
+      # # Build iOS .ipa
+      # - name: Build iOS
+      #   if: matrix.target == 'ios'
+      #   run: |
+      #     flutter precache --ios
+      #     cd ios
+      #     pod update
+      #     cd ..
+      #     flutter build ios -t lib/src/main.dart --release --no-codesign
+      #     sh thin-payload.sh build/ios/iphoneos/*.app
+      #     cd build
+      #     mkdir -p Payload
+      #     mv ios/iphoneos/*.app Payload
+      #     zip -9 JHenTai_${{ steps.get_version.outputs.version }}.ipa -r Payload
+      # # Build macOS .dmg
+      # - name: Build macOS
+      #   if: matrix.target == 'macOS'
+      #   run: |
+      #     flutter precache --macos
+      #     cd macos
+      #     pod update
+      #     cd ..
+      #     sh dmg.sh
+      # # Build Windows .zip
+      # - name: Build Windows
+      #   if: matrix.target == 'Windows'
+      #   run: |
+      #     flutter build windows -t lib/src/main.dart --release
+      #     $DestDir = "build\windows\JHenTai_${{ steps.get_version.outputs.version }}"
+      #     $SrcDir = "build\windows\x64\runner\Release"
+      #     New-Item -Path $DestDir -ItemType Directory
+      #     Copy-Item $SrcDir\* -Recurse $DestDir
+      #     Copy-Item -Filter *.dll -Path windows\* -Destination $DestDir -Force
+      #     Compress-Archive $DestDir build\windows\JHenTai_${{ steps.get_version.outputs.version }}_Windows.zip
+      # # Build Linux .deb
+      # - name: Build Linux deb
+      #   if: matrix.target == 'Linux-x64-deb' || matrix.target == 'Linux-arm64-deb'
+      #   run: |
+      #     # Prepare build depends
+      #     sudo apt-get update -y
+      #     sudo apt-get install -y ninja-build libfuse2 webkit2gtk-4.1
           
-          # Compile
-          flutter build linux --release -t lib/src/main.dart
+      #     # Compile
+      #     flutter build linux --release -t lib/src/main.dart
 
-          # Build debian package
-          mkdir -p build/linux/JHenTai-${{ steps.get_version.outputs.version }}-Linux-${{ steps.get_version.outputs.arch }}
-          cd build/linux/JHenTai-${{ steps.get_version.outputs.version }}-Linux-${{ steps.get_version.outputs.arch }}
-          mkdir -p opt/jhentai
-          mkdir -p usr/share/applications
-          mkdir -p usr/share/icons/hicolor/512x512/apps
-          cp -r ../${{ steps.get_version.outputs.arch }}/release/bundle/* opt/jhentai
-          cp -r ../../../linux/assets/DEBIAN .
-          chmod 0755 DEBIAN/postinst
-          chmod 0755 DEBIAN/postrm
+      #     # Build debian package
+      #     mkdir -p build/linux/JHenTai-${{ steps.get_version.outputs.version }}-Linux-${{ steps.get_version.outputs.arch }}
+      #     cd build/linux/JHenTai-${{ steps.get_version.outputs.version }}-Linux-${{ steps.get_version.outputs.arch }}
+      #     mkdir -p opt/jhentai
+      #     mkdir -p usr/share/applications
+      #     mkdir -p usr/share/icons/hicolor/512x512/apps
+      #     cp -r ../${{ steps.get_version.outputs.arch }}/release/bundle/* opt/jhentai
+      #     cp -r ../../../linux/assets/DEBIAN .
+      #     chmod 0755 DEBIAN/postinst
+      #     chmod 0755 DEBIAN/postrm
 
-          cp ../../../linux/assets/top.jtmonster.jhentai.desktop usr/share/applications
-          cp ../../../assets/icon/JHenTai_512.png usr/share/icons/hicolor/512x512/apps/top.jtmonster.jhentai.png
+      #     cp ../../../linux/assets/top.jtmonster.jhentai.desktop usr/share/applications
+      #     cp ../../../assets/icon/JHenTai_512.png usr/share/icons/hicolor/512x512/apps/top.jtmonster.jhentai.png
 
-          sed -i "/^Version: /s/Version: .*/Version: ${{ steps.get_version.outputs.version }}/" DEBIAN/control
-          if [ "${{ steps.get_version.outputs.arch }}" = "arm64" ]; then
-              sed -i "/^Architecture: /s/Architecture: .*/Architecture: arm64/" DEBIAN/control
-          fi
+      #     sed -i "/^Version: /s/Version: .*/Version: ${{ steps.get_version.outputs.version }}/" DEBIAN/control
+      #     if [ "${{ steps.get_version.outputs.arch }}" = "arm64" ]; then
+      #         sed -i "/^Architecture: /s/Architecture: .*/Architecture: arm64/" DEBIAN/control
+      #     fi
 
-          cd ..
-          dpkg-deb --build --root-owner-group JHenTai-${{ steps.get_version.outputs.version }}-Linux-${{ steps.get_version.outputs.arch }}
-      # Build Linux .AppImage
-      - name: Build Linux AppImage
-        if: matrix.target == 'Linux-x64-AppImage'
-        run: |
-          # Prepare build depends
-          sudo apt-get update -y
-          sudo apt-get install -y ninja-build libfuse2 webkit2gtk-4.1
+      #     cd ..
+      #     dpkg-deb --build --root-owner-group JHenTai-${{ steps.get_version.outputs.version }}-Linux-${{ steps.get_version.outputs.arch }}
+      # # Build Linux .AppImage
+      # - name: Build Linux AppImage
+      #   if: matrix.target == 'Linux-x64-AppImage'
+      #   run: |
+      #     # Prepare build depends
+      #     sudo apt-get update -y
+      #     sudo apt-get install -y ninja-build libfuse2 webkit2gtk-4.1
           
-          # Compile
-          flutter build linux --release -t lib/src/main.dart
+      #     # Compile
+      #     flutter build linux --release -t lib/src/main.dart
           
-          cd build/linux
+      #     cd build/linux
           
-          mkdir AppDir
-          cp -r x64/release/bundle/* AppDir
-          mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps/
-          mkdir -p AppDir/usr/share/applications
-          cp ../../linux/assets/top.jtmonster.jhentai.desktop AppDir/usr/share/applications
-          cp ../../assets/icon/JHenTai_512.png AppDir/usr/share/icons/hicolor/512x512/apps/top.jtmonster.jhentai.png
+      #     mkdir AppDir
+      #     cp -r x64/release/bundle/* AppDir
+      #     mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps/
+      #     mkdir -p AppDir/usr/share/applications
+      #     cp ../../linux/assets/top.jtmonster.jhentai.desktop AppDir/usr/share/applications
+      #     cp ../../assets/icon/JHenTai_512.png AppDir/usr/share/icons/hicolor/512x512/apps/top.jtmonster.jhentai.png
           
-          wget -O appimage-builder https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder
-          ./appimage-builder --skip-tests --recipe ../../linux/assets/AppImageBuilder.yml
+      #     wget -O appimage-builder https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+      #     chmod +x appimage-builder
+      #     ./appimage-builder --skip-tests --recipe ../../linux/assets/AppImageBuilder.yml
           
-          mv JHenTai-latest-x86_64.AppImage JHenTai-${{ steps.get_version.outputs.version }}-Linux-x64.AppImage
+      #     mv JHenTai-latest-x86_64.AppImage JHenTai-${{ steps.get_version.outputs.version }}-Linux-x64.AppImage
       # Upload Artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:jhentai/src/pages/watched/watched_page_state.dart';
+import 'package:skana_ehentai/src/pages/watched/watched_page_state.dart';
 
 import '../../enum/config_enum.dart';
 import '../../model/search_config.dart';

@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/model/search_config.dart';
-import 'package:jhentai/src/pages/search/desktop/desktop_search_page_state.dart';
-import 'package:jhentai/src/pages/search/mixin/new_search_argument.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/model/search_config.dart';
+import 'package:skana_ehentai/src/pages/search/desktop/desktop_search_page_state.dart';
+import 'package:skana_ehentai/src/pages/search/mixin/new_search_argument.dart';
 
 import '../../../mixin/scroll_to_top_logic_mixin.dart';
 import '../../../mixin/scroll_to_top_state_mixin.dart';

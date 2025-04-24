@@ -1,6 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:jhentai/src/model/gallery_thumbnail.dart';
+import 'package:skana_ehentai/src/model/gallery_thumbnail.dart';
 
 import '../model/gallery_image.dart';
 import 'eh_image.dart';

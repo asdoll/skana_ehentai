@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/pages/download/mixin/gallery/gallery_download_page_logic_mixin.dart';
-import 'package:jhentai/src/setting/performance_setting.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/pages/download/mixin/gallery/gallery_download_page_logic_mixin.dart';
+import 'package:skana_ehentai/src/setting/performance_setting.dart';
 
 import '../../../../database/database.dart';
 import '../../../../mixin/scroll_to_top_logic_mixin.dart';

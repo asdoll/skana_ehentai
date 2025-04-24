@@ -770,7 +770,6 @@ class ru_RU {
       'import': 'Импорт',
       'save2Local': 'Сохранить локально',
       'readIndexRecord': 'Прогресс чтения',
-      'quickSearch': 'Быстрый поиск',
       'blockRules': 'Правила блокировки',
       'searchHistory': 'История поиска',
       'galleryHistory': 'История галерей',

@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/list_extension.dart';
-import 'package:jhentai/src/service/gallery_download_service.dart';
-import 'package:jhentai/src/utils/file_util.dart';
+import 'package:skana_ehentai/src/extension/list_extension.dart';
+import 'package:skana_ehentai/src/service/gallery_download_service.dart';
+import 'package:skana_ehentai/src/utils/file_util.dart';
 import 'package:path/path.dart';
 
 import '../model/gallery_image.dart';
@@ -89,12 +89,14 @@ class LocalGalleryService extends GetxController with GridBasePageServiceMixin, 
     List<File> allFiles = dir.listSync().whereType<File>().toList();
     List<File> imageFiles = dir.listSync().whereType<File>().where((image) => FileUtil.isImageExtension(image.path)).toList();
     if (allFiles.length == imageFiles.length) {
+      // ignore: body_might_complete_normally_catch_error
       dir.delete(recursive: true).catchError((e) {
         log.error('Delete local gallery error!', e);
         log.uploadError(e);
       });
     } else {
       for (File file in imageFiles) {
+        // ignore: body_might_complete_normally_catch_error
         file.delete().catchError((e) {
           log.error('Delete local gallery error!', e);
           log.uploadError(e);

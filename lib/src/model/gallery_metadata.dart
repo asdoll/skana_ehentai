@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:jhentai/src/model/gallery_image.dart';
-import 'package:jhentai/src/model/gallery_tag.dart';
-import 'package:jhentai/src/model/gallery_url.dart';
+import 'package:skana_ehentai/src/model/gallery_image.dart';
+import 'package:skana_ehentai/src/model/gallery_tag.dart';
+import 'package:skana_ehentai/src/model/gallery_url.dart';
 
 class GalleryMetadata {
   GalleryUrl galleryUrl;

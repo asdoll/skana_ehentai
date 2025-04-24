@@ -2,10 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/model/read_page_info.dart';
-import 'package:jhentai/src/pages/read/layout/horizontal_double_column/horizontal_double_column_layout_state.dart';
-import 'package:jhentai/src/widget/eh_wheel_scroll_listener.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/model/read_page_info.dart';
+import 'package:skana_ehentai/src/pages/read/layout/horizontal_double_column/horizontal_double_column_layout_state.dart';
+import 'package:skana_ehentai/src/widget/eh_wheel_scroll_listener.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../../../service/gallery_download_service.dart';

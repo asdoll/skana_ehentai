@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
 
 class JumpPageDialog extends StatefulWidget {
   final int totalPageNo;

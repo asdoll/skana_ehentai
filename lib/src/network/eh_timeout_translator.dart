@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/setting/network_setting.dart';
+import 'package:skana_ehentai/src/setting/network_setting.dart';
 
 class EHTimeoutTranslator extends Interceptor {
   @override

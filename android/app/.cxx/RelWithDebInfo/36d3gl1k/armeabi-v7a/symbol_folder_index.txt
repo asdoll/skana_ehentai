@@ -1,0 +1,1 @@
+/home/yhlu/Documents/git/skana_ehentai/build/app/intermediates/cxx/RelWithDebInfo/36d3gl1k/obj/armeabi-v7a

@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:jhentai/src/database/dao/dio_cache_dao.dart';
-import 'package:jhentai/src/setting/network_setting.dart';
-import 'package:jhentai/src/service/log.dart';
+import 'package:skana_ehentai/src/database/dao/dio_cache_dao.dart';
+import 'package:skana_ehentai/src/setting/network_setting.dart';
+import 'package:skana_ehentai/src/service/log.dart';
 
 import '../database/database.dart';
 
@@ -142,7 +142,7 @@ class EHCacheManager extends Interceptor {
       return true;
     }
 
-    if (!allowedStatusCodes.contains(response?.statusCode)) {
+    if (!allowedStatusCodes.contains(response.statusCode)) {
       return true;
     }
 

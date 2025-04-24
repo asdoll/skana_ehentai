@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:jhentai/src/extension/get_logic_extension.dart';
-import 'package:jhentai/src/extension/list_extension.dart';
-import 'package:jhentai/src/pages/layout/mobile_v2/mobile_layout_page_v2_state.dart';
-import 'package:jhentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
+import 'package:skana_ehentai/src/extension/list_extension.dart';
+import 'package:skana_ehentai/src/pages/layout/mobile_v2/mobile_layout_page_v2_state.dart';
+import 'package:skana_ehentai/src/utils/route_util.dart';
 
 import '../../../mixin/double_tap_to_refresh_logic_mixin.dart';
 import '../../../setting/preference_setting.dart';

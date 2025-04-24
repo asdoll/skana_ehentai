@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:jhentai/src/consts/eh_consts.dart';
-import 'package:jhentai/src/enum/config_enum.dart';
-import 'package:jhentai/src/service/path_service.dart';
-import 'package:jhentai/src/service/log.dart';
+import 'package:skana_ehentai/src/consts/eh_consts.dart';
+import 'package:skana_ehentai/src/enum/config_enum.dart';
+import 'package:skana_ehentai/src/service/path_service.dart';
+import 'package:skana_ehentai/src/service/log.dart';
 import 'package:path/path.dart';
 
 import '../service/jh_service.dart';
@@ -67,6 +67,7 @@ class DownloadSetting with JHLifeCircleBeanWithConfigStorage implements JHLifeCi
   String toConfigString() {
     return jsonEncode({
       'downloadPath': downloadPath.value,
+      // ignore: invalid_use_of_protected_member
       'extraGalleryScanPath': extraGalleryScanPath.value,
       'singleImageSavePath': singleImageSavePath.value,
       'downloadOriginalImageByDefault': downloadOriginalImageByDefault.value,
