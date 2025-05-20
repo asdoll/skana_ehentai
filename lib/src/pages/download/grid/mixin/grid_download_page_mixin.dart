@@ -14,6 +14,7 @@ import 'package:skana_ehentai/src/widget/icons.dart';
 import '../../../../mixin/scroll_to_top_logic_mixin.dart';
 import '../../../../mixin/scroll_to_top_page_mixin.dart';
 import '../../../../mixin/scroll_to_top_state_mixin.dart';
+import '../../../../routes/routes.dart';
 import '../../../../setting/style_setting.dart';
 import '../../../layout/mobile_v2/notification/tap_menu_button_notification.dart';
 import '../../download_base_page.dart';
