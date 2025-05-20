@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get/get_rx/src/rx_workers/rx_workers.dart';
+import 'package:skana_ehentai/src/config/jh_api_secret_config.dart';
 import 'package:skana_ehentai/src/consts/jh_consts.dart';
 import 'package:skana_ehentai/src/network/eh_request.dart';
-import 'package:skana_ehentai/src/network/jh_cookie_manager.dart';
 import 'package:skana_ehentai/src/utils/hmac_util.dart';
 
 import '../service/isolate_service.dart';

@@ -66,16 +66,18 @@ class ArchiveListDownloadPage extends StatelessWidget
     return appBar(
       centerTitle: true,
       leading: styleSetting.isInV2Layout
-          ? isRouteAtTop(Routes.download) ? MoonButton.icon(
-      onTap: () => backRoute(currentRoute: Routes.download),
-      icon: Icon(
-        BootstrapIcons.justify,
-        color: context.moonTheme?.tokens.colors.bulma,
-        size: 20,
-      ),
-    ) : NormalDrawerButton(
-              onTap: () => TapMenuButtonNotification().dispatch(context),
-            )
+          ? isRouteAtTop(Routes.download)
+              ? MoonButton.icon(
+                  onTap: () => backRoute(currentRoute: Routes.download),
+                  icon: Icon(
+                    BootstrapIcons.justify,
+                    color: context.moonTheme?.tokens.colors.bulma,
+                    size: 20,
+                  ),
+                )
+              : NormalDrawerButton(
+                  onTap: () => TapMenuButtonNotification().dispatch(context),
+                )
           : null,
       titleWidget: const DownloadPageSegmentControl(
           galleryType: DownloadPageGalleryType.archive),
@@ -239,7 +241,8 @@ class ArchiveListDownloadPage extends StatelessWidget
           logic.handleLongPressOrSecondaryTapItem(archive, context),
       onLongPress: () =>
           logic.handleLongPressOrSecondaryTapItem(archive, context),
-      child: _buildCard(context, archive).marginSymmetric(horizontal: 5,vertical: 2),
+      child: _buildCard(context, archive)
+          .marginSymmetric(horizontal: 5, vertical: 2),
     );
   }
 
@@ -342,8 +345,8 @@ class ArchiveListDownloadPage extends StatelessWidget
               preferenceSetting.showUtcTime.isTrue
                   ? archive.publishTime
                   : DateUtil.transformUtc2LocalTimeString(archive.publishTime),
-              style: TextStyle(
-                  color: UIConfig.downloadPageCardTextColor(context)),
+              style:
+                  TextStyle(color: UIConfig.downloadPageCardTextColor(context)),
             ).small(),
           ],
         ).marginOnly(top: 5),
@@ -381,7 +384,8 @@ class ArchiveListDownloadPage extends StatelessWidget
         return GestureDetector(
           onTap: () => logic.handleReUnlockArchive(archive),
           child: Icon(BootstrapIcons.unlock,
-              size: UIConfig.downloadPageBotIconSize+1, color: UIConfig.alertColor(context)),
+              size: UIConfig.downloadPageBotIconSize + 1,
+              color: UIConfig.alertColor(context)),
         ).marginOnly(right: 8);
       },
     );
@@ -430,13 +434,15 @@ class ArchiveListDownloadPage extends StatelessWidget
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: UIConfig.resumePauseButtonColor(context)),
       ),
-      child: Transform.translate(offset: Offset(0,-1),child:Text(
-        'original'.tr,
-        style: TextStyle(
-            color: UIConfig.resumePauseButtonColor(context),
-            fontWeight: FontWeight.bold,
-            fontSize: 10),
-      )).paddingBottom(1),
+      child: Transform.translate(
+          offset: Offset(0, -1),
+          child: Text(
+            'original'.tr,
+            style: TextStyle(
+                color: UIConfig.resumePauseButtonColor(context),
+                fontWeight: FontWeight.bold,
+                fontSize: 10),
+          )).paddingBottom(1),
     );
   }
 

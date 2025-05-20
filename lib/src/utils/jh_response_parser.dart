@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:jhentai/src/model/jh_response/jh_response.dart';
+import 'package:skana_ehentai/src/model/jh_response/jh_response.dart';
 
 
 class JHResponseParser {
