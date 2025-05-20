@@ -26,8 +26,12 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../database/database.dart';
 import '../enum/config_enum.dart';
+import '../model/archive_bot_response/archive_bot_response.dart';
+import '../model/archive_bot_response/check_in_vo.dart';
 import '../model/gallery_metadata.dart';
+import '../network/archive_bot_request.dart';
 import '../setting/advanced_setting.dart';
+import '../utils/archive_bot_response_parser.dart';
 import '../utils/version_util.dart';
 import '../widget/update_dialog.dart';
 import 'jh_service.dart';
@@ -46,9 +50,13 @@ class ScheduleService with JHLifeCircleBeanErrorCatch implements JHLifeCircleBea
     Timer(const Duration(seconds: 10), refreshGalleryTags);
     Timer(const Duration(seconds: 10), refreshArchiveTags);
     Timer(const Duration(seconds: 5), clearOutdatedImageCache);
+    Timer(const Duration(seconds: 1), _clearOutdatedGalleryImageHashCache);
 
     Timer(const Duration(seconds: 5), checkEHEvent);
     Timer.periodic(const Duration(minutes: 5), (_) => checkEHEvent());
+
+    Timer(const Duration(seconds: 5), checkInArchiveBot);
+    Timer.periodic(const Duration(minutes: 5), (_) => checkInArchiveBot());
   }
 
   Future<void> _checkUpdate() async {
@@ -163,6 +171,16 @@ class ScheduleService with JHLifeCircleBeanErrorCatch implements JHLifeCircleBea
     }).then((_) => log.info('Clear outdated image cache success, count: $count'));
   }
 
+  Future<void> _clearOutdatedGalleryImageHashCache() async {
+    DateTime thresholdTime = DateTime.now().subtract(const Duration(days: 3));
+    String thresholdTimeStr = thresholdTime.toString();
+
+    return appDb.managers.localConfig
+        .filter((config) => config.configKey.equals(ConfigEnum.galleryImageHash.key) & config.utime.column.isSmallerThanValue(thresholdTimeStr))
+        .delete()
+        .then((value) => value > 0);
+  }
+
   Future<void> checkEHEvent() async {
     if (!userSetting.hasLoggedIn()) {
       return;
@@ -201,6 +219,29 @@ class ScheduleService with JHLifeCircleBeanErrorCatch implements JHLifeCircleBea
         onPressed: () => launchUrlString(eventInfo.hvUrl!, mode: LaunchMode.externalApplication),
         isShort: false,
       );
+    }
+  }
+
+  Future<void> checkInArchiveBot() async {
+    if (!archiveBotSetting.isReady) {
+      return;
+    }
+
+    try {
+      ArchiveBotResponse response = await archiveBotRequest.requestCheckIn(
+        apiAddress: archiveBotSetting.apiAddress.value,
+        apiKey: archiveBotSetting.apiKey.value!,
+        parser: ArchiveBotResponseParser.commonParse,
+      );
+      log.debug('Auto Checkin response: $response');
+      if (response.isSuccess) {
+        CheckInVO checkInVO = CheckInVO.fromResponse(response.data);
+        snack('checkInSuccess'.tr, 'checkInSuccessHint'.trArgs([checkInVO.getGP.toString(), checkInVO.currentGP.toString()]));
+      }
+    } on DioException catch (e) {
+      log.error('Failed to auto checkin', e.errorMsg, e.stackTrace);
+    } catch (e) {
+      log.error('Failed to auto checkin', e.toString(), StackTrace.current);
     }
   }
 }

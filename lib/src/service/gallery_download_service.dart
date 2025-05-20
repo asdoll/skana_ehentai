@@ -72,6 +72,7 @@ class GalleryDownloadService extends GetxController with GridBasePageServiceMixi
   List<GalleryDownloadedData> gallerysWithGroup(String group) => gallerys.where((g) => galleryDownloadInfos[g.gid]!.group == group).toList();
 
   static const int _maxRetryTimes = 3;
+  static const int _maxRetryTimes4FetchImageHashes = 1;
   static const String metadataFileName = 'metadata';
   static const int _maxTitleLength = 85;
 
@@ -868,15 +869,68 @@ class GalleryDownloadService extends GetxController with GridBasePageServiceMixi
   // Task
 
   AsyncTask<void> _downloadGalleryTask(GalleryDownloadedData gallery) {
-    return () {
+    return () async {
       if (_taskHasBeenPausedOrRemoved(gallery)) {
         return;
+      }
+
+      /// If this is a update from old gallery, try to fetch image hashes from JHenTai Server
+      if (gallery.oldVersionGalleryUrl != null && downloadSetting.useJH2UpdateGallery.isTrue) {
+        List<String> imageHashes = await _fetchImageHashesFromJHenTaiServer(gallery);
+
+        if (imageHashes.length == gallery.pageCount) {
+          await _tryCopyImageInfosFromImageHashes(gallery, imageHashes);
+        } else {
+          log.error('Image hashes count mismatch, gid: ${gallery.gid}, expected: ${gallery.pageCount}, actual: ${imageHashes.length}');
+        }
       }
 
       for (int serialNo = 0; serialNo < gallery.pageCount; serialNo++) {
         _processImage(gallery, serialNo);
       }
     };
+  }
+
+  Future<List<String>> _fetchImageHashesFromJHenTaiServer(GalleryDownloadedData gallery) async {
+    if (_taskHasBeenPausedOrRemoved(gallery)) {
+      return [];
+    }
+
+    String? cachedImageHashes = await localConfigService.read(configKey: ConfigEnum.galleryImageHash, subConfigKey: gallery.gid.toString());
+    if (cachedImageHashes != null) {
+      return jsonDecode(cachedImageHashes).cast<String>();
+    }
+
+    GalleryDownloadInfo galleryDownloadInfo = galleryDownloadInfos[gallery.gid]!;
+
+    try {
+      JHResponse response = await retry(
+        () => jhRequest.requestGalleryImageHashes(
+          gid: gallery.gid,
+          token: gallery.token,
+          cancelToken: galleryDownloadInfo.cancelToken,
+          parser: JHResponseParser.commonParse,
+        ),
+        retryIf: (e) => e is DioException && e.type != DioExceptionType.cancel,
+        onRetry: (e) => log.download('Failed to fetch image hashes, retry. Reason: ${(e as DioException).message}'),
+        maxAttempts: _maxRetryTimes4FetchImageHashes,
+      );
+
+      log.debug('Fetch image hashes response: $response');
+      if (response.isSuccess) {
+        FetchImageHashesVO fetchImageHashesVO = FetchImageHashesVO.fromResponse(response.data);
+        localConfigService.write(configKey: ConfigEnum.galleryImageHash, subConfigKey: gallery.gid.toString(), value: jsonEncode(fetchImageHashesVO.hashes));
+        return fetchImageHashesVO.hashes;
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      log.error('Failed to fetch image hashes', e.errorMsg, e.stackTrace);
+      return [];
+    } catch (e) {
+      log.error('Failed to fetch image hashes', e.toString(), StackTrace.current);
+      return [];
+    }
   }
 
   Future<void> _processImage(GalleryDownloadedData gallery, int serialNo) async {
@@ -1254,6 +1308,53 @@ class GalleryDownloadService extends GetxController with GridBasePageServiceMixi
     await superResolutionService.copyImageInfo(oldGallery, newGallery, oldImageSerialNo, newImageSerialNo);
   }
 
+  Future<void> _tryCopyImageInfosFromImageHashes(GalleryDownloadedData newGallery, List<String> imageHashes) async {
+    GalleryDownloadedData? oldGallery = gallerys.firstWhereOrNull((e) => e.galleryUrl == newGallery.oldVersionGalleryUrl);
+    if (oldGallery == null) {
+      return;
+    }
+
+    for (int serialNo = 0; serialNo < newGallery.pageCount; serialNo++) {
+      if (_taskHasBeenPausedOrRemoved(newGallery)) {
+        break;
+      }
+
+      GalleryDownloadInfo newGalleryDownloadInfo = galleryDownloadInfos[newGallery.gid]!;
+      if (newGalleryDownloadInfo.images[serialNo]?.downloadStatus == DownloadStatus.downloaded) {
+        continue;
+      }
+
+      int? oldImageSerialNo = galleryDownloadInfos[oldGallery.gid]?.images.firstIndexWhereOrNull((e) => e?.imageHash == imageHashes[serialNo]);
+      if (oldImageSerialNo == null) {
+        continue;
+      }
+
+      GalleryImage oldImage = galleryDownloadInfos[oldGallery.gid]!.images[oldImageSerialNo]!;
+
+      GalleryImage newImage = oldImage.copyWith(
+        path: _computeImageDownloadRelativePath(newGallery.title, newGallery.gid, oldImage.url, serialNo),
+        downloadStatus: DownloadStatus.downloaded,
+      );
+
+      log.download('Copy old image, new serialNo: $serialNo');
+      io.File oldFile = io.File(path.join(pathService.getVisibleDir().path, oldImage.path!));
+      await oldFile.copy(path.join(pathService.getVisibleDir().path, newImage.path!));
+
+      if (newGalleryDownloadInfo.images[serialNo] == null) {
+        await _saveNewImageInfoInDatabase(newImage, serialNo, newGallery.gid);
+        newGalleryDownloadInfo.images[serialNo] = newImage;
+      } else {
+        await _updateImageStatus(newGallery, newImage, serialNo, DownloadStatus.downloaded);
+      }
+
+      await _updateProgressAfterImageDownloaded(newGallery, serialNo);
+
+      await superResolutionService.copyImageInfo(oldGallery, newGallery, oldImageSerialNo, serialNo);
+    }
+
+    _saveGalleryMetadataInDisk(newGallery);
+  }
+
   Future<void> _copyImageInfo(GalleryImage oldImage, GalleryDownloadedData newGallery, int newImageSerialNo) async {
     log.download('Copy old image, new serialNo: $newImageSerialNo');
 
@@ -1278,7 +1379,7 @@ class GalleryDownloadService extends GetxController with GridBasePageServiceMixi
   }
 
   Future<void> _updateProgressAfterImageDownloaded(GalleryDownloadedData gallery, int serialNo) async {
-    if (_taskHasBeenPausedOrRemoved(gallery)) {
+    if (_taskHasBeenRemoved(gallery)) {
       return;
     }
 

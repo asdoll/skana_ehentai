@@ -72,9 +72,18 @@ class GalleryListDownloadPage extends StatelessWidget
     return appBar(
       centerTitle: true,
       leading: styleSetting.isInV2Layout
-          ? NormalDrawerButton(
-              onTap: () => TapMenuButtonNotification().dispatch(context),
-            )
+          ? isRouteAtTop(Routes.download)
+              ? MoonButton.icon(
+                  onTap: () => backRoute(currentRoute: Routes.download),
+                  icon: Icon(
+                    BootstrapIcons.justify,
+                    color: context.moonTheme?.tokens.colors.bulma,
+                    size: 20,
+                  ),
+                )
+              : NormalDrawerButton(
+                  onTap: () => TapMenuButtonNotification().dispatch(context),
+                )
           : null,
       titleWidget: const DownloadPageSegmentControl(
           galleryType: DownloadPageGalleryType.download),
@@ -554,7 +563,8 @@ class GalleryListDownloadPage extends StatelessWidget
                       downloadProgress.curCount / downloadProgress.totalCount,
                   color:
                       downloadProgress.downloadStatus == DownloadStatus.paused
-                          ? UIConfig.downloadPageProgressPausedIndicatorColor(context)
+                          ? UIConfig.downloadPageProgressPausedIndicatorColor(
+                              context)
                           : null,
                 ),
               ).marginOnly(top: 4),

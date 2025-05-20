@@ -66,7 +66,14 @@ class ArchiveListDownloadPage extends StatelessWidget
     return appBar(
       centerTitle: true,
       leading: styleSetting.isInV2Layout
-          ? NormalDrawerButton(
+          ? isRouteAtTop(Routes.download) ? MoonButton.icon(
+      onTap: () => backRoute(currentRoute: Routes.download),
+      icon: Icon(
+        BootstrapIcons.justify,
+        color: context.moonTheme?.tokens.colors.bulma,
+        size: 20,
+      ),
+    ) : NormalDrawerButton(
               onTap: () => TapMenuButtonNotification().dispatch(context),
             )
           : null,

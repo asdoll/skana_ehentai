@@ -718,6 +718,7 @@ favnote：配對收藏備註
       'restoreTasksAutomaticallyHint': '程式每次啟動時嘗試復原下載任務',
       'brokenDownloadPathHint': '你的下載路徑似乎已經損壞，下載功能可能失效',
       'brokenExtraScanPathHint': '你的預設本機畫廊路徑似乎已經損壞，本機畫廊可能無法被識別',
+      'useJH2UpdateGallery': '使用JH服務器加速畫廊更新',
 
       /// archive bot settings
       'archiveBotSettings': '歸檔機器人設定',
@@ -823,7 +824,7 @@ favnote：配對收藏備註
       'warningImageHint': 'R18G圖片，點擊以顯示',
 
       /// tagSet dialog
-      'chooseTagSet': '選擇收藏標籤集',
+      'chooseTagSet': '選擇標籤集',
 
       /// tag namespace
       'language': '語言',
