@@ -1,8 +1,10 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:simple_animations/animation_controller_extension/animation_controller_extension.dart';
 import 'package:simple_animations/animation_mixin/animation_mixin.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../model/gallery_tag.dart';
 
@@ -16,7 +18,7 @@ class EHTag extends StatefulWidget {
   final bool inDeleteMode;
 
   const EHTag({
-    Key? key,
+    super.key,
     required this.tag,
     this.addNameSpaceColor = false,
     this.onTap,
@@ -24,7 +26,7 @@ class EHTag extends StatefulWidget {
     this.onLongPress,
     this.showTagStatus = false,
     this.inDeleteMode = false,
-  }) : super(key: key);
+  });
 
   @override
   State<EHTag> createState() => _EHTagState();
@@ -33,7 +35,8 @@ class EHTag extends StatefulWidget {
 class _EHTagState extends State<EHTag> with AnimationMixin {
   bool inDeleteMode = false;
 
-  late Animation<double> animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
+  late Animation<double> animation = Tween<double>(begin: 0, end: 1)
+      .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
 
   @override
   void initState() {
@@ -58,21 +61,24 @@ class _EHTagState extends State<EHTag> with AnimationMixin {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Text(
-      (widget.tag.tagData.tagName ?? widget.tag.tagData.key) +
-          (widget.tag.voteStatus == EHTagVoteStatus.up
-              ? '↑'
-              : widget.tag.voteStatus == EHTagVoteStatus.down
-                  ? '↓'
-                  : ''),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(
-        fontSize: 12,
-        height: 1,
-        color: widget.tag.color ?? (widget.addNameSpaceColor ? UIConfig.tagNameSpaceTextColor : UIConfig.ehTagTextColor(context)),
-      ),
-    );
+    Widget child = Transform.translate(
+        offset: Offset(0, -1),
+        child: Text(
+          (widget.tag.tagData.tagName ?? widget.tag.tagData.key) +
+              (widget.tag.voteStatus == EHTagVoteStatus.up
+                  ? '↑'
+                  : widget.tag.voteStatus == EHTagVoteStatus.down
+                      ? '↓'
+                      : ''),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: widget.tag.color ??
+                (widget.addNameSpaceColor
+                    ? UIConfig.tagNameSpaceTextColor
+                    : UIConfig.ehTagTextColor(context)),
+          ),
+        ).small());
 
     child = Row(
       mainAxisSize: MainAxisSize.min,
@@ -82,13 +88,12 @@ class _EHTagState extends State<EHTag> with AnimationMixin {
           duration: UIConfig.ehTagAnimationDuration,
           child: inDeleteMode
               ? Container(
-                  child: const Icon(Icons.close, size: 10),
-                  margin: const EdgeInsets.only(left: 4),
-                  padding: const EdgeInsets.all(1.5),
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: UIConfig.ehTagDeleteButtonBackGroundColor(context),
                     borderRadius: BorderRadius.circular(8),
                   ),
+                  child: const Icon(BootstrapIcons.x, size: 10),
                 )
               : const SizedBox(),
         ),
@@ -102,7 +107,8 @@ class _EHTagState extends State<EHTag> with AnimationMixin {
       child: child,
     );
 
-    if (widget.showTagStatus && widget.tag.tagStatus != EHTagStatus.confidence) {
+    if (widget.showTagStatus &&
+        widget.tag.tagStatus != EHTagStatus.confidence) {
       child = DottedBorder(
         customPath: (size) {
           return Path()
@@ -110,32 +116,40 @@ class _EHTagState extends State<EHTag> with AnimationMixin {
             ..lineTo(size.width, size.height);
         },
         color: UIConfig.ehTagUnderLineColor(context),
-        dashPattern: widget.tag.tagStatus == EHTagStatus.skepticism ? const <double>[3, 4] : const <double>[1, 2],
+        dashPattern: widget.tag.tagStatus == EHTagStatus.skepticism
+            ? const <double>[3, 4]
+            : const <double>[1, 2],
         padding: EdgeInsets.zero,
-        strokeCap: widget.tag.tagStatus == EHTagStatus.skepticism ? StrokeCap.round : StrokeCap.butt,
+        strokeCap: widget.tag.tagStatus == EHTagStatus.skepticism
+            ? StrokeCap.round
+            : StrokeCap.butt,
         child: child,
       );
     }
 
     child = Container(
-      height: 24,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
         color: widget.tag.backgroundColor ??
             (widget.addNameSpaceColor
-                ? UIConfig.zhTagNameSpaceColor[widget.tag.tagData.key] ?? UIConfig.tagNameSpaceColor[widget.tag.tagData.key]!
+                ? UIConfig.zhTagNameSpaceColor[widget.tag.tagData.key] ??
+                    UIConfig.tagNameSpaceColor[widget.tag.tagData.key]!
                 : UIConfig.ehTagBackGroundColor(context)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: child,
     );
 
-    if (widget.onTap != null || widget.onSecondaryTap != null || widget.onLongPress != null) {
+    if (widget.onTap != null ||
+        widget.onSecondaryTap != null ||
+        widget.onLongPress != null) {
       child = MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: widget.onTap != null ? () => widget.onTap!(widget.tag) : null,
-          onSecondaryTap: widget.onSecondaryTap != null ? () => widget.onSecondaryTap!(widget.tag) : null,
+          onSecondaryTap: widget.onSecondaryTap != null
+              ? () => widget.onSecondaryTap!(widget.tag)
+              : null,
           onLongPress: widget.onLongPress != null
               ? () {
                   Feedback.forLongPress(context);

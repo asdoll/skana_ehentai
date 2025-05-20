@@ -21,6 +21,7 @@ import '../../../../../widget/eh_thumbnail.dart';
 import '../../../../../widget/eh_wheel_speed_controller.dart';
 import '../../../../../widget/icon_text_button.dart';
 
+// ignore: must_be_immutable
 class DetailPreviewPage extends DetailsPage {
   DetailPreviewPage({super.key}) : super.preview() {
     logic = DetailsPreviewPageLogic();

@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/utils/cookie_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 typedef OnPageStartedCallback = Future<void> Function(String url, WebViewController controller);
 
 class WebviewPage extends StatefulWidget {
-  const WebviewPage({Key? key}) : super(key: key);
+  const WebviewPage({super.key});
 
   @override
-  _WebviewPageState createState() => _WebviewPageState();
+  State<WebviewPage> createState() => _WebviewPageState();
 }
 
 class _WebviewPageState extends State<WebviewPage> {
@@ -60,11 +61,10 @@ class _WebviewPageState extends State<WebviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        title: LoadingStateIndicator(
+      appBar: appBar(
+        titleWidget: LoadingStateIndicator(
           loadingState: loadingState,
-          successWidgetBuilder: () => Text(title),
+          successWidgetBuilder: () => Text(title).appSubHeader(),
         ).paddingOnly(right: 40),
       ),
       body: WebViewWidget(controller: controller),

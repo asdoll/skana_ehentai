@@ -271,7 +271,7 @@ class GroupedListController<G, E> {
 
   void attach(_GroupedListState<G, E> state) {
     /// todo
-    assert(_groupedListState == null);
+    //assert(_groupedListState == null);
 
     _groupedListState = state;
   }

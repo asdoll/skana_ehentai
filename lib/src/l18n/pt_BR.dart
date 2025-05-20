@@ -222,6 +222,7 @@ class pt_BR {
       'toggleMenu': 'Alternar menu',
       'share': 'Compartilhar',
       'save': 'Salvar em imagens',
+      'selectDate': 'Selecione a data',
 
       /// setting page
       'account': 'Conta',

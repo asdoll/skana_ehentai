@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:blur/blur.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import 'package:skana_ehentai/src/model/gallery.dart';
 import 'package:skana_ehentai/src/model/gallery_tag.dart';
 import 'package:skana_ehentai/src/setting/preference_setting.dart';
 import 'package:skana_ehentai/src/setting/style_setting.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../consts/locale_consts.dart';
@@ -31,7 +33,7 @@ class EHGalleryListCard extends StatelessWidget {
   final bool withTags;
 
   const EHGalleryListCard({
-    Key? key,
+    super.key,
     required this.gallery,
     required this.downloaded,
     required this.listMode,
@@ -39,60 +41,38 @@ class EHGalleryListCard extends StatelessWidget {
     this.withTags = true,
     this.handleLongPressCard,
     this.handleSecondaryTapCard,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return FadeIn(
+      duration: const Duration(milliseconds: 100),
+      child: SizedBox(
+        height: withTags
+            ? UIConfig.galleryCardHeight
+            : UIConfig.galleryCardHeightWithoutTags,
+        child: buildGalleryCard(context),
+      ),
+    );
+  }
+
+  Widget buildGalleryCard(BuildContext context) {
+    final isFlat =
+        listMode == ListMode.flat || listMode == ListMode.flatWithoutTags;
+    Widget child = moonListTileWidgets(
+      label: buildGalleryCardInfo(context),
+      leading: styleSetting.moveCover2RightSide.isTrue ? null : buildGalleryCardCover(context),
+      trailing: styleSetting.moveCover2RightSide.isTrue ? buildGalleryCardCover(context) : null,
+      menuItemPadding: const EdgeInsets.all(4),
       onTap: () => handleTapCard(gallery),
-      onLongPress: handleLongPressCard == null ? null : () => handleLongPressCard!(gallery),
-      onSecondaryTap: handleSecondaryTapCard == null ? null : () => handleSecondaryTapCard!(gallery),
-      child: FadeIn(
-        duration: const Duration(milliseconds: 100),
-        child: SizedBox(
-          height: withTags ? UIConfig.galleryCardHeight : UIConfig.galleryCardHeightWithoutTags,
-          child: listMode == ListMode.flat || listMode == ListMode.flatWithoutTags ? buildFlatGalleryCard(context) : buildRoundGalleryCard(context),
-        ),
-      ),
-    );
-  }
-
-  Widget buildRoundGalleryCard(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: UIConfig.backGroundColor(context),
-        boxShadow: [
-          BoxShadow(
-            color: UIConfig.galleryCardShadowColor(context),
-            blurRadius: 3,
-            offset: const Offset(2, 2),
-          )
-        ],
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: buildFlatGalleryCard(context),
-      ),
-    );
-  }
-
-  Widget buildFlatGalleryCard(BuildContext context) {
-    List<Widget> children = [
-      buildGalleryCardCover(context),
-      Expanded(
-        child: buildGalleryCardInfo(context).paddingOnly(left: 6, right: 10, top: 6, bottom: 5),
-      ),
-    ];
-
-    if (styleSetting.moveCover2RightSide.isTrue) {
-      children = children.reversed.toList();
-    }
-
-    Widget child = ColoredBox(
-      color: UIConfig.backGroundColor(context),
-      child: Row(children: children),
+      onLongPress: handleLongPressCard == null
+          ? null
+          : () => handleLongPressCard!(gallery),
+      onSecondaryTap: handleSecondaryTapCard == null
+          ? null
+          : () => handleSecondaryTapCard!(gallery),
+      noPadding: isFlat,
+      borderRadius: isFlat ? BorderRadius.zero : null,
     );
 
     if (gallery.blockedByLocalRules) {
@@ -100,17 +80,19 @@ class EHGalleryListCard extends StatelessWidget {
         blur: 8,
         blurColor: UIConfig.backGroundColor(context),
         colorOpacity: 0.7,
-        child: child,
         overlay: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cancel_outlined, size: UIConfig.galleryCardFilteredIconSize, color: UIConfig.onBackGroundColor(context)),
-            Text('filtered'.tr, style: TextStyle(color: UIConfig.onBackGroundColor(context))),
+            Icon(Icons.cancel_outlined,
+                size: UIConfig.galleryCardFilteredIconSize,
+                color: UIConfig.onBackGroundColor(context)),
+            Text('filtered'.tr,
+                style: TextStyle(color: UIConfig.onBackGroundColor(context))).subHeader(),
           ],
         ),
+        child: child,
       );
     }
-
     return child;
   }
 
@@ -118,20 +100,25 @@ class EHGalleryListCard extends StatelessWidget {
     return EHImage(
       galleryImage: gallery.cover,
       containerColor: UIConfig.galleryCardBackGroundColor(context),
-      containerHeight: withTags ? UIConfig.galleryCardHeight : UIConfig.galleryCardHeightWithoutTags,
-      containerWidth: withTags ? UIConfig.galleryCardCoverWidth : UIConfig.galleryCardCoverWidthWithoutTags,
+      containerHeight: withTags
+          ? UIConfig.galleryCardHeight
+          : UIConfig.galleryCardHeightWithoutTags,
+      containerWidth: withTags
+          ? UIConfig.galleryCardCoverWidth
+          : UIConfig.galleryCardCoverWidthWithoutTags,
       heroTag: gallery.blockedByLocalRules ? null : gallery.cover,
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
+      borderRadius: BorderRadius.circular(8),
     );
   }
 
   Widget buildGalleryCardInfo(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildGalleryCardInfoHeader(context),
-        if (withTags && gallery.tags.isNotEmpty) buildGalleryCardTagWaterFlow(context),
+        buildGalleryCardTagWaterFlow(context),
         buildGalleryInfoFooter(context),
       ],
     );
@@ -142,22 +129,26 @@ class EHGalleryListCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text('${gallery.title}\n', maxLines: 2, overflow: TextOverflow.ellipsis)
+            .subHeader(),
         Text(
-          gallery.title,
-          maxLines: 2,
+          gallery.uploader ?? "",
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: UIConfig.galleryCardTitleSize, height: 1.2),
-        ),
-        if (gallery.uploader != null)
-          Text(
-            gallery.uploader!,
-            style: TextStyle(fontSize: UIConfig.galleryCardTextSize, color: UIConfig.galleryCardTextColor(context)),
-          ).marginOnly(top: 2),
+          style: TextStyle(color: UIConfig.galleryCardUploaderColor(context)),
+        ).small().paddingOnly(bottom: 2),
       ],
     );
   }
 
   Widget buildGalleryCardTagWaterFlow(BuildContext context) {
+    if (!withTags) {
+      return SizedBox(
+        height: listMode == ListMode.flatWithoutTags
+            ? UIConfig.galleryCardNoTagsFlatHeight
+            : UIConfig.galleryCardNoTagsHeight,
+      );
+    }
     List<GalleryTag> mergedList = [];
     gallery.tags.forEach((namespace, galleryTags) {
       mergedList.addAll(galleryTags);
@@ -174,6 +165,10 @@ class EHGalleryListCard extends StatelessWidget {
       }
     });
 
+    if (gallery.tags.isEmpty) {
+      return SizedBox(height: UIConfig.galleryCardTagsHeight);
+    }
+
     return SizedBox(
       height: UIConfig.galleryCardTagsHeight,
       child: WaterfallFlow.builder(
@@ -189,7 +184,7 @@ class EHGalleryListCard extends StatelessWidget {
         itemCount: mergedList.length,
         itemBuilder: (_, int index) => EHTag(tag: mergedList[index]),
       ).enableMouseDrag(withScrollBar: false),
-    );
+    ).paddingBottom(3);
   }
 
   Widget buildGalleryInfoFooter(BuildContext context) {
@@ -203,7 +198,8 @@ class EHGalleryListCard extends StatelessWidget {
             const Expanded(child: SizedBox()),
             if (downloaded) _buildDownloadIcon(context).marginOnly(right: 4),
             if (gallery.isFavorite) _buildFavoriteIcon().marginOnly(right: 4),
-            if (gallery.language != null) _buildLanguage(context).marginOnly(right: 4),
+            if (gallery.language != null)
+              _buildLanguage(context).marginOnly(right: 4),
             if (gallery.pageCount != null) _buildPageCount(context),
           ],
         ),
@@ -225,37 +221,41 @@ class EHGalleryListCard extends StatelessWidget {
       initialRating: gallery.rating,
       itemCount: 5,
       allowHalfRating: true,
-      itemSize: 16,
+      itemSize: 12,
       ignoreGestures: true,
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: gallery.hasRated ? UIConfig.galleryRatingStarRatedColor(context) : UIConfig.galleryRatingStarColor,
+        color: gallery.hasRated
+            ? UIConfig.galleryRatingStarRatedColor(context)
+            : UIConfig.galleryRatingStarColor,
       ),
       onRatingUpdate: (rating) {},
     );
   }
 
-  Widget _buildDownloadIcon(BuildContext context) => Icon(Icons.downloading, size: 11, color: UIConfig.galleryCardTextColor(context));
+  Widget _buildDownloadIcon(BuildContext context) =>
+      Icon(Icons.arrow_circle_down_rounded,
+          size: 14, color: UIConfig.galleryCardUploaderColor(context)).paddingTop(1);
 
-  Widget _buildFavoriteIcon() => Icon(Icons.favorite, size: 11, color: UIConfig.favoriteTagColor[gallery.favoriteTagIndex!]);
+  Widget _buildFavoriteIcon() => Icon(BootstrapIcons.heart_fill,
+      size: 11, color: UIConfig.favoriteTagColor[gallery.favoriteTagIndex!]).paddingTop(2);
 
   Text _buildPageCount(BuildContext context) =>
-      Text(gallery.pageCount.toString() + 'P', style: TextStyle(fontSize: UIConfig.galleryCardTextSize, color: UIConfig.galleryCardTextColor(context)));
+      Text('${gallery.pageCount}P',style: TextStyle(color: UIConfig.galleryCardUploaderColor(context))).small();
 
   Text _buildLanguage(BuildContext context) {
-    return Text(
-      LocaleConsts.language2Abbreviation[gallery.language] ?? '',
-      style: TextStyle(fontSize: UIConfig.galleryCardTextSize, color: UIConfig.galleryCardTextColor(context)),
-    );
+    return Text(LocaleConsts.language2Abbreviation[gallery.language] ?? '',
+            style: TextStyle(color: UIConfig.galleryCardUploaderColor(context)))
+        .small();
   }
 
   Text _buildTime(BuildContext context) {
     return Text(
-      preferenceSetting.showUtcTime.isTrue ? gallery.publishTime : DateUtil.transformUtc2LocalTimeString(gallery.publishTime),
+      preferenceSetting.showUtcTime.isTrue
+          ? gallery.publishTime
+          : DateUtil.transformUtc2LocalTimeString(gallery.publishTime),
       style: TextStyle(
-          fontSize: UIConfig.galleryCardTextSize,
-          color: UIConfig.galleryCardTextColor(context),
           decoration: gallery.isExpunged ? TextDecoration.lineThrough : null),
-    );
+    ).xSmall();
   }
 }

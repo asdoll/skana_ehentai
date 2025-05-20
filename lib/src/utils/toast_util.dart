@@ -17,7 +17,7 @@ void toast(String msg, {bool isCenter = true, bool isShort = true}) {
   Widget toast = Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(25.0),
+      borderRadius: BorderRadius.circular(8.0),
       color: UIConfig.toastBackGroundColor(Get.context!),
     ),
     child: Text(msg, style: TextStyle(color: UIConfig.toastTextColor(Get.context!))),

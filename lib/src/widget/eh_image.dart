@@ -168,11 +168,11 @@ class EHImage extends StatelessWidget {
 
   Widget buildFileImage(BuildContext context) {
     if (galleryImage.downloadStatus == DownloadStatus.paused) {
-      return pausedWidgetBuilder?.call() ?? const Center(child: CircularProgressIndicator());
+      return pausedWidgetBuilder?.call() ?? Center(child: UIConfig.loadingAnimation(context));
     }
 
     if (galleryImage.downloadStatus == DownloadStatus.downloading) {
-      return downloadingWidgetBuilder?.call() ?? const Center(child: CircularProgressIndicator());
+      return downloadingWidgetBuilder?.call() ?? Center(child: UIConfig.loadingAnimation(context));
     }
 
     return ExtendedImage.file(

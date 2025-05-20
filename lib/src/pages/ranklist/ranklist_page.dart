@@ -3,19 +3,16 @@ import 'package:get/get.dart';
 import 'package:skana_ehentai/src/pages/base/base_page.dart';
 import 'package:skana_ehentai/src/pages/ranklist/ranklist_page_logic.dart';
 import 'package:skana_ehentai/src/pages/ranklist/ranklist_page_state.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 class RanklistPage extends BasePage {
   const RanklistPage({
-    Key? key,
-    bool showMenuButton = false,
-    bool showTitle = false,
-    bool showScroll2TopButton = true,
+    super.key,
+    super.showMenuButton,
+    super.showTitle,
+    super.showScroll2TopButton = true,
   }) : super(
-          key: key,
-          showMenuButton: showMenuButton,
-          showTitle: showTitle,
           showJumpButton: true,
-          showScroll2TopButton: showScroll2TopButton,
         );
 
   @override
@@ -26,21 +23,20 @@ class RanklistPage extends BasePage {
 
   @override
   AppBar? buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text('${state.ranklistType.name.tr} ${'ranklist'.tr}'),
-      centerTitle: true,
+    return appBar(
+      title: '${state.ranklistType.name.tr} ${'ranklist'.tr}',
       leading: showMenuButton ? super.buildAppBarMenuButton(context) : null,
       actions: [
         ...super.buildAppBarActions(),
-        PopupMenuButton(
+        popupMenuButton(
           tooltip: '',
-          initialValue: state.ranklistType,
           onSelected: logic.handleChangeRanklist,
+          constraints: BoxConstraints(maxWidth: 100),
           itemBuilder: (BuildContext context) => <PopupMenuEntry<RanklistType>>[
-            PopupMenuItem<RanklistType>(value: RanklistType.allTime, child: Center(child: Text('allTime'.tr))),
-            PopupMenuItem<RanklistType>(value: RanklistType.year, child: Center(child: Text('year'.tr))),
-            PopupMenuItem<RanklistType>(value: RanklistType.month, child: Center(child: Text('month'.tr))),
-            PopupMenuItem<RanklistType>(value: RanklistType.day, child: Center(child: Text('day'.tr))),
+            PopupMenuItem<RanklistType>(value: RanklistType.allTime, child: Center(child: Text('allTime'.tr).small())),
+            PopupMenuItem<RanklistType>(value: RanklistType.year, child: Center(child: Text('year'.tr).small())),
+            PopupMenuItem<RanklistType>(value: RanklistType.month, child: Center(child: Text('month'.tr).small())),
+            PopupMenuItem<RanklistType>(value: RanklistType.day, child: Center(child: Text('day'.tr).small())),
           ],
         ),
       ],

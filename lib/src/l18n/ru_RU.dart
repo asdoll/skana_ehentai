@@ -226,6 +226,7 @@ class ru_RU {
       'toggleMenu': 'Переключить меню',
       'share': 'Поделиться',
       'save': 'Сохранить в Изображения',
+      'selectDate': 'выберите дату',
 
       /// setting page
       'account': 'Аккаунт',

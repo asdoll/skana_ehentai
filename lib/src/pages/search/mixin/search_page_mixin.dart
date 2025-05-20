@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/pages/base/base_page.dart';
 import 'package:skana_ehentai/src/pages/details/details_page_logic.dart';
@@ -9,6 +11,8 @@ import 'package:skana_ehentai/src/pages/search/mixin/search_page_logic_mixin.dar
 import 'package:skana_ehentai/src/pages/search/mixin/search_page_state_mixin.dart';
 import 'package:skana_ehentai/src/setting/style_setting.dart';
 import 'package:skana_ehentai/src/utils/search_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../database/database.dart';
 import '../../../model/gallery_tag.dart';
@@ -21,7 +25,8 @@ import '../../../widget/eh_search_config_dialog.dart';
 import '../../../widget/eh_tag.dart';
 import '../../../widget/eh_wheel_speed_controller.dart';
 
-mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateMixin> on BasePage<L, S> {
+mixin SearchPageMixin<L extends SearchPageLogicMixin,
+    S extends SearchPageStateMixin> on BasePage<L, S> {
   @override
   L get logic;
 
@@ -30,30 +35,28 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
 
   List<Widget> buildActionButtons({VisualDensity? visualDensity}) {
     return [
-      IconButton(
-        icon: const Icon(Icons.attach_file),
-        onPressed: logic.handleFileSearch,
-        visualDensity: visualDensity,
+      MoonEhButton(
+        icon: BootstrapIcons.paperclip,
+        onTap: logic.handleFileSearch,
       ),
-      IconButton(
-        icon: const Icon(Icons.restore),
-        onPressed: logic.handleTapJumpButton,
-        visualDensity: visualDensity,
+      MoonEhButton(
+        icon: BootstrapIcons.clock_history,
+        onTap: logic.handleTapJumpButton,
       ),
-      IconButton(
-        icon: Icon(state.bodyType == SearchPageBodyType.gallerys ? Icons.search : Icons.image_outlined),
-        onPressed: logic.toggleBodyType,
-        visualDensity: visualDensity,
+      MoonEhButton(
+        icon: state.bodyType == SearchPageBodyType.gallerys
+            ? BootstrapIcons.search
+            : BootstrapIcons.image,
+        onTap: logic.toggleBodyType,
       ),
-      IconButton(
-        icon: const Icon(Icons.filter_alt_outlined),
-        onPressed: () => logic.handleTapFilterButton(EHSearchConfigDialogType.filter),
-        visualDensity: visualDensity,
+      MoonEhButton(
+        icon: BootstrapIcons.filter,
+        onTap: () =>
+            logic.handleTapFilterButton(EHSearchConfigDialogType.filter),
       ),
-      IconButton(
-        icon: const Icon(Icons.more_vert),
-        onPressed: () => toRoute(Routes.quickSearch),
-        visualDensity: visualDensity,
+      MoonEhButton(
+        icon: BootstrapIcons.three_dots,
+        onTap: () => toRoute(Routes.quickSearch),
       ),
     ];
   }
@@ -64,45 +67,41 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
       init: logic,
       id: logic.searchFieldId,
       builder: (_) => SizedBox(
-        height: styleSetting.isInDesktopLayout ? UIConfig.desktopSearchBarHeight : UIConfig.mobileV2SearchBarHeight,
+        height: styleSetting.isInDesktopLayout
+            ? UIConfig.desktopSearchBarHeight
+            : UIConfig.mobileV2SearchBarHeight,
         child: FutureBuilder(
           future: state.searchConfigInitCompleter.future,
-          builder: (_, __) => TextField(
+          builder: (_, __) => MoonTextInput(
             focusNode: state.searchFieldFocusNode,
             textInputAction: TextInputAction.search,
             controller: TextEditingController.fromValue(
               TextEditingValue(
-                text: state.searchConfig.keyword ?? '',
+                text: state.searchConfig.keyword == null ||
+                        state.searchConfig.keyword!.trim().isEmpty
+                    ? state.searchConfig.computeFullKeywords()
+                    : state.searchConfig.keyword!,
 
                 /// make cursor stay at last letter
-                selection: TextSelection.fromPosition(TextPosition(offset: state.searchConfig.keyword?.length ?? 0)),
+                selection: TextSelection.fromPosition(TextPosition(
+                    offset: state.searchConfig.keyword?.length ?? 0)),
               ),
             ),
             style: const TextStyle(fontSize: 15),
             textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-              isDense: true,
-              hintText: 'search'.tr,
-              contentPadding: EdgeInsets.zero,
-              labelStyle: const TextStyle(fontSize: 15),
-              floatingLabelStyle: const TextStyle(fontSize: 10),
-              labelText: state.searchConfig.tags?.isEmpty ?? true ? null : state.searchConfig.computeTagKeywords(withTranslation: false, separator: ' / '),
-              prefixIcon: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(child: const Icon(Icons.search), onTap: logic.handleClearAndRefresh),
-              ),
-              prefixIconConstraints: BoxConstraints(
-                minHeight: styleSetting.isInDesktopLayout ? UIConfig.desktopSearchBarHeight : UIConfig.mobileV2SearchBarHeight,
-                minWidth: styleSetting.isInDesktopLayout ? 32 : 52,
-              ),
-              suffixIcon: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(child: const Icon(Icons.cancel), onTap: logic.handleTapClearButton),
-              ),
-              suffixIconConstraints: BoxConstraints(
-                minHeight: styleSetting.isInDesktopLayout ? UIConfig.desktopSearchBarHeight : UIConfig.mobileV2SearchBarHeight,
-                minWidth: styleSetting.isInDesktopLayout ? 24 : 40,
-              ),
+            hintText: 'search'.tr,
+            hasFloatingLabel: true,
+            leading: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                  onTap: logic.handleClearAndRefresh,
+                  child: moonIcon(icon: BootstrapIcons.search)),
+            ),
+            trailing: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                  onTap: logic.handleTapClearButton,
+                  child: moonIcon(icon: BootstrapIcons.x)),
             ),
             onTap: () {
               if (state.bodyType == SearchPageBodyType.gallerys) {
@@ -119,7 +118,8 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
   }
 
   Widget buildOpenGalleryArea() {
-    if (state.inputGalleryUrl == null && state.inputGalleryImagePageUrl == null) {
+    if (state.inputGalleryUrl == null &&
+        state.inputGalleryImagePageUrl == null) {
       return const SizedBox();
     }
 
@@ -127,15 +127,22 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
       margin: const EdgeInsets.only(top: 8),
       child: ListTile(
         title: Text('openGallery'.tr),
-        subtitle: Text(state.inputGalleryUrl?.url ?? state.inputGalleryImagePageUrl!.url, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+            state.inputGalleryUrl?.url ?? state.inputGalleryImagePageUrl!.url,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis),
         leading: const Icon(Icons.open_in_new),
         onTap: () {
           state.searchFieldFocusNode.unfocus();
 
           if (state.inputGalleryUrl != null) {
-            toRoute(Routes.details, arguments: DetailsPageArgument(galleryUrl: state.inputGalleryUrl!));
+            toRoute(Routes.details,
+                arguments:
+                    DetailsPageArgument(galleryUrl: state.inputGalleryUrl!));
           } else if (state.inputGalleryImagePageUrl != null) {
-            toRoute(Routes.imagePage, arguments: GalleryImagePageArgument(galleryImagePageUrl: state.inputGalleryImagePageUrl!));
+            toRoute(Routes.imagePage,
+                arguments: GalleryImagePageArgument(
+                    galleryImagePageUrl: state.inputGalleryImagePageUrl!));
           }
         },
       ),
@@ -163,11 +170,15 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
       sliver: SliverToBoxAdapter(
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: UIConfig.searchPageAnimationDuration),
+          duration: const Duration(
+              milliseconds: UIConfig.searchPageAnimationDuration),
           switchInCurve: Curves.easeIn,
           switchOutCurve: Curves.easeOut,
-          transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: SizeTransition(sizeFactor: animation, child: child)),
-          child: state.hideSearchHistory ? const SizedBox() : buildHistoryChips(),
+          transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: SizeTransition(sizeFactor: animation, child: child)),
+          child:
+              state.hideSearchHistory ? const SizedBox() : buildHistoryChips(),
         ),
       ),
     );
@@ -181,7 +192,8 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
           child: Wrap(
             spacing: 8,
             runSpacing: 7,
-            children: searchHistoryService.histories.map(buildHistoryChip).toList(),
+            children:
+                searchHistoryService.histories.map(buildHistoryChip).toList(),
           ),
         ),
       ],
@@ -196,14 +208,15 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
           if (state.inDeleteSearchHistoryMode) {
             logic.handleDeleteSearchHistory(history);
           } else {
-            newSearch(keyword: history.rawKeyword + ' ');
+            newSearch(keyword: '${history.rawKeyword} ');
           }
         },
         onLongPress: state.inDeleteSearchHistoryMode
             ? null
             : () {
                 if (state.searchConfigInitCompleter.isCompleted) {
-                  state.searchConfig.keyword = (state.searchConfig.keyword ?? '').trimLeft() + ' ' + history.rawKeyword;
+                  state.searchConfig.keyword =
+                      '${(state.searchConfig.keyword ?? '').trimLeft()} ${history.rawKeyword}';
                   logic.update([logic.searchFieldId]);
                 }
               },
@@ -211,7 +224,9 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
           tag: GalleryTag(
             tagData: TagData(
               namespace: '',
-              key: state.enableSearchHistoryTranslation ? history.translatedKeyword ?? history.rawKeyword : history.rawKeyword,
+              key: state.enableSearchHistoryTranslation
+                  ? history.translatedKeyword ?? history.rawKeyword
+                  : history.rawKeyword,
             ),
           ),
           inDeleteMode: state.inDeleteSearchHistoryMode,
@@ -226,27 +241,37 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: UIConfig.searchPageAnimationDuration),
+            duration: const Duration(
+                milliseconds: UIConfig.searchPageAnimationDuration),
             child: state.hideSearchHistory || !tagTranslationService.isReady
                 ? null
-                : IconButton(
-                    onPressed: logic.toggleEnableSearchHistoryTranslation,
-                    icon: Icon(Icons.translate, size: 20, color: UIConfig.primaryColor((context))),
+                : MoonEhButton(
+                    onTap: logic.toggleEnableSearchHistoryTranslation,
+                    icon: BootstrapIcons.translate,
+                    color: UIConfig.primaryColor((context)),
                   ),
           ),
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: UIConfig.searchPageAnimationDuration),
+            duration: const Duration(
+                milliseconds: UIConfig.searchPageAnimationDuration),
             child: GestureDetector(
-              onLongPress: state.hideSearchHistory ? null : logic.handleClearAllSearchHistories,
-              child: IconButton(
-                key: ValueKey(state.hideSearchHistory),
-                onPressed: state.hideSearchHistory ? logic.toggleHideSearchHistory : logic.toggleDeleteSearchHistoryMode,
-                icon: state.hideSearchHistory
-                    ? const Icon(Icons.visibility, size: 20)
-                    : state.inDeleteSearchHistoryMode
-                        ? const Icon(Icons.close, size: 20)
-                        : Icon(Icons.delete, size: 20, color: UIConfig.alertColor(context)),
-              ),
+              onLongPress: state.hideSearchHistory
+                  ? null
+                  : logic.handleClearAllSearchHistories,
+              child: MoonEhButton(
+                  key: ValueKey(state.hideSearchHistory),
+                  onTap: state.hideSearchHistory
+                      ? logic.toggleHideSearchHistory
+                      : logic.toggleDeleteSearchHistoryMode,
+                  icon: state.hideSearchHistory
+                      ? BootstrapIcons.eye
+                      : state.inDeleteSearchHistoryMode
+                          ? BootstrapIcons.x
+                          : BootstrapIcons.trash,
+                  color: !(state.hideSearchHistory ||
+                          state.inDeleteSearchHistoryMode)
+                      ? UIConfig.alertColor(context)
+                      : null),
             ),
           ),
         ],
@@ -264,26 +289,35 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
             title: highlightRawTag(
               context,
               state.suggestions[index],
-              TextStyle(fontSize: UIConfig.searchPageSuggestionTitleTextSize, color: UIConfig.searchPageSuggestionTitleColor(context)),
-              const TextStyle(fontSize: UIConfig.searchPageSuggestionTitleTextSize, color: UIConfig.searchPageSuggestionHighlightColor),
+              TextStyle(
+                  fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                  color: UIConfig.searchPageSuggestionTitleColor(context)),
+              const TextStyle(
+                  fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                  color: UIConfig.searchPageSuggestionHighlightColor),
             ),
             subtitle: state.suggestions[index].tagData.tagName == null
                 ? null
                 : highlightTranslatedTag(
                     context,
                     state.suggestions[index],
-                    TextStyle(fontSize: UIConfig.searchPageSuggestionSubTitleTextSize, color: UIConfig.searchPageSuggestionSubTitleColor(context)),
-                    const TextStyle(fontSize: UIConfig.searchPageSuggestionSubTitleTextSize, color: UIConfig.searchPageSuggestionHighlightColor),
+                    TextStyle(
+                        fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
+                        color: UIConfig.searchPageSuggestionSubTitleColor(
+                            context)),
+                    const TextStyle(
+                        fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
+                        color: UIConfig.searchPageSuggestionHighlightColor),
                   ),
-            leading: Icon(Icons.search, color: UIConfig.searchPageSuggestionTitleColor(context)),
+            leading: Icon(Icons.search,
+                color: UIConfig.searchPageSuggestionTitleColor(context)),
             dense: true,
             minLeadingWidth: 20,
             visualDensity: const VisualDensity(vertical: -1),
             onTap: () {
               if (state.searchConfigInitCompleter.isCompleted) {
-                state.searchConfig.keyword = (state.searchConfig.keyword?.substring(0, state.suggestions[index].matchStart) ?? '') +
-                    (state.suggestions[index].operator ?? '') +
-                    '${state.suggestions[index].tagData.namespace}:"${state.suggestions[index].tagData.key}\$" ';
+                state.searchConfig.keyword =
+                    '${state.searchConfig.keyword?.substring(0, state.suggestions[index].matchStart) ?? ''}${state.suggestions[index].operator ?? ''}${state.suggestions[index].tagData.namespace}:"${state.suggestions[index].tagData.key}\$" ';
                 state.searchFieldFocusNode.requestFocus();
                 logic.update([logic.searchFieldId]);
               }
@@ -296,32 +330,60 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin, S extends SearchPageStateM
   }
 }
 
-RichText highlightRawTag(BuildContext context, TagAutoCompletionMatch match, TextStyle? style, TextStyle? highlightStyle, {bool singleLine = false}) {
+RichText highlightRawTag(BuildContext context, TagAutoCompletionMatch match,
+    TextStyle? style, TextStyle? highlightStyle,
+    {bool singleLine = false}) {
   List<TextSpan> children = <TextSpan>[];
 
   if (match.namespaceMatch == null) {
-    children.add(TextSpan(text: match.tagData.namespace, style: style));
+    children.add(TextSpan(text: match.tagData.namespace, style: style).small());
   } else {
     children.addAll(
       [
-        TextSpan(text: match.tagData.namespace.substring(0, match.namespaceMatch!.start), style: style),
-        TextSpan(text: match.tagData.namespace.substring(match.namespaceMatch!.start, match.namespaceMatch!.end), style: highlightStyle),
-        TextSpan(text: match.tagData.namespace.substring(match.namespaceMatch!.end), style: style),
+        TextSpan(
+                text: match.tagData.namespace
+                    .substring(0, match.namespaceMatch!.start),
+                style: style)
+            .small(),
+        TextSpan(
+                text: match.tagData.namespace.substring(
+                    match.namespaceMatch!.start, match.namespaceMatch!.end),
+                style: highlightStyle)
+            .small(),
+        TextSpan(
+                text: match.tagData.namespace
+                    .substring(match.namespaceMatch!.end),
+                style: style)
+            .small(),
       ],
     );
   }
 
-  bool namespaceTotalMatch = match.namespaceMatch != null && match.namespaceMatch!.start == 0 && match.namespaceMatch!.end == match.tagData.namespace.length;
-  children.add(TextSpan(text: ' : ', style: namespaceTotalMatch ? highlightStyle : style));
+  bool namespaceTotalMatch = match.namespaceMatch != null &&
+      match.namespaceMatch!.start == 0 &&
+      match.namespaceMatch!.end == match.tagData.namespace.length;
+  children.add(
+      TextSpan(text: ' : ', style: namespaceTotalMatch ? highlightStyle : style)
+          .small());
 
   if (match.keyMatch == null) {
-    children.add(TextSpan(text: match.tagData.key, style: style));
+    children.add(TextSpan(text: match.tagData.key, style: style).small());
   } else {
     children.addAll(
       [
-        TextSpan(text: match.tagData.key.substring(0, match.keyMatch!.start), style: style),
-        TextSpan(text: match.tagData.key.substring(match.keyMatch!.start, match.keyMatch!.end), style: highlightStyle),
-        TextSpan(text: match.tagData.key.substring(match.keyMatch!.end), style: style),
+        TextSpan(
+                text: match.tagData.key.substring(0, match.keyMatch!.start),
+                style: style)
+            .small(),
+        TextSpan(
+                text: match.tagData.key
+                    .substring(match.keyMatch!.start, match.keyMatch!.end),
+                style: highlightStyle)
+            .small(),
+        TextSpan(
+                text: match.tagData.key.substring(match.keyMatch!.end),
+                style: style)
+            .small(),
       ],
     );
   }
@@ -333,39 +395,69 @@ RichText highlightRawTag(BuildContext context, TagAutoCompletionMatch match, Tex
   );
 }
 
-RichText highlightTranslatedTag(BuildContext context, TagAutoCompletionMatch match, TextStyle? style, TextStyle? highlightStyle, {bool singleLine = false}) {
+RichText highlightTranslatedTag(BuildContext context,
+    TagAutoCompletionMatch match, TextStyle? style, TextStyle? highlightStyle,
+    {bool singleLine = false}) {
   List<TextSpan> children = <TextSpan>[];
-  if (match.tagData.translatedNamespace == null || match.tagData.tagName == null) {
-    return RichText(text: TextSpan(children: children));
+  if (match.tagData.translatedNamespace == null ||
+      match.tagData.tagName == null) {
+    return RichText(text: TextSpan(children: children).small());
   }
 
   if (match.translatedNamespaceMatch == null) {
-    children.add(TextSpan(text: match.tagData.translatedNamespace, style: style));
+    children.add(TextSpan(text: match.tagData.translatedNamespace, style: style)
+        .small());
   } else {
     children.addAll(
       [
-        TextSpan(text: match.tagData.translatedNamespace!.substring(0, match.translatedNamespaceMatch!.start), style: style),
         TextSpan(
-            text: match.tagData.translatedNamespace!.substring(match.translatedNamespaceMatch!.start, match.translatedNamespaceMatch!.end),
-            style: highlightStyle),
-        TextSpan(text: match.tagData.translatedNamespace!.substring(match.translatedNamespaceMatch!.end), style: style),
+                text: match.tagData.translatedNamespace!
+                    .substring(0, match.translatedNamespaceMatch!.start),
+                style: style)
+            .small(),
+        TextSpan(
+                text: match.tagData.translatedNamespace!.substring(
+                    match.translatedNamespaceMatch!.start,
+                    match.translatedNamespaceMatch!.end),
+                style: highlightStyle)
+            .small(),
+        TextSpan(
+                text: match.tagData.translatedNamespace!
+                    .substring(match.translatedNamespaceMatch!.end),
+                style: style)
+            .small(),
       ],
     );
   }
 
   bool translatedNamespaceTotalMatch = match.translatedNamespaceMatch != null &&
       match.translatedNamespaceMatch!.start == 0 &&
-      match.translatedNamespaceMatch!.end == match.tagData.translatedNamespace!.length;
-  children.add(TextSpan(text: ' : ', style: translatedNamespaceTotalMatch ? highlightStyle : style));
+      match.translatedNamespaceMatch!.end ==
+          match.tagData.translatedNamespace!.length;
+  children.add(TextSpan(
+          text: ' : ',
+          style: translatedNamespaceTotalMatch ? highlightStyle : style)
+      .small());
 
   if (match.tagNameMatch == null) {
-    children.add(TextSpan(text: match.tagData.tagName!, style: style));
+    children.add(TextSpan(text: match.tagData.tagName!, style: style).small());
   } else {
     children.addAll(
       [
-        TextSpan(text: match.tagData.tagName!.substring(0, match.tagNameMatch!.start), style: style),
-        TextSpan(text: match.tagData.tagName!.substring(match.tagNameMatch!.start, match.tagNameMatch!.end), style: highlightStyle),
-        TextSpan(text: match.tagData.tagName!.substring(match.tagNameMatch!.end), style: style),
+        TextSpan(
+                text: match.tagData.tagName!
+                    .substring(0, match.tagNameMatch!.start),
+                style: style)
+            .small(),
+        TextSpan(
+                text: match.tagData.tagName!.substring(
+                    match.tagNameMatch!.start, match.tagNameMatch!.end),
+                style: highlightStyle)
+            .small(),
+        TextSpan(
+                text: match.tagData.tagName!.substring(match.tagNameMatch!.end),
+                style: style)
+            .small(),
       ],
     );
   }

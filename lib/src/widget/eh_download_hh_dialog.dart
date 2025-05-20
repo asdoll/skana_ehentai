@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../config/ui_config.dart';
 import '../exception/eh_site_exception.dart';
@@ -20,7 +22,7 @@ import 'loading_state_indicator.dart';
 class EHDownloadHHDialog extends StatefulWidget {
   final String archivePageUrl;
 
-  const EHDownloadHHDialog({Key? key, required this.archivePageUrl}) : super(key: key);
+  const EHDownloadHHDialog({super.key, required this.archivePageUrl});
 
   @override
   State<EHDownloadHHDialog> createState() => _EHDownloadHHDialogState();
@@ -38,14 +40,15 @@ class _EHDownloadHHDialogState extends State<EHDownloadHHDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('H@H ${'download'.tr}'),
-      content: SizedBox(
+    return moonAlertDialog(
+      context: context,
+      title: 'H@H ${'download'.tr}',
+      contentWidget: SizedBox(
         height: UIConfig.hhDialogBodyHeight,
         child: LoadingStateIndicator(
           loadingState: loadingState,
           errorTapCallback: _getHHInfo,
-          successWidgetBuilder: () => _buildBody(),
+          successWidgetBuilder: _buildBody,
         ),
       ),
     );
@@ -55,18 +58,29 @@ class _EHDownloadHHDialogState extends State<EHDownloadHHDialog> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        if (hhInfo.creditCount != null && hhInfo.gpCount != null) EHAsset(gpCount: hhInfo.gpCount!, creditCount: hhInfo.creditCount!),
+        if (hhInfo.creditCount != null && hhInfo.gpCount != null)
+          EHAsset(gpCount: hhInfo.gpCount!, creditCount: hhInfo.creditCount!),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [_HHDownloadButtonSet(archive: hhInfo.archives[0]), _HHDownloadButtonSet(archive: hhInfo.archives[1])],
+          children: [
+            _HHDownloadButtonSet(archive: hhInfo.archives[0]),
+            _HHDownloadButtonSet(archive: hhInfo.archives[1])
+          ],
         ).marginOnly(top: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [_HHDownloadButtonSet(archive: hhInfo.archives[2]), _HHDownloadButtonSet(archive: hhInfo.archives[3])],
+          children: [
+            _HHDownloadButtonSet(archive: hhInfo.archives[2]),
+            _HHDownloadButtonSet(archive: hhInfo.archives[3])
+          ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [_HHDownloadButtonSet(archive: hhInfo.archives[4]), if (hhInfo.archives.length >= 6) _HHDownloadButtonSet(archive: hhInfo.archives[5])],
+          children: [
+            _HHDownloadButtonSet(archive: hhInfo.archives[4]),
+            if (hhInfo.archives.length >= 6)
+              _HHDownloadButtonSet(archive: hhInfo.archives[5])
+          ],
         ),
       ],
     );
@@ -76,7 +90,9 @@ class _EHDownloadHHDialogState extends State<EHDownloadHHDialog> {
     setState(() => loadingState = LoadingState.loading);
 
     try {
-      hhInfo = await ehRequest.get(url: widget.archivePageUrl, parser: EHSpiderParser.archivePage2HHInfo);
+      hhInfo = await ehRequest.get(
+          url: widget.archivePageUrl,
+          parser: EHSpiderParser.archivePage2HHInfo);
     } on DioException catch (e) {
       log.error('Get H@H download info failed', e.errorMsg);
       snack('failed'.tr, e.errorMsg ?? '');
@@ -104,19 +120,22 @@ class _EHDownloadHHDialogState extends State<EHDownloadHHDialog> {
 class _HHDownloadButtonSet extends StatelessWidget {
   final GalleryHHArchive archive;
 
-  const _HHDownloadButtonSet({Key? key, required this.archive}) : super(key: key);
+  const _HHDownloadButtonSet({required this.archive});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ElevatedButton(
-          onPressed: archive.resolution == null ? null : () => backRoute(result: archive.resolution),
-          child: SizedBox(
+        MoonFilledButton(
+          buttonSize: MoonButtonSize.sm,
+          onTap: archive.resolution == null
+              ? null
+              : () => backRoute(result: archive.resolution),
+          label: SizedBox(
             width: UIConfig.hhDialogTextButtonWidth,
             child: Center(
-              child: Text(archive.resolutionDesc, style: const TextStyle(fontSize: UIConfig.archiveDialogDownloadTextSize)),
+              child: Text(archive.resolutionDesc).small(),
             ),
           ),
         ),
@@ -124,12 +143,16 @@ class _HHDownloadButtonSet extends StatelessWidget {
           children: [
             Text(
               archive.size.removeAllWhitespace,
-              style: TextStyle(color: UIConfig.hhDialogCostTextColor(context), fontSize: UIConfig.hhDialogTextSize),
-            ).marginOnly(right: 6),
+              style: TextStyle(
+                  color: UIConfig.hhDialogCostTextColor(context),
+                  fontSize: UIConfig.hhDialogTextSize),
+            ).small().marginOnly(right: 6),
             Text(
               archive.cost.removeAllWhitespace,
-              style: TextStyle(color: UIConfig.hhDialogCostTextColor(context), fontSize: UIConfig.hhDialogTextSize),
-            ),
+              style: TextStyle(
+                  color: UIConfig.hhDialogCostTextColor(context),
+                  fontSize: UIConfig.hhDialogTextSize),
+            ).small(),
           ],
         )
       ],

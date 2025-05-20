@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,8 @@ import 'package:skana_ehentai/src/setting/user_setting.dart';
 import 'package:skana_ehentai/src/utils/cookie_util.dart';
 import 'package:skana_ehentai/src/utils/snack_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../../../exception/eh_site_exception.dart';
@@ -36,28 +39,33 @@ class _CookiePageState extends State<CookiePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('accountSetting'.tr),
+      appBar: appBar(
+        title: 'accountSetting'.tr,
         actions: [
-          IconButton(icon: const Icon(Icons.copy), onPressed: _copyCookies),
+          MoonEhButton.md(
+              icon: BootstrapIcons.clipboard,
+              onTap: _copyCookies),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 12),
         children: ehRequest.cookies
             .map(
-              (cookie) => ListTile(
-                title: Text(cookie.name),
-                subtitle: Text(cookie.value),
+              (cookie) => moonListTile(
+                title: cookie.name,
+                subtitle: cookie.value,
                 trailing: cookie.name == EHConsts.igneousCookieName
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           LoadingStateIndicator(
                             loadingState: _refreshIgneousState,
-                            loadingWidgetBuilder: () => const CupertinoActivityIndicator().marginOnly(right: 10),
-                            idleWidgetBuilder: () => IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshIgneousCookie),
+                            loadingWidgetBuilder: () =>
+                                const CupertinoActivityIndicator()
+                                    .marginOnly(right: 10),
+                            idleWidgetBuilder: () => IconButton(
+                                icon: const Icon(Icons.refresh),
+                                onPressed: _refreshIgneousCookie),
                             successWidgetSameWithIdle: true,
                             errorWidgetSameWithIdle: true,
                           )
@@ -65,7 +73,6 @@ class _CookiePageState extends State<CookiePage> {
                       )
                     : null,
                 onTap: _copyAllCookies,
-                dense: true,
               ),
             )
             .toList(),
@@ -83,7 +90,10 @@ class _CookiePageState extends State<CookiePage> {
       CookieUtil.parse2String(
         ehRequest.cookies
             .where(
-              (cookie) => cookie.name == 'ipb_member_id' || cookie.name == 'ipb_pass_hash' || cookie.name == 'igneous',
+              (cookie) =>
+                  cookie.name == 'ipb_member_id' ||
+                  cookie.name == 'ipb_pass_hash' ||
+                  cookie.name == 'igneous',
             )
             .toList(),
       ),
@@ -119,9 +129,11 @@ class _CookiePageState extends State<CookiePage> {
         }),
       );
 
-      log.info('Refresh igneous cookie, set-cookie: ${response.headers.value('set-cookie')}');
+      log.info(
+          'Refresh igneous cookie, set-cookie: ${response.headers.value('set-cookie')}');
 
-      List<String>? cookiePairs = response.headers.value('set-cookie')?.split(';');
+      List<String>? cookiePairs =
+          response.headers.value('set-cookie')?.split(';');
       if (cookiePairs == null) {
         snack('refreshIgneousFailed'.tr, 'Sad panda');
         setStateSafely(() {
@@ -188,11 +200,13 @@ class _CookiePageState extends State<CookiePage> {
     }
 
     _dio = Dio(BaseOptions(
-      connectTimeout: Duration(milliseconds: networkSetting.connectTimeout.value),
-      receiveTimeout: Duration(milliseconds: networkSetting.receiveTimeout.value),
+      connectTimeout:
+          Duration(milliseconds: networkSetting.connectTimeout.value),
+      receiveTimeout:
+          Duration(milliseconds: networkSetting.receiveTimeout.value),
     ));
 
-    EHIpProvider _ehIpProvider = RoundRobinIpProvider(NetworkSetting.host2IPs);
+    EHIpProvider ehIpProvider = RoundRobinIpProvider(NetworkSetting.host2IPs);
 
     _dio!.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
@@ -203,28 +217,34 @@ class _CookiePageState extends State<CookiePage> {
 
         String rawPath = options.path;
         String host = options.uri.host;
-        if (!_ehIpProvider.supports(host)) {
+        if (!ehIpProvider.supports(host)) {
           handler.next(options);
           return;
         }
 
-        String ip = _ehIpProvider.nextIP(host);
+        String ip = ehIpProvider.nextIP(host);
         handler.next(options.copyWith(
           path: rawPath.replaceFirst(host, ip),
           headers: {...options.headers, 'host': host},
-          extra: options.extra..[EHRequest.domainFrontingExtraKey] = {'host': host, 'ip': ip},
+          extra: options.extra
+            ..[EHRequest.domainFrontingExtraKey] = {'host': host, 'ip': ip},
         ));
       },
       onError: (DioException e, ErrorInterceptorHandler handler) {
-        if (!e.requestOptions.extra.containsKey(EHRequest.domainFrontingExtraKey)) {
+        if (!e.requestOptions.extra
+            .containsKey(EHRequest.domainFrontingExtraKey)) {
           handler.next(e);
           return;
         }
 
-        if (e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.badResponse || e.type == DioExceptionType.connectionError) {
-          String host = e.requestOptions.extra[EHRequest.domainFrontingExtraKey]['host'];
-          String ip = e.requestOptions.extra[EHRequest.domainFrontingExtraKey]['ip'];
-          _ehIpProvider.addUnavailableIp(host, ip);
+        if (e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.badResponse ||
+            e.type == DioExceptionType.connectionError) {
+          String host =
+              e.requestOptions.extra[EHRequest.domainFrontingExtraKey]['host'];
+          String ip =
+              e.requestOptions.extra[EHRequest.domainFrontingExtraKey]['ip'];
+          ehIpProvider.addUnavailableIp(host, ip);
           log.info('Refresh igneous, add unavailable host-ip: $host-$ip');
         }
 

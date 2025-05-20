@@ -47,4 +47,17 @@ class JHLayout {
           isSupported: () => PlatformDispatcher.instance.views.first.physicalSize.width / PlatformDispatcher.instance.views.first.devicePixelRatio >= 600,
         ),
       ];
+  
+  static String layout(LayoutMode mode) {
+    switch(mode){
+      case LayoutMode.mobileV2:
+        return 'mobileLayoutV2Name'.tr;
+      case LayoutMode.tabletV2:
+        return 'tabletLayoutV2Name'.tr;
+      case LayoutMode.desktop:
+        return 'desktopLayoutName'.tr;
+      default:
+        return "";
+    }
+  }
 }

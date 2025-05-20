@@ -1,6 +1,10 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:telegram/telegram.dart';
 
 import '../setting/archive_bot_setting.dart';
@@ -18,8 +22,8 @@ class EHArchiveBotSettingDialog extends StatefulWidget {
 }
 
 class _EHArchiveBotSettingDialogState extends State<EHArchiveBotSettingDialog> {
-  TextEditingController _apiAddressController = TextEditingController();
-  TextEditingController _apiKeyController = TextEditingController();
+  final TextEditingController _apiAddressController = TextEditingController();
+  final TextEditingController _apiKeyController = TextEditingController();
   late bool _useProxy;
 
   @override
@@ -37,88 +41,19 @@ class _EHArchiveBotSettingDialogState extends State<EHArchiveBotSettingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Row(
-        children: [
-          Text('apiSetting'.tr),
-          const Expanded(child: SizedBox()),
-          IconButton(
-            icon: const Icon(Icons.telegram),
-            onPressed: () {
-              Telegram.joinChannel(inviteLink: 'https://t.me/EH_ArBot');
-            },
-          )
-        ],
-      ),
-      contentPadding: const EdgeInsets.only(left: 8.0, top: 16.0, right: 0, bottom: 24.0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            minLeadingWidth: 40,
-            leading: Text('apiAddress'.tr, style: const TextStyle(fontSize: 14)),
-            title: TextField(
-              enabled: !_useProxy,
-              controller: _apiAddressController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                constraints: const BoxConstraints(minWidth: 400),
-                suffixIcon: _apiAddressController.text.isEmpty
-                    ? null
-                    : MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          child: const Icon(Icons.cancel),
-                          onTap: () {
-                            setStateSafely(_apiAddressController.clear);
-                          },
-                        ),
-                      ),
-              ),
-              onChanged: (String value) {
-                setStateSafely(() {});
-              },
-            ),
-          ),
-          ListTile(
-            minLeadingWidth: 40,
-            leading: Text('apiKey'.tr, style: const TextStyle(fontSize: 14)),
-            title: TextField(
-              controller: _apiKeyController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                constraints: const BoxConstraints(minWidth: 400),
-                suffixIcon: _apiKeyController.text.isEmpty
-                    ? null
-                    : MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          child: const Icon(Icons.cancel),
-                          onTap: () {
-                            setStateSafely(_apiKeyController.clear);
-                          },
-                        ),
-                      ),
-              ),
-              onChanged: (String value) {
-                setStateSafely(() {});
-              },
-            ),
-          ),
-          SwitchListTile(
-            title: Text('useProxyServer'.tr, style: const TextStyle(fontSize: 14)),
-            value: _useProxy,
-            onChanged: (bool value) async {
-              setStateSafely(() {
-                _useProxy = value;
-              });
-            },
-          )
-        ],
-      ),
+    return moonAlertDialog(
+      context: context,
+      title: 'apiSetting'.tr,
       actions: [
-        TextButton(onPressed: backRoute, child: Text('cancel'.tr)),
-        TextButton(
+        MoonEhButton.md(
+          icon: BootstrapIcons.telegram,
+          size: 30,
+          onTap: () {
+            Telegram.joinChannel(inviteLink: 'https://t.me/EH_ArBot');
+          },
+        ),
+        outlinedButton(onPressed: backRoute, label: 'cancel'.tr),
+        filledButton(
           onPressed: () {
             setStateSafely(() {
               archiveBotSetting.saveAllConfig(
@@ -129,9 +64,69 @@ class _EHArchiveBotSettingDialogState extends State<EHArchiveBotSettingDialog> {
               backRoute(result: true);
             });
           },
-          child: Text('OK'.tr),
+          label: 'OK'.tr,
         ),
       ],
+      contentWidget: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            minLeadingWidth: 40,
+            leading: Text('apiAddress'.tr).small(),
+            title: MoonTextInput(
+              enabled: !_useProxy,
+              controller: _apiAddressController,
+              trailing: _apiAddressController.text.isEmpty
+                    ? null
+                    : MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          child: moonIcon(icon: BootstrapIcons.x),
+                          onTap: () {
+                            setStateSafely(_apiAddressController.clear);
+                          },
+                        ),
+                      ),
+              onChanged: (String value) {
+                setStateSafely(() {});
+              },
+            ),
+          ),
+          ListTile(
+            minLeadingWidth: 40,
+            leading: Text('apiKey'.tr).small(),
+            title: MoonTextInput(
+              controller: _apiKeyController,
+              trailing: _apiKeyController.text.isEmpty
+                    ? null
+                    : MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          child: moonIcon(icon: BootstrapIcons.x),
+                          onTap: () {
+                            setStateSafely(_apiKeyController.clear);
+                          },
+                        ),
+                      ),
+              onChanged: (String value) {
+                setStateSafely(() {});
+              },
+            ),
+          ),
+          ListTile(
+            minLeadingWidth: 40,
+            leading: Text('useProxyServer'.tr).small(),
+            title: MoonSwitch(
+              value: _useProxy,
+              onChanged: (bool value) async {
+                setStateSafely(() {
+                  _useProxy = value;
+                });
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

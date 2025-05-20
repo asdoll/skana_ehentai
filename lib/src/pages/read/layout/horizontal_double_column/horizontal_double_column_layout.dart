@@ -14,7 +14,7 @@ import '../base/base_layout.dart';
 import 'horizontal_double_column_layout_logic.dart';
 
 class HorizontalDoubleColumnLayout extends BaseLayout {
-  HorizontalDoubleColumnLayout({Key? key}) : super(key: key);
+  HorizontalDoubleColumnLayout({super.key});
 
   @override
   final HorizontalDoubleColumnLayoutLogic logic = Get.put<HorizontalDoubleColumnLayoutLogic>(HorizontalDoubleColumnLayoutLogic(), permanent: true);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 class EHDialog extends StatelessWidget {
   final String title;
@@ -8,22 +9,23 @@ class EHDialog extends StatelessWidget {
   final bool showCancelButton;
 
   const EHDialog({
-    Key? key,
+    super.key,
     required this.title,
     this.content,
     this.showCancelButton = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(title),
-      content: content == null ? null : Text(content!),
-      actions: [
-        if (showCancelButton) TextButton(onPressed: backRoute, child: Text('cancel'.tr)),
-        TextButton(child: Text('OK'.tr), onPressed: () => backRoute(result: true)),
+    return moonAlertDialog(
+      context: context,
+      title: title,
+      content: content,
+      actions:[
+        if (showCancelButton)
+          outlinedButton(onPressed: backRoute, label: 'cancel'.tr),
+        filledButton(onPressed: () => backRoute(result: true), label: 'OK'.tr),
       ],
-      actionsPadding: const EdgeInsets.only(left: 24, right: 24, bottom: 12),
     );
   }
 }

@@ -1,24 +1,30 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/model/search_config.dart';
 import 'package:skana_ehentai/src/service/quick_search_service.dart';
 import 'package:skana_ehentai/src/utils/search_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 class QuickSearchPage extends StatelessWidget {
   final bool automaticallyImplyLeading;
 
-  const QuickSearchPage({Key? key, this.automaticallyImplyLeading = false}) : super(key: key);
+  const QuickSearchPage({super.key, this.automaticallyImplyLeading = false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('quickSearch'.tr),
-        automaticallyImplyLeading: automaticallyImplyLeading,
-        actions: const [
-          IconButton(icon: Icon(Icons.add_circle_outline, size: 24), onPressed: handleAddQuickSearch),
+      appBar: appBar(
+        title: 'quickSearch'.tr,
+        actions: [
+          MoonEhButton(
+            buttonSize: MoonButtonSize.lg,
+            icon: BootstrapIcons.plus_circle,
+            onTap: handleAddQuickSearch,
+          ),
         ],
       ),
       body: GetBuilder<QuickSearchService>(
@@ -33,16 +39,15 @@ class QuickSearchPage extends StatelessWidget {
               key: Key(entries[index].key),
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(
-                  dense: true,
-                  title: Text(entries[index].key, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () => quickSearchService.handleUpdateQuickSearch(entries[index]),
+                moonListTile(
+                  title: entries[index].key,
+                  trailing: MoonButton.icon(
+                    buttonSize: MoonButtonSize.sm,
+                    icon: moonIcon(icon: BootstrapIcons.gear),
+                    onTap: () => quickSearchService.handleUpdateQuickSearch(entries[index]),
                   ).marginOnly(right: GetPlatform.isDesktop ? 24 : 0),
                   onTap: () => newSearch(rewriteSearchConfig: entries[index].value, forceNewRoute: true),
                 ),
-                const Divider(thickness: 0.7, height: 2),
               ],
             ),
           ).enableMouseDrag();

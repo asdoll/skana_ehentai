@@ -1,13 +1,16 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/model/gallery_note.dart';
 import 'package:skana_ehentai/src/setting/preference_setting.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../exception/eh_site_exception.dart';
@@ -24,12 +27,11 @@ class EHFavoriteDialog extends StatefulWidget {
   final GalleryNoteFetchFunction? initNoteFuture;
 
   const EHFavoriteDialog({
-    Key? key,
+    super.key,
     this.selectedIndex,
     this.needInitNote = false,
     this.initNoteFuture,
-  })  : assert(needInitNote == false || initNoteFuture != null),
-        super(key: key);
+  }) : assert(needInitNote == false || initNoteFuture != null);
 
   @override
   State<EHFavoriteDialog> createState() => _EHFavoriteDialogState();
@@ -66,106 +68,95 @@ class _EHFavoriteDialogState extends State<EHFavoriteDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Center(child: Text('chooseFavorite'.tr)),
-      children: [
-        LoadingStateIndicator(
-          loadingState: _loadingState,
-          errorTapCallback: _initFavoriteNote,
-          successWidgetBuilder: () => Obx(
-            () => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...favoriteSetting.favoriteTagNames
-                    .mapIndexed(
-                      (index, tagName) => ListTile(
-                        dense: true,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                        selected: selectedIndex == index,
-                        selectedTileColor: UIConfig.favoriteDialogTileColor(context),
-                        leading: Text(
-                          tagName,
-                          style: const TextStyle(fontSize: UIConfig.favoriteDialogLeadingTextSize),
+    return moonAlertDialog(
+      context: context,
+      title: 'chooseFavorite'.tr,
+      contentWidget: LoadingStateIndicator(
+        loadingState: _loadingState,
+        errorTapCallback: _initFavoriteNote,
+        successWidgetBuilder: () => Obx(
+          () => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 6),
+              ...favoriteSetting.favoriteTagNames.mapIndexed((index, tagName) =>
+                  moonListTile(
+                      title: tagName,
+                      titleColor: index == selectedIndex
+                          ? UIConfig.favoriteDialogTileColor(context)
+                          : null,
+                      trailing: Text(
+                        favoriteSetting.favoriteCounts[index].toString(),
+                        style: TextStyle(
+                            color:
+                                UIConfig.favoriteDialogCountTextColor(context)),
+                      ).small(),
+                      onTap: () {
+                        backRoute(
+                          result: (
+                            isDelete: index == selectedIndex,
+                            favIndex: index,
+                            note: _controller.text,
+                            remember: remember,
+                          ),
+                        );
+                      })),
+              Divider(height: 12, color: UIConfig.layoutDividerColor(context)),
+              ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.only(left: 12, right: 12),
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (preferenceSetting.enableDefaultFavorite.isTrue)
+                      Text('asYourDefault'.tr).small(),
+                    if (preferenceSetting.enableDefaultFavorite.isTrue)
+                      MoonCheckbox(
+                          value: remember,
+                          onChanged: (value) =>
+                              setState(() => remember = value!)),
+                  ],
+                ),
+                trailing: MoonButton.icon(
+                  icon: const Icon(BootstrapIcons.pencil_square, size: 20),
+                  onTap: () {
+                    setState(() {
+                      inNoteMode = !inNoteMode;
+                    });
+                  },
+                ),
+              ),
+              if (inNoteMode)
+                MoonTextInput(
+                  controller: _controller,
+                  padding: const EdgeInsets.only(left: 12, right: 0),
+                  inputFormatters: [LengthLimitingTextInputFormatter(200)],
+                  style: const TextStyle(fontSize: 12),
+                  minLines: 1,
+                  maxLines: 4,
+                  trailing: MoonButton.icon(
+                    icon: moonIcon(icon: BootstrapIcons.check2),
+                    onTap: () {
+                      if (selectedIndex == null) {
+                        toast('addNoteHint'.tr);
+                        return;
+                      }
+
+                      backRoute(
+                        result: (
+                          isDelete: false,
+                          favIndex: selectedIndex,
+                          note: _controller.text,
+                          remember: remember,
                         ),
-                        trailing: Text(
-                          favoriteSetting.favoriteCounts[index].toString(),
-                          style: TextStyle(fontSize: UIConfig.favoriteDialogTrailingTextSize, color: UIConfig.favoriteDialogCountTextColor(context)),
-                        ),
-                        onTap: () {
-                          backRoute(
-                            result: (
-                              isDelete: index == selectedIndex,
-                              favIndex: index,
-                              note: _controller.text,
-                              remember: remember,
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                    .toList(),
-                const Divider(height: 12),
-                ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.only(left: 12, right: 12),
-                  leading: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (preferenceSetting.enableDefaultFavorite.isTrue) Text('asYourDefault'.tr),
-                      if (preferenceSetting.enableDefaultFavorite.isTrue) Checkbox(value: remember, onChanged: (value) => setState(() => remember = value!)),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit_note),
-                    onPressed: () {
-                      setState(() {
-                        inNoteMode = !inNoteMode;
-                      });
+                      );
                     },
                   ),
-                ).marginOnly(top: 4),
-                if (inNoteMode)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 160),
-                          child: TextField(
-                            controller: _controller,
-                            inputFormatters: [LengthLimitingTextInputFormatter(200)],
-                            style: const TextStyle(fontSize: 12),
-                            minLines: 1,
-                            maxLines: 4,
-                            decoration: const InputDecoration(isDense: true),
-                          ),
-                        ).paddingOnly(left: 8),
-                      ),
-                      TextButton(
-                        child: Text('OK'.tr),
-                        onPressed: () {
-                          if (selectedIndex == null) {
-                            toast('addNoteHint'.tr);
-                            return;
-                          }
-
-                          backRoute(
-                            result: (
-                              isDelete: false,
-                              favIndex: selectedIndex,
-                              note: _controller.text,
-                              remember: remember,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ).marginOnly(top: 4, bottom: 4),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
-      ],
-      contentPadding: const EdgeInsets.only(top: 18, left: 12, right: 12, bottom: 12),
+      ),
     );
   }
 

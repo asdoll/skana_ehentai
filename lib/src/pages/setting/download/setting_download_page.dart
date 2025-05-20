@@ -1,9 +1,11 @@
 import 'dart:io' as io;
 
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/string_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
@@ -12,7 +14,9 @@ import 'package:skana_ehentai/src/setting/download_setting.dart';
 import 'package:skana_ehentai/src/setting/user_setting.dart';
 import 'package:skana_ehentai/src/utils/file_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:path/path.dart';
 
@@ -25,7 +29,7 @@ import '../../../utils/route_util.dart';
 import '../../../widget/eh_download_dialog.dart';
 
 class SettingDownloadPage extends StatefulWidget {
-  const SettingDownloadPage({Key? key}) : super(key: key);
+  const SettingDownloadPage({super.key});
 
   @override
   State<SettingDownloadPage> createState() => _SettingDownloadPageState();
@@ -45,7 +49,7 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('downloadSetting'.tr)),
+      appBar: appBar(title: 'downloadSetting'.tr),
       body: Obx(
         () => EHWheelSpeedController(
           controller: scrollController,
@@ -77,63 +81,61 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
   }
 
   Widget _buildDownloadPath() {
-    return ListTile(
-      title: Text('downloadPath'.tr),
-      subtitle: Text(downloadSetting.downloadPath.value.breakWord),
-      trailing: changeDownloadPathState == LoadingState.loading ? const CupertinoActivityIndicator() : null,
+    return moonListTile(
+      title: 'downloadPath'.tr,
+      subtitle: downloadSetting.downloadPath.value.breakWord,
+      trailing: changeDownloadPathState == LoadingState.loading ? UIConfig.loadingAnimation(Get.context!) : const SizedBox(width: 24),
       onTap: () {
         if (!GetPlatform.isIOS) {
           toast('changeDownloadPathHint'.tr, isShort: false);
         }
       },
-      onLongPress: _handleChangeDownloadPath,
+      onLongPress: () => _handleChangeDownloadPath(newDownloadPath: null),
     );
   }
 
   Widget _buildResetDownloadPath() {
-    return ListTile(
-      title: Text('resetDownloadPath'.tr),
-      subtitle: Text('longPress2Reset'.tr),
+    return moonListTile(
+      title: 'resetDownloadPath'.tr,
+      subtitle: 'longPress2Reset'.tr,
       onLongPress: _handleResetDownloadPath,
     );
   }
 
   Widget _buildExtraGalleryScanPath() {
-    return ListTile(
-      title: Text('extraGalleryScanPath'.tr),
-      subtitle: Text('extraGalleryScanPathHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'extraGalleryScanPath'.tr,
+      subtitle: 'extraGalleryScanPathHint'.tr,
+      trailing: MoonEhButton.md(onTap: () => toRoute(Routes.extraGalleryScanPath), icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.extraGalleryScanPath),
     );
   }
 
   Widget _buildSingleImageSavePath() {
-    return ListTile(
-      title: Text('singleImageSavePath'.tr),
-      subtitle: Text(downloadSetting.singleImageSavePath.value.breakWord),
-      trailing: GetPlatform.isMacOS ? null : const Icon(Icons.keyboard_arrow_right),
-      onTap: GetPlatform.isMacOS ? null : _handleChangeSingleImageSavePath,
+    return moonListTile(
+      title: 'singleImageSavePath'.tr,
+      subtitle: downloadSetting.singleImageSavePath.value.breakWord,
+      trailing: GetPlatform.isMacOS ? null : MoonEhButton.md(onTap: _handleChangeSingleImageSavePath, icon: BootstrapIcons.chevron_right),
     );
   }
 
   Widget _buildDownloadOriginalImage() {
-    return SwitchListTile(
-      title: Text('downloadOriginalImageByDefault'.tr),
-      value: downloadSetting.downloadOriginalImageByDefault.value,
-      onChanged: (value) {
+    return moonListTile(
+      title: 'downloadOriginalImageByDefault'.tr,
+      trailing: MoonSwitch(value: downloadSetting.downloadOriginalImageByDefault.value, onChanged: (value) {
         if (!userSetting.hasLoggedIn()) {
           toast('needLoginToOperate'.tr);
           return;
         }
         downloadSetting.saveDownloadOriginalImageByDefault(value);
-      },
+      }),
     );
   }
 
   Widget _buildDefaultGalleryGroup(BuildContext context) {
-    return ListTile(
-      title: Text('defaultGalleryGroup'.tr),
-      subtitle: Text('longPress2Reset'.tr),
+    return moonListTile(
+      title: 'defaultGalleryGroup'.tr,
+      subtitle: 'longPress2Reset'.tr,
       trailing: Text(downloadSetting.defaultGalleryGroup.value ?? '', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
       onTap: () async {
         ({String group, bool downloadOriginalImage})? result = await showDialog(
@@ -152,16 +154,16 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
       onLongPress: () {
         downloadSetting.saveDefaultGalleryGroup(null);
       },
-    ).marginOnly(right: 12);
+    );
   }
 
   Widget _buildDefaultArchiveGroup(BuildContext context) {
-    return ListTile(
-        title: Text('defaultArchiveGroup'.tr),
-        subtitle: Text('longPress2Reset'.tr),
-        trailing: Text(downloadSetting.defaultArchiveGroup.value ?? '', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
-        onTap: () async {
-          ({String group, bool downloadOriginalImage})? result = await showDialog(
+    return moonListTile(
+      title: 'defaultArchiveGroup'.tr,
+      subtitle: 'longPress2Reset'.tr,
+      trailing: Text(downloadSetting.defaultArchiveGroup.value ?? '', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
+      onTap: () async {
+        ({String group, bool downloadOriginalImage})? result = await showDialog(
             context: context,
             builder: (_) => EHDownloadDialog(
               title: 'chooseGroup'.tr,
@@ -174,73 +176,86 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
             downloadSetting.saveDefaultArchiveGroup(result.group);
           }
         },
-        onLongPress: () {
-          downloadSetting.saveDefaultArchiveGroup(null);
-        }).marginOnly(right: 12);
+      onLongPress: () {
+        downloadSetting.saveDefaultArchiveGroup(null);
+      });
   }
 
   Widget _buildDownloadConcurrency() {
-    return ListTile(
-      title: Text('downloadTaskConcurrency'.tr),
-      trailing: DropdownButton<int>(
-        value: downloadSetting.downloadTaskConcurrency.value,
-        elevation: 4,
-        onChanged: (int? newValue) => downloadSetting.saveDownloadTaskConcurrency(newValue!),
-        items: const [
-          DropdownMenuItem(child: Text('2'), value: 2),
-          DropdownMenuItem(child: Text('4'), value: 4),
-          DropdownMenuItem(child: Text('6'), value: 6),
-          DropdownMenuItem(child: Text('8'), value: 8),
-          DropdownMenuItem(child: Text('10'), value: 10),
+    return moonListTile(
+      title: 'downloadTaskConcurrency'.tr,
+      trailing: popupMenuButton<int>(
+        initialValue: downloadSetting.downloadTaskConcurrency.value,
+        onSelected: (int? newValue) => downloadSetting.saveDownloadTaskConcurrency(newValue!),
+        itemBuilder: (context) => [
+          PopupMenuItem(value: 2, child: Text('2').small()),
+          PopupMenuItem(value: 4, child: Text('4').small()),
+          PopupMenuItem(value: 6, child: Text('6').small()),
+          PopupMenuItem(value: 8, child: Text('8').small()),
+          PopupMenuItem(value: 10, child: Text('10').small()),
         ],
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: downloadSetting.downloadTaskConcurrency.value.toString(),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildArchiveBotSettings() {
-    return ListTile(
-      title: Text('archiveBotSettings'.tr),
-      subtitle: Text('archiveBotSettingsHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'archiveBotSettings'.tr,
+      subtitle: 'archiveBotSettingsHint'.tr,
+      trailing: MoonEhButton.md(onTap: () => toRoute(Routes.archiveBotSettings), icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.archiveBotSettings),
     );
   }
 
   Widget _buildSpeedLimit(BuildContext context) {
-    return ListTile(
-      title: Text('speedLimit'.tr),
-      subtitle: Text('speedLimitHint'.tr),
+    return moonListTile(
+      title: 'speedLimit'.tr,
+      subtitle: 'speedLimitHint'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          DropdownButton<int>(
-            value: downloadSetting.maximum.value,
-            elevation: 4,
-            alignment: AlignmentDirectional.bottomEnd,
-            onChanged: (int? newValue) {
+          popupMenuButton<int>(
+            initialValue: downloadSetting.maximum.value,
+            onSelected: (int? newValue) {
               downloadSetting.saveMaximum(newValue!);
             },
-            items: const [
-              DropdownMenuItem(child: Text('1'), value: 1),
-              DropdownMenuItem(child: Text('2'), value: 2),
-              DropdownMenuItem(child: Text('3'), value: 3),
-              DropdownMenuItem(child: Text('5'), value: 5),
-              DropdownMenuItem(child: Text('10'), value: 10),
-              DropdownMenuItem(child: Text('99'), value: 99),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 1, child: Text('1').small()),
+              PopupMenuItem(value: 2, child: Text('2').small()),
+              PopupMenuItem(value: 3, child: Text('3').small()),
+              PopupMenuItem(value: 5, child: Text('5').small()),
+              PopupMenuItem(value: 10, child: Text('10').small()),
+              PopupMenuItem(value: 99, child: Text('99').small()),
             ],
+            child: IgnorePointer(
+              child: filledButton(
+                onPressed: () {},
+                label: downloadSetting.maximum.value.toString(),
+              ),
+            ),
           ),
-          Text('${'images'.tr} ${'per'.tr}', style: UIConfig.settingPageListTileTrailingTextStyle(context)).marginSymmetric(horizontal: 8),
-          DropdownButton<Duration>(
-            value: downloadSetting.period.value,
-            elevation: 4,
-            alignment: AlignmentDirectional.bottomEnd,
-            onChanged: (Duration? newValue) => downloadSetting.savePeriod(newValue!),
-            items: const [
-              DropdownMenuItem(child: Text('1s'), value: Duration(seconds: 1)),
-              DropdownMenuItem(child: Text('2s'), value: Duration(seconds: 2)),
-              DropdownMenuItem(child: Text('3s'), value: Duration(seconds: 3)),
+          Text('${'images'.tr} ${'per'.tr}', style: UIConfig.settingPageListTileTrailingTextStyle(context)).small().marginSymmetric(horizontal: 8),
+          popupMenuButton<Duration>(
+            initialValue: downloadSetting.period.value,
+            onSelected: (Duration? newValue) => downloadSetting.savePeriod(newValue!),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: Duration(seconds: 1), child: Text('1s').small()),
+              PopupMenuItem(value: Duration(seconds: 2), child: Text('2s').small()),
+              PopupMenuItem(value: Duration(seconds: 3), child: Text('3s').small()),
             ],
+            child: IgnorePointer(
+              child: filledButton(
+                onPressed: () {},
+                label: '${downloadSetting.period.value.inSeconds}s',
+              ),
+            ),
           ),
         ],
       ),
@@ -248,69 +263,72 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
   }
 
   Widget _buildDownloadAllGallerysOfSamePriority() {
-    return SwitchListTile(
-      title: Text('downloadAllGallerysOfSamePriority'.tr),
-      subtitle: Text('${'downloadAllGallerysOfSamePriorityHint'.tr} | ${'needRestart'.tr}'),
-      value: downloadSetting.downloadAllGallerysOfSamePriority.value,
-      onChanged: downloadSetting.saveDownloadAllGallerysOfSamePriority,
+    return moonListTile(
+      title: 'downloadAllGallerysOfSamePriority'.tr,
+      subtitle: '${'downloadAllGallerysOfSamePriorityHint'.tr} | ${'needRestart'.tr}',
+      trailing: MoonSwitch(value: downloadSetting.downloadAllGallerysOfSamePriority.value, onChanged: (value) {
+        downloadSetting.saveDownloadAllGallerysOfSamePriority(value);
+      }),
     );
   }
 
   Widget _buildArchiveDownloadIsolateCount() {
-    return ListTile(
-      title: Text('archiveDownloadIsolateCount'.tr),
-      subtitle: Text('archiveDownloadIsolateCountHint'.tr),
-      trailing: DropdownButton<int>(
-        value: downloadSetting.archiveDownloadIsolateCount.value,
-        elevation: 4,
-        onChanged: (int? newValue) => downloadSetting.saveArchiveDownloadIsolateCount(newValue!),
-        items: const [
-          DropdownMenuItem(child: Text('1'), value: 1),
-          DropdownMenuItem(child: Text('2'), value: 2),
-          DropdownMenuItem(child: Text('3'), value: 3),
-          DropdownMenuItem(child: Text('4'), value: 4),
-          DropdownMenuItem(child: Text('5'), value: 5),
-          DropdownMenuItem(child: Text('6'), value: 6),
-          DropdownMenuItem(child: Text('7'), value: 7),
-          DropdownMenuItem(child: Text('8'), value: 8),
-          DropdownMenuItem(child: Text('9'), value: 9),
-          DropdownMenuItem(child: Text('10'), value: 10),
+    return moonListTile(
+      title: 'archiveDownloadIsolateCount'.tr,
+      subtitle: 'archiveDownloadIsolateCountHint'.tr,
+      trailing: popupMenuButton<int>(
+        initialValue: downloadSetting.archiveDownloadIsolateCount.value,
+        onSelected: (int? newValue) => downloadSetting.saveArchiveDownloadIsolateCount(newValue!),
+        itemBuilder: (context) => [
+          PopupMenuItem(value: 1, child: Text('1').small()),
+          PopupMenuItem(value: 2, child: Text('2').small()),
+          PopupMenuItem(value: 3, child: Text('3').small()),
+          PopupMenuItem(value: 4, child: Text('4').small()),
+          PopupMenuItem(value: 5, child: Text('5').small()),
+          PopupMenuItem(value: 6, child: Text('6').small()),
+          PopupMenuItem(value: 7, child: Text('7').small()),
+          PopupMenuItem(value: 8, child: Text('8').small()),
+          PopupMenuItem(value: 9, child: Text('9').small()),
+          PopupMenuItem(value: 10, child: Text('10').small()),
         ],
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: downloadSetting.archiveDownloadIsolateCount.value.toString(),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildManageArchiveDownloadConcurrency() {
-    return SwitchListTile(
-      title: Text('manageArchiveDownloadConcurrency'.tr),
-      subtitle: Text('manageArchiveDownloadConcurrencyHint'.tr),
-      value: downloadSetting.manageArchiveDownloadConcurrency.value,
-      onChanged: downloadSetting.saveManageArchiveDownloadConcurrency,
+    return moonListTile(
+      title: 'manageArchiveDownloadConcurrency'.tr,
+      subtitle: 'manageArchiveDownloadConcurrencyHint'.tr,
+      trailing: MoonSwitch(value: downloadSetting.manageArchiveDownloadConcurrency.value, onChanged: downloadSetting.saveManageArchiveDownloadConcurrency),
     );
   }
 
   Widget _buildDeleteArchiveFileAfterDownload() {
-    return SwitchListTile(
-      title: Text('deleteArchiveFileAfterDownload'.tr),
-      value: downloadSetting.deleteArchiveFileAfterDownload.value,
-      onChanged: downloadSetting.saveDeleteArchiveFileAfterDownload,
+    return moonListTile(
+      title: 'deleteArchiveFileAfterDownload'.tr,
+      trailing: MoonSwitch(value: downloadSetting.deleteArchiveFileAfterDownload.value, onChanged: downloadSetting.saveDeleteArchiveFileAfterDownload),
     );
   }
 
   Widget _buildRestore() {
-    return ListTile(
-      title: Text('restoreDownloadTasks'.tr),
-      subtitle: Text('restoreDownloadTasksHint'.tr),
+    return moonListTile(
+      title: 'restoreDownloadTasks'.tr,
+      subtitle: 'restoreDownloadTasksHint'.tr,
       onTap: _restore,
     );
   }
 
   Widget _buildRestoreTasksAutomatically() {
-    return SwitchListTile(
-      title: Text('restoreTasksAutomatically'.tr),
-      subtitle: Text('restoreTasksAutomaticallyHint'.tr),
-      value: downloadSetting.restoreTasksAutomatically.value,
-      onChanged: downloadSetting.saveRestoreTasksAutomatically,
+    return moonListTile(
+      title: 'restoreTasksAutomatically'.tr,
+      subtitle: 'restoreTasksAutomaticallyHint'.tr,
+      trailing: MoonSwitch(value: downloadSetting.restoreTasksAutomatically.value, onChanged: downloadSetting.saveRestoreTasksAutomatically),
     );
   }
 

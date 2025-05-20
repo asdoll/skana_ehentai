@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../config/ui_config.dart';
 
@@ -42,7 +43,7 @@ class LoadingStateIndicator extends StatelessWidget {
   final bool successWidgetSameWithIdle;
 
   const LoadingStateIndicator({
-    Key? key,
+    super.key,
     this.height,
     this.width,
     required this.loadingState,
@@ -59,7 +60,7 @@ class LoadingStateIndicator extends StatelessWidget {
     this.errorWidgetBuilder,
     this.errorWidgetSameWithIdle = false,
     this.successWidgetSameWithIdle = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +103,7 @@ class LoadingStateIndicator extends StatelessWidget {
       case LoadingState.noData:
         child = GestureDetector(
           onTap: noDataTapCallback,
-          child: noDataWidget ?? Text('noData'.tr, style: TextStyle(color: UIConfig.loadingStateIndicatorButtonColor(context))),
+          child: noDataWidget ?? Text('noData'.tr, style: TextStyle(color: UIConfig.loadingStateIndicatorButtonColor(context))).appHeader(),
         );
         break;
     }

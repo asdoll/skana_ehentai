@@ -15,37 +15,45 @@ import '../service/log.dart';
 import '../utils/route_util.dart';
 
 typedef DidChangePlatformBrightnessCallback = void Function();
-typedef DidChangeAppLifecycleStateCallback = void Function(AppLifecycleState state);
+typedef DidChangeAppLifecycleStateCallback = void Function(
+    AppLifecycleState state);
 typedef DidHaveMemoryPressureCallback = void Function();
 typedef AppLaunchCallback = void Function(BuildContext context);
 
 class AppManager extends StatefulWidget {
-  static final List<DidChangePlatformBrightnessCallback> _didChangePlatformBrightnessCallbacks = [];
-  static final List<DidChangeAppLifecycleStateCallback> _didChangeAppLifecycleStateCallbacks = [];
-  static final List<DidHaveMemoryPressureCallback> _didHaveMemoryPressureCallbacks = [];
+  static final List<DidChangePlatformBrightnessCallback>
+      _didChangePlatformBrightnessCallbacks = [];
+  static final List<DidChangeAppLifecycleStateCallback>
+      _didChangeAppLifecycleStateCallbacks = [];
+  static final List<DidHaveMemoryPressureCallback>
+      _didHaveMemoryPressureCallbacks = [];
 
   static final List<AppLaunchCallback> _appLaunchCallbacks = [];
 
   final Widget child;
 
-  const AppManager({Key? key, required this.child}) : super(key: key);
+  const AppManager({super.key, required this.child});
 
   @override
   State<AppManager> createState() => _AppManagerState();
 
-  static void registerDidChangePlatformBrightnessCallback(DidChangePlatformBrightnessCallback callback) {
+  static void registerDidChangePlatformBrightnessCallback(
+      DidChangePlatformBrightnessCallback callback) {
     _didChangePlatformBrightnessCallbacks.add(callback);
   }
 
-  static void unRegisterDidChangePlatformBrightnessCallback(DidChangePlatformBrightnessCallback callback) {
+  static void unRegisterDidChangePlatformBrightnessCallback(
+      DidChangePlatformBrightnessCallback callback) {
     _didChangePlatformBrightnessCallbacks.remove(callback);
   }
 
-  static void registerDidHaveMemoryPressureCallback(DidHaveMemoryPressureCallback callback) {
+  static void registerDidHaveMemoryPressureCallback(
+      DidHaveMemoryPressureCallback callback) {
     _didHaveMemoryPressureCallbacks.add(callback);
   }
 
-  static void unRegisterDidHaveMemoryPressureCallback(DidHaveMemoryPressureCallback callback) {
+  static void unRegisterDidHaveMemoryPressureCallback(
+      DidHaveMemoryPressureCallback callback) {
     _didHaveMemoryPressureCallbacks.remove(callback);
   }
 
@@ -98,7 +106,8 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
 
   @override
   void didChangePlatformBrightness() {
-    for (DidChangePlatformBrightnessCallback callback in AppManager._didChangePlatformBrightnessCallbacks) {
+    for (DidChangePlatformBrightnessCallback callback
+        in AppManager._didChangePlatformBrightnessCallbacks) {
       callback.call();
     }
     super.didChangePlatformBrightness();
@@ -106,7 +115,8 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    for (DidChangeAppLifecycleStateCallback callback in AppManager._didChangeAppLifecycleStateCallbacks) {
+    for (DidChangeAppLifecycleStateCallback callback
+        in AppManager._didChangeAppLifecycleStateCallbacks) {
       callback.call(state);
     }
     super.didChangeAppLifecycleState(state);
@@ -115,7 +125,8 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
   @override
   void didHaveMemoryPressure() {
     if (_currentState == AppLifecycleState.resumed) {
-      for (DidHaveMemoryPressureCallback callback in AppManager._didHaveMemoryPressureCallbacks) {
+      for (DidHaveMemoryPressureCallback callback
+          in AppManager._didHaveMemoryPressureCallbacks) {
         callback.call();
       }
     }
@@ -126,14 +137,19 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: UIConfig.scrollBehaviourWithScrollBar,
-      child: inBlur
-          ? Blur(
-              blur: 100,
-              blurColor: GetPlatform.isAndroid ? Colors.white : Colors.grey.shade600,
-              colorOpacity: 1,
-              child: widget.child,
-            )
-          : widget.child,
+      child: MediaQuery(
+        data:
+            MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+        child: inBlur
+            ? Blur(
+                blur: 100,
+                blurColor:
+                    GetPlatform.isAndroid ? Colors.white : Colors.grey.shade600,
+                colorOpacity: 1,
+                child: widget.child,
+              )
+            : widget.child,
+      ),
     );
   }
 
@@ -142,9 +158,10 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
       return;
     }
     if (PlatformDispatcher.instance.platformBrightness == Brightness.light) {
-      Get.rootController.theme = ThemeConfig.theme(styleSetting.lightThemeColor.value, Brightness.light);
+      Get.rootController.theme = ThemeConfig.theme(Brightness.light);
     } else {
-      Get.rootController.darkTheme = ThemeConfig.theme(styleSetting.darkThemeColor.value, Brightness.dark);
+      Get.rootController.darkTheme =
+          ThemeConfig.theme(Brightness.dark);
     }
 
     Get.rootController.updateSafely();
@@ -161,7 +178,10 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
       lastInactiveTime ??= DateTime.now();
     }
 
-    if ((securitySetting.enableAuthOnResume.isTrue || securitySetting.enableBlur.isTrue) && !inBlur && !isRouteAtTop(Routes.lock)) {
+    if ((securitySetting.enableAuthOnResume.isTrue ||
+            securitySetting.enableBlur.isTrue) &&
+        !inBlur &&
+        !isRouteAtTop(Routes.lock)) {
       setState(() => inBlur = true);
     }
   }
@@ -182,10 +202,12 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
       return;
     }
 
-    if ((securitySetting.enablePasswordAuth.isTrue || securitySetting.enableBiometricAuth.isTrue) &&
+    if ((securitySetting.enablePasswordAuth.isTrue ||
+            securitySetting.enableBiometricAuth.isTrue) &&
         DateTime.now().difference(lastInactiveTime!).inSeconds >= 3) {
       toRoute(Routes.lock);
-      Future.delayed(const Duration(milliseconds: 300), () => setState(() => inBlur = false));
+      Future.delayed(const Duration(milliseconds: 300),
+          () => setState(() => inBlur = false));
       lastInactiveTime = null;
     } else {
       setState(() => inBlur = false);
@@ -196,7 +218,9 @@ class _AppManagerState extends State<AppManager> with WidgetsBindingObserver {
   /// for Android, blur is invalid when switch app to background(app is still clearly visible in switcher),
   /// so i choose to set FLAG_SECURE to do the same effect.
   void _addSecureFlagForAndroid(BuildContext context) {
-    if (GetPlatform.isAndroid && (securitySetting.enableAuthOnResume.isTrue || securitySetting.enableBlur.isTrue)) {
+    if (GetPlatform.isAndroid &&
+        (securitySetting.enableAuthOnResume.isTrue ||
+            securitySetting.enableBlur.isTrue)) {
       FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     }
   }

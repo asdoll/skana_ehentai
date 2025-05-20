@@ -1,12 +1,14 @@
 import 'dart:math';
 
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/pages/setting/account/login/login_page_logic.dart';
 import 'package:skana_ehentai/src/pages/setting/account/login/login_page_state.dart';
-import 'package:skana_ehentai/src/widget/icon_text_button.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 
 import '../../../../utils/screen_size_util.dart';
@@ -15,7 +17,7 @@ class LoginPage extends StatelessWidget {
   final LoginPageLogic logic = Get.put<LoginPageLogic>(LoginPageLogic());
   final LoginPageState state = Get.find<LoginPageLogic>().state;
 
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +25,15 @@ class LoginPage extends StatelessWidget {
       builder: (_) => Scaffold(
         /// set false to deal with keyboard
         resizeToAvoidBottomInset: false,
-        backgroundColor: UIConfig.loginPageBackgroundColor(context),
-        appBar: AppBar(backgroundColor: UIConfig.loginPageBackgroundColor(context), leading: BackButton(color: UIConfig.loginPageForegroundColor(context))),
+        appBar: appBar(),
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const _TopArea(),
-            Text('EHenTai', style: TextStyle(color: UIConfig.loginPageForegroundColor(context), fontSize: 60)),
+            Text('EHenTai',
+                style: TextStyle(
+                    color: UIConfig.loginPageForegroundColor(context),
+                    fontSize: 60)),
             _buildForm(context),
           ],
         ),
@@ -41,7 +45,9 @@ class LoginPage extends StatelessWidget {
     return Container(
       height: 300,
       width: 300,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: UIConfig.loginPageForegroundColor(context), width: 2)),
+      decoration: BoxDecoration(
+          color: UIConfig.loginPageBackgroundColor(context),
+          borderRadius: BorderRadius.circular(12)),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GetBuilder<LoginPageLogic>(
         id: LoginPageLogic.formId,
@@ -50,7 +56,10 @@ class LoginPage extends StatelessWidget {
           children: [
             SizedBox(
               height: 170,
-              child: Center(child: state.loginType == LoginType.password ? _buildUserNameForm(context) : _buildCookieForm(context)),
+              child: Center(
+                  child: state.loginType == LoginType.password
+                      ? _buildUserNameForm(context)
+                      : _buildCookieForm(context)),
             ),
             _buildButtons(context).marginOnly(top: 24),
           ],
@@ -64,51 +73,41 @@ class LoginPage extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildUsernameField(context).marginOnly(top: 6),
-        _buildPasswordField(context).marginOnly(top: 12),
-        _buildUserNameFormHint(context).marginOnly(top: 36),
+        _buildPasswordField(context).marginOnly(top: 4),
+        _buildUserNameFormHint(context).marginOnly(top: 24),
       ],
     );
   }
 
   Widget _buildUsernameField(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
-      child: TextFormField(
-        onEditingComplete: state.passwordFocusNode.requestFocus,
-        onChanged: (userName) => state.userName = userName,
-        decoration: InputDecoration(
-          hintText: 'userName'.tr,
-          hintStyle: TextStyle(color: UIConfig.loginPageTextHintColor(context), fontSize: UIConfig.loginPageTextHintSize, height: 1),
-          prefixIcon: Icon(Icons.account_circle, size: 22, color: UIConfig.loginPagePrefixIconColor(context)),
-        ),
-      ),
+    return MoonTextInput(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      onEditingComplete: state.passwordFocusNode.requestFocus,
+      onChanged: (userName) => state.userName = userName,
+      hintText: 'userName'.tr,
+      leading: moonIcon(
+          icon: BootstrapIcons.person,
+          color: UIConfig.loginPagePrefixIconColor(context)),
     );
   }
 
   Widget _buildPasswordField(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
-      height: 48,
-      child: TextFormField(
-        focusNode: state.passwordFocusNode,
-        obscureText: state.obscureText,
-        onChanged: (password) => state.password = password,
-        onFieldSubmitted: (v) => logic.handleLogin(),
-        decoration: InputDecoration(
-          hintText: 'password'.tr,
-          hintStyle: TextStyle(color: UIConfig.loginPageTextHintColor(context), fontSize: UIConfig.loginPageTextHintSize, height: 1),
-          prefixIcon: Icon(Icons.key, size: 22, color: UIConfig.loginPagePrefixIconColor(context)),
-          suffixIcon: InkWell(
-            child: state.obscureText
-                ? Icon(Icons.visibility, size: 22, color: UIConfig.loginPagePrefixIconColor(context))
-                : Icon(Icons.visibility_off, size: 22, color: UIConfig.loginPagePrefixIconColor(context)),
-            onTap: () {
-              state.obscureText = !state.obscureText;
-              logic.update();
-            },
-          ),
-        ),
+    return MoonTextInput(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      focusNode: state.passwordFocusNode,
+      obscureText: state.obscureText,
+      onChanged: (password) => state.password = password,
+      onSubmitted: (v) => logic.handleLogin(),
+      hintText: 'password'.tr,
+      leading: moonIcon(
+          icon: BootstrapIcons.key,
+          color: UIConfig.loginPagePrefixIconColor(context)),
+      trailing: MoonEhButton(
+        icon: state.obscureText ? BootstrapIcons.eye : BootstrapIcons.eye_slash,
+        onTap: () {
+          state.obscureText = !state.obscureText;
+          logic.update();
+        },
       ),
     );
   }
@@ -117,8 +116,9 @@ class LoginPage extends StatelessWidget {
     return Center(
       child: Text(
         'userNameFormHint'.tr,
-        style: TextStyle(color: UIConfig.loginPageFormHintColor(context), fontSize: 13),
-      ),
+        style: TextStyle(
+            color: UIConfig.loginPageFormHintColor(context), fontSize: 13),
+      ).small(),
     );
   }
 
@@ -133,10 +133,19 @@ class LoginPage extends StatelessWidget {
           Row(
             children: [
               Expanded(child: _buildIgneousField(context)),
-              IconTextButton(
-                icon: Icon(Icons.paste, size: 22, color: UIConfig.loginPagePrefixIconColor(context)),
-                text: Text('parse'.tr, style: const TextStyle(fontSize: UIConfig.loginPageParseCookieTextSize)),
-                onPressed: logic.pasteCookie,
+              InkWell(
+                onTap: logic.pasteCookie,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    MoonEhButton(
+                      buttonSize: MoonButtonSize.xs,
+                      onTap: logic.pasteCookie,
+                      icon: BootstrapIcons.clipboard,
+                    ),
+                    Text('parse'.tr).xSmall(),
+                  ],
+                ),
               ),
             ],
           ).marginOnly(top: 6),
@@ -146,69 +155,51 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildIpbMemberIdField(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
-      child: TextFormField(
-        key: const Key('ipbMemberId'),
-        onEditingComplete: state.passwordFocusNode.requestFocus,
-        controller: TextEditingController(text: state.ipbMemberId ?? ''),
-        decoration: InputDecoration(
-          hintText: 'ipb_member_id',
-          hintStyle: TextStyle(color: UIConfig.loginPageTextHintColor(context), fontSize: UIConfig.loginPageTextHintSize, height: 1),
-          prefixIcon: Icon(FontAwesomeIcons.cookieBite, size: 18, color: UIConfig.loginPagePrefixIconColor(context)),
-          suffixIcon: const SizedBox(
-            height: 8,
-            width: 8,
-            child: Center(child: Text('*')),
-          ),
-        ),
-        onChanged: (ipbMemberId) => state.ipbMemberId = ipbMemberId,
+    return MoonTextInput(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      key: const Key('ipbMemberId'),
+      onEditingComplete: state.passwordFocusNode.requestFocus,
+      controller: TextEditingController(text: state.ipbMemberId ?? ''),
+      hintText: 'ipb_member_id',
+      leading: moonIcon(icon: BootstrapIcons.cookie),
+      trailing: SizedBox(
+        height: 8,
+        width: 16,
+        child: Center(child: Text('*').small()),
       ),
+      onChanged: (ipbMemberId) => state.ipbMemberId = ipbMemberId,
     );
   }
 
   Widget _buildIpbPassHashField(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
-      child: TextFormField(
-        key: const Key('ipbPassHash'),
-        focusNode: state.ipbPassHashFocusNode,
-        controller: TextEditingController(text: state.ipbPassHash ?? ''),
-        decoration: InputDecoration(
-          hintText: 'ipb_pass_hash',
-          hintStyle: TextStyle(color: UIConfig.loginPageTextHintColor(context), fontSize: UIConfig.loginPageTextHintSize, height: 1),
-          prefixIcon: Icon(FontAwesomeIcons.cookieBite, size: 18, color: UIConfig.loginPagePrefixIconColor(context)),
-          suffixIcon: const SizedBox(
-            height: 8,
-            width: 8,
-            child: Center(child: Text('*')),
-          ),
-        ),
-        onEditingComplete: state.igneousFocusNode.requestFocus,
-        onFieldSubmitted: (v) => logic.handleLogin(),
-        onChanged: (ipbPassHash) => state.ipbPassHash = ipbPassHash,
+    return MoonTextInput(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      key: const Key('ipbPassHash'),
+      focusNode: state.ipbPassHashFocusNode,
+      controller: TextEditingController(text: state.ipbPassHash ?? ''),
+      hintText: 'ipb_pass_hash',
+      leading: moonIcon(icon: BootstrapIcons.cookie),
+      trailing: SizedBox(
+        height: 8,
+        width: 16,
+        child: Center(child: Text('*').small()),
       ),
+      onEditingComplete: state.igneousFocusNode.requestFocus,
+      onSubmitted: (v) => logic.handleLogin(),
+      onChanged: (ipbPassHash) => state.ipbPassHash = ipbPassHash,
     );
   }
 
   Widget _buildIgneousField(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40)),
-      child: TextFormField(
-        key: const Key('igneous'),
-        focusNode: state.igneousFocusNode,
-        controller: TextEditingController(text: state.igneous ?? ''),
-        decoration: InputDecoration(
-          hintText: 'igneousHint'.tr,
-          hintStyle: TextStyle(color: UIConfig.loginPageTextHintColor(context), fontSize: UIConfig.loginPageTextHintSize, height: 1),
-          prefixIcon: Icon(FontAwesomeIcons.cookieBite, size: 18, color: UIConfig.loginPagePrefixIconColor(context)),
-        ),
-        onChanged: (igneous) => state.igneous = igneous,
-        onFieldSubmitted: (v) => logic.handleLogin(),
-      ),
+    return MoonTextInput(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      key: const Key('igneous'),
+      focusNode: state.igneousFocusNode,
+      controller: TextEditingController(text: state.igneous ?? ''),
+      hintText: 'igneousHint'.tr,
+      leading: moonIcon(icon: BootstrapIcons.cookie),
+      onChanged: (igneous) => state.igneous = igneous,
+      onSubmitted: (v) => logic.handleLogin(),
     );
   }
 
@@ -216,53 +207,67 @@ class LoginPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconTextButton(
-          width: 56,
-          icon: Icon(Icons.public, color: UIConfig.loginPageFormIconColor(context)),
-          text: const Text('Web', style: TextStyle(fontSize: 10)),
-          onPressed: logic.handleWebLogin,
-        ),
-        ElevatedButton(
-          onPressed: logic.handleLogin,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: UIConfig.loginPageFormIconColor(context),
-            foregroundColor: UIConfig.loginPageBackgroundColor(context),
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(12),
-            minimumSize: const Size(52, 52),
-            maximumSize: const Size(52, 52),
+        InkWell(
+          onTap: logic.handleWebLogin,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MoonEhButton(
+                buttonSize: MoonButtonSize.xs,
+                onTap: logic.handleWebLogin,
+                icon: BootstrapIcons.globe_americas,
+              ),
+              Text('Web').xSmall(),
+            ],
           ),
-          child: GetBuilder<LoginPageLogic>(
+        ),
+        MoonButton.icon(
+          onTap: logic.handleLogin,
+          icon: GetBuilder<LoginPageLogic>(
             id: LoginPageLogic.loadingStateId,
             builder: (_) => LoadingStateIndicator(
-              useCupertinoIndicator: true,
+              useCupertinoIndicator: false,
               loadingState: state.loginState,
-              indicatorRadius: 10,
+              indicatorRadius: 20,
               indicatorColor: UIConfig.loginPageIndicatorColor(context),
-              idleWidgetBuilder: () => const Icon(Icons.arrow_forward),
-              successWidgetBuilder: () => const Icon(Icons.check),
+              idleWidgetBuilder: () =>
+                  moonIcon(icon: BootstrapIcons.box_arrow_in_right, size: 30),
+              successWidgetBuilder: () =>
+                  moonIcon(icon: BootstrapIcons.check2, size: 30),
               errorWidgetSameWithIdle: true,
             ),
           ),
         ).marginSymmetric(horizontal: 18),
-        IconTextButton(
-          width: 56,
-          icon: Icon(state.loginType == LoginType.password ? Icons.cookie : Icons.face, color: UIConfig.loginPageFormIconColor(context)),
-          text: Text(state.loginType == LoginType.password ? 'Cookie' : 'User', style: const TextStyle(fontSize: 10)),
-          onPressed: logic.toggleLoginType,
-        ),
+        InkWell(
+          onTap: logic.toggleLoginType,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MoonEhButton(
+                buttonSize: MoonButtonSize.xs,
+                onTap: logic.toggleLoginType,
+                icon: state.loginType == LoginType.password
+                    ? BootstrapIcons.cookie
+                    : BootstrapIcons.person_gear,
+              ),
+              Text(state.loginType == LoginType.password ? 'Cookie' : 'User')
+                  .xSmall(),
+            ],
+          ),
+        )
       ],
     );
   }
 }
 
 class _TopArea extends StatelessWidget {
-  const _TopArea({Key? key}) : super(key: key);
+  const _TopArea();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: max(screenHeight / 10 - MediaQuery.of(context).viewInsets.bottom, 0),
+      height:
+          max(screenHeight / 10 - MediaQuery.of(context).viewInsets.bottom, 0),
       width: double.infinity,
     );
   }

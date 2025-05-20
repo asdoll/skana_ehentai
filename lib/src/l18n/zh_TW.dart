@@ -220,6 +220,7 @@ class zh_TW {
       'toggleMenu': '顯示/隱藏選單',
       'share': '分享',
       'save': '儲存至相簿',
+      'selectDate': '選擇日期',
 
       /// setting page
       'account': '帳戶',

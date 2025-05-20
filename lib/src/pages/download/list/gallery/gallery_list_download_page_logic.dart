@@ -80,7 +80,7 @@ class GalleryListDownloadPageLogic extends GetxController
       bool? result = await showDialog(
         context: context,
         builder: (_) => EHDialog(
-          title: 'delete'.tr + '?',
+          title: '${'delete'.tr}?',
           content: 'deleteUpdatingDependentHint'.tr,
         ),
       );

@@ -1,12 +1,16 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../../setting/network_setting.dart';
 
 class SettingProxyPage extends StatefulWidget {
-  const SettingProxyPage({Key? key}) : super(key: key);
+  const SettingProxyPage({super.key});
 
   @override
   State<SettingProxyPage> createState() => _SettingProxyPageState();
@@ -21,14 +25,14 @@ class _SettingProxyPageState extends State<SettingProxyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('proxySetting'.tr),
+      appBar: appBar(
+        title: 'proxySetting'.tr,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: () {
-              networkSetting.saveProxy(proxyType, proxyAddress, proxyUsername, proxyPassword);
+          MoonEhButton.md(
+            icon: BootstrapIcons.save,
+            onTap: () {
+              networkSetting.saveProxy(
+                  proxyType, proxyAddress, proxyUsername, proxyPassword);
               toast('success'.tr);
             },
           ),
@@ -49,77 +53,104 @@ class _SettingProxyPageState extends State<SettingProxyPage> {
   }
 
   Widget _buildProxyType() {
-    return ListTile(
-      title: Text('proxyType'.tr),
-      trailing: Obx(
-        () => DropdownButton<JProxyType>(
-          value: networkSetting.proxyType.value,
-          alignment: Alignment.center,
-          items: [
-            DropdownMenuItem(child: Text('systemProxy'.tr), value: JProxyType.system),
-            DropdownMenuItem(child: Text('httpProxy'.tr), value: JProxyType.http),
-            DropdownMenuItem(child: Text('socks5Proxy'.tr), value: JProxyType.socks5),
-            DropdownMenuItem(child: Text('socks4Proxy'.tr), value: JProxyType.socks4),
-            DropdownMenuItem(child: Text('directProxy'.tr), value: JProxyType.direct),
-          ],
-          onChanged: (JProxyType? value) {
-            proxyType = value!;
-            networkSetting.saveProxy(proxyType, proxyAddress, proxyUsername, proxyPassword);
-          },
+    return moonListTile(
+      title: 'proxyType'.tr,
+      trailing: popupMenuButton<JProxyType>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+              value: JProxyType.system, child: Text('systemProxy'.tr).small()),
+          PopupMenuItem(value: JProxyType.http, child: Text('httpProxy'.tr).small()),
+          PopupMenuItem(
+              value: JProxyType.socks5, child: Text('socks5Proxy'.tr).small()),
+          PopupMenuItem(
+              value: JProxyType.socks4, child: Text('socks4Proxy'.tr).small()),
+          PopupMenuItem(
+              value: JProxyType.direct, child: Text('directProxy'.tr).small()),
+        ],
+        onSelected: (JProxyType value) {
+          proxyType = value;
+          networkSetting.saveProxy(
+              proxyType, proxyAddress, proxyUsername, proxyPassword);
+        },
+        initialValue: proxyType,
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: proxyType == JProxyType.system
+                ? 'systemProxy'.tr
+                : proxyType == JProxyType.direct
+                    ? 'directProxy'.tr
+                    : proxyType == JProxyType.http
+                        ? 'httpProxy'.tr
+                        : proxyType == JProxyType.socks5
+                            ? 'socks5Proxy'.tr
+                            : proxyType == JProxyType.socks4
+                                ? 'socks4Proxy'.tr
+                                : 'unknown'.tr,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildProxyAddress() {
-    return ListTile(
-      title: Text('address'.tr),
+    return moonListTile(
+      title: 'address'.tr,
       trailing: SizedBox(
         width: 150,
-        child: TextField(
-          controller: TextEditingController(text: networkSetting.proxyAddress.value),
-          decoration: const InputDecoration(isDense: true, labelStyle: TextStyle(fontSize: 12)),
+        child: MoonTextInput(
+          controller:
+              TextEditingController(text: networkSetting.proxyAddress.value),
           textAlign: TextAlign.center,
+          textInputSize: MoonTextInputSize.sm,
           onChanged: (String value) => proxyAddress = value,
-          enabled: networkSetting.proxyType.value != JProxyType.system && networkSetting.proxyType.value != JProxyType.direct,
+          enabled: networkSetting.proxyType.value != JProxyType.system &&
+              networkSetting.proxyType.value != JProxyType.direct,
         ),
       ),
-      enabled: networkSetting.proxyType.value != JProxyType.system && networkSetting.proxyType.value != JProxyType.direct,
+      enabled: networkSetting.proxyType.value != JProxyType.system &&
+          networkSetting.proxyType.value != JProxyType.direct,
     );
   }
 
   Widget _buildProxyUsername() {
-    return ListTile(
-      title: Text('userName'.tr),
+    return moonListTile(
+      title: 'userName'.tr,
       trailing: SizedBox(
         width: 150,
-        child: TextField(
-          controller: TextEditingController(text: networkSetting.proxyUsername.value),
-          decoration: const InputDecoration(isDense: true, labelStyle: TextStyle(fontSize: 12)),
+        child: MoonTextInput(
+          controller:
+              TextEditingController(text: networkSetting.proxyUsername.value),
           textAlign: TextAlign.center,
+          textInputSize: MoonTextInputSize.sm,
           onChanged: (String value) => proxyUsername = value,
-          enabled: networkSetting.proxyType.value != JProxyType.system && networkSetting.proxyType.value != JProxyType.direct,
+          enabled: networkSetting.proxyType.value != JProxyType.system &&
+              networkSetting.proxyType.value != JProxyType.direct,
         ),
       ),
-      enabled: networkSetting.proxyType.value != JProxyType.system && networkSetting.proxyType.value != JProxyType.direct,
+      enabled: networkSetting.proxyType.value != JProxyType.system &&
+          networkSetting.proxyType.value != JProxyType.direct,
     );
   }
 
   Widget _buildProxyPassword() {
-    return ListTile(
-      title: Text('password'.tr),
+    return moonListTile(
+      title: 'password'.tr,
       trailing: SizedBox(
         width: 150,
-        child: TextField(
-          controller: TextEditingController(text: networkSetting.proxyPassword.value),
-          decoration: const InputDecoration(isDense: true, labelStyle: TextStyle(fontSize: 12)),
+        child: MoonTextInput(
+          controller:
+              TextEditingController(text: networkSetting.proxyPassword.value),
           textAlign: TextAlign.center,
+          textInputSize: MoonTextInputSize.sm,
           onChanged: (String value) => proxyPassword = value,
           obscureText: true,
-          enabled: networkSetting.proxyType.value != JProxyType.system && networkSetting.proxyType.value != JProxyType.direct,
+          enabled: networkSetting.proxyType.value != JProxyType.system &&
+              networkSetting.proxyType.value != JProxyType.direct,
         ),
       ),
-      enabled: networkSetting.proxyType.value != JProxyType.system && networkSetting.proxyType.value != JProxyType.direct,
+      enabled: networkSetting.proxyType.value != JProxyType.system &&
+          networkSetting.proxyType.value != JProxyType.direct,
     );
   }
 }

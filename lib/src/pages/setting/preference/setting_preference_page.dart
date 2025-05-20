@@ -1,8 +1,13 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
+import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/model/tab_bar_icon.dart';
 import 'package:skana_ehentai/src/service/tag_search_order_service.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../consts/locale_consts.dart';
@@ -22,7 +27,7 @@ class SettingPreferencePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('preferenceSetting'.tr)),
+      appBar: appBar(title: 'preferenceSetting'.tr),
       body: Obx(
         () => SafeArea(
           child: ListView(
@@ -34,21 +39,29 @@ class SettingPreferencePage extends StatelessWidget {
               _buildDefaultTab(),
               if (styleSetting.isInV2Layout) _buildSimpleDashboardMode(),
               if (styleSetting.isInV2Layout) _buildShowBottomNavigation(),
-              if (styleSetting.isInV2Layout || styleSetting.actualLayout == LayoutMode.desktop) _buildHideScroll2TopButton(),
+              if (styleSetting.isInV2Layout ||
+                  styleSetting.actualLayout == LayoutMode.desktop)
+                _buildHideScroll2TopButton(),
               _buildPreloadGalleryCover(),
               _buildEnableSwipeBackGesture(),
-              if (styleSetting.isInV2Layout) _buildEnableLeftMenuDrawerGesture(),
+              if (styleSetting.isInV2Layout)
+                _buildEnableLeftMenuDrawerGesture(),
               if (styleSetting.isInV2Layout) _buildQuickSearch(),
-              if (styleSetting.isInV2Layout) _buildDrawerGestureEdgeWidth(context),
+              if (styleSetting.isInV2Layout)
+                _buildDrawerGestureEdgeWidth(context),
               _buildShowAllGalleryTitles(),
               _buildShowGalleryTagVoteStatus(),
               _buildShowComments(),
-              if (preferenceSetting.showComments.isTrue) _buildShowAllComments().fadeIn(const Key('showAllComments')),
+              if (preferenceSetting.showComments.isTrue)
+                _buildShowAllComments().fadeIn(const Key('showAllComments')),
               _buildEnableDefaultFavorite(),
               _buildEnableDefaultTagSet(),
-              if (GetPlatform.isDesktop && styleSetting.isInDesktopLayout) _buildLaunchInFullScreen(),
+              if (GetPlatform.isDesktop && styleSetting.isInDesktopLayout)
+                _buildLaunchInFullScreen(),
               _buildTagSearchConfig(),
-              if (preferenceSetting.enableTagZHTranslation.isTrue) _buildShowR18GImageDirectly().fadeIn(const Key('showR18GImageDirectly')),
+              if (preferenceSetting.enableTagZHTranslation.isTrue)
+                _buildShowR18GImageDirectly()
+                    .fadeIn(const Key('showR18GImageDirectly')),
               _buildShowUtcTime(),
               _buildShowDawnInfo(),
               _buildShowEncounterMonster(),
@@ -62,19 +75,25 @@ class SettingPreferencePage extends StatelessWidget {
   }
 
   Widget _buildLanguage() {
-    return ListTile(
-      title: Text('language'.tr),
-      trailing: DropdownButton<Locale>(
-        value: preferenceSetting.locale.value,
-        elevation: 4,
-        alignment: AlignmentDirectional.centerEnd,
-        onChanged: (Locale? newValue) => preferenceSetting.saveLanguage(newValue!),
-        items: LocaleText()
+    return moonListTile(
+      title: 'language'.tr,
+      trailing: popupMenuButton<Locale>(
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: LocaleConsts.localeCode2Description[
+                preferenceSetting.locale.value.toString()]!,
+          ),
+        ),
+        initialValue: preferenceSetting.locale.value,
+        onSelected: (Locale? newValue) =>
+            preferenceSetting.saveLanguage(newValue!),
+        itemBuilder: (context) => LocaleText()
             .keys
             .keys
-            .map((localeCode) => DropdownMenuItem(
+            .map((localeCode) => PopupMenuItem(
                   value: localeCode2Locale(localeCode),
-                  child: Text(LocaleConsts.localeCode2Description[localeCode]!),
+                  child: Text(LocaleConsts.localeCode2Description[localeCode]!).small(),
                 ))
             .toList(),
       ),
@@ -82,35 +101,35 @@ class SettingPreferencePage extends StatelessWidget {
   }
 
   Widget _buildTagTranslate() {
-    return ListTile(
-      title: Text('enableTagZHTranslation'.tr),
+    return moonListTile(
+      title: 'enableTagZHTranslation'.tr,
       subtitle: tagTranslationService.loadingState.value == LoadingState.success
-          ? Text('${'version'.tr}: ${tagTranslationService.timeStamp.value!}', style: const TextStyle(fontSize: 12))
+          ? '${'version'.tr}: ${tagTranslationService.timeStamp.value!}'
           : tagTranslationService.loadingState.value == LoadingState.loading
-              ? Text(
-                  '${'downloadTagTranslationHint'.tr}${tagTranslationService.downloadProgress.value}',
-                  style: const TextStyle(fontSize: 12),
-                )
+              ? '${'downloadTagTranslationHint'.tr}${tagTranslationService.downloadProgress.value}'
               : tagTranslationService.loadingState.value == LoadingState.error
-                  ? Text('downloadFailed'.tr, style: const TextStyle(fontSize: 12))
+                  ? 'downloadFailed'.tr
                   : null,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
-            useCupertinoIndicator: true,
             loadingState: tagTranslationService.loadingState.value,
             indicatorRadius: 10,
             width: 40,
-            idleWidgetBuilder: () => IconButton(onPressed: tagTranslationService.fetchDataFromGithub, icon: const Icon(Icons.refresh)),
+            idleWidgetBuilder: () => MoonEhButton(
+                onTap: tagTranslationService.fetchDataFromGithub,
+                icon: BootstrapIcons.arrow_counterclockwise),
             errorWidgetSameWithIdle: true,
             successWidgetSameWithIdle: true,
           ),
-          Switch(
+          MoonSwitch(
             value: preferenceSetting.enableTagZHTranslation.value,
             onChanged: (value) {
               preferenceSetting.saveEnableTagZHTranslation(value);
-              if (value == true && tagTranslationService.loadingState.value != LoadingState.success) {
+              if (value == true &&
+                  tagTranslationService.loadingState.value !=
+                      LoadingState.success) {
                 tagTranslationService.fetchDataFromGithub();
               }
             },
@@ -121,35 +140,38 @@ class SettingPreferencePage extends StatelessWidget {
   }
 
   Widget _buildTagOrderOptimization() {
-    return ListTile(
-      title: Text('zhTagSearchOrderOptimization'.tr),
-      subtitle: tagSearchOrderOptimizationService.loadingState.value == LoadingState.success
-          ? Text('${'version'.tr}: ${tagSearchOrderOptimizationService.version.value!}', style: const TextStyle(fontSize: 12))
-          : tagSearchOrderOptimizationService.loadingState.value == LoadingState.loading
-              ? Text(
-                  '${'downloadTagTranslationHint'.tr}${tagSearchOrderOptimizationService.downloadProgress.value}',
-                  style: const TextStyle(fontSize: 12),
-                )
-              : tagSearchOrderOptimizationService.loadingState.value == LoadingState.error
-                  ? Text('downloadFailed'.tr, style: const TextStyle(fontSize: 12))
-                  : Text('zhTagSearchOrderOptimizationHint'.tr),
+    return moonListTile(
+      title: 'zhTagSearchOrderOptimization'.tr,
+      subtitle: tagSearchOrderOptimizationService.loadingState.value ==
+              LoadingState.success
+          ? '${'version'.tr}: ${tagSearchOrderOptimizationService.version.value!}'
+          : tagSearchOrderOptimizationService.loadingState.value ==
+                  LoadingState.loading
+              ? '${'downloadTagTranslationHint'.tr}${tagSearchOrderOptimizationService.downloadProgress.value}'
+              : tagSearchOrderOptimizationService.loadingState.value ==
+                      LoadingState.error
+                  ? 'downloadFailed'.tr
+                  : 'zhTagSearchOrderOptimizationHint'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
-            useCupertinoIndicator: true,
             loadingState: tagSearchOrderOptimizationService.loadingState.value,
             indicatorRadius: 10,
             width: 40,
-            idleWidgetBuilder: () => IconButton(onPressed: tagSearchOrderOptimizationService.fetchDataFromGithub, icon: const Icon(Icons.refresh)),
+            idleWidgetBuilder: () => MoonEhButton(
+                onTap: tagSearchOrderOptimizationService.fetchDataFromGithub,
+                icon: BootstrapIcons.arrow_counterclockwise),
             errorWidgetSameWithIdle: true,
             successWidgetSameWithIdle: true,
           ),
-          Switch(
+          MoonSwitch(
             value: preferenceSetting.enableTagZHSearchOrderOptimization.value,
             onChanged: (value) {
               preferenceSetting.saveEnableTagZHSearchOrderOptimization(value);
-              if (value == true && tagSearchOrderOptimizationService.loadingState.value != LoadingState.success) {
+              if (value == true &&
+                  tagSearchOrderOptimizationService.loadingState.value !=
+                      LoadingState.success) {
                 tagSearchOrderOptimizationService.fetchDataFromGithub();
               }
             },
@@ -160,136 +182,152 @@ class SettingPreferencePage extends StatelessWidget {
   }
 
   Widget _buildDefaultTab() {
-    return ListTile(
-      title: Text('defaultTab'.tr),
-      trailing: DropdownButton<TabBarIconNameEnum>(
-        value: preferenceSetting.defaultTab.value,
-        elevation: 4,
-        alignment: AlignmentDirectional.centerEnd,
-        onChanged: (TabBarIconNameEnum? newValue) => preferenceSetting.saveDefaultTab(newValue!),
-        items: [
-          DropdownMenuItem(
-            value: TabBarIconNameEnum.home,
-            child: Text(TabBarIconNameEnum.home.name.tr),
+    return moonListTile(
+      title: 'defaultTab'.tr,
+      trailing: popupMenuButton<TabBarIconNameEnum>(
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: TabBarIconNameEnum.values
+                .firstWhere(
+                    (element) => element == preferenceSetting.defaultTab.value)
+                .name
+                .tr,
           ),
-          DropdownMenuItem(
-            value: TabBarIconNameEnum.popular,
-            child: Text(TabBarIconNameEnum.popular.name.tr),
-          ),
-          DropdownMenuItem(
-            value: TabBarIconNameEnum.ranklist,
-            child: Text(TabBarIconNameEnum.ranklist.name.tr),
-          ),
-          DropdownMenuItem(
-            value: TabBarIconNameEnum.favorite,
-            child: Text(TabBarIconNameEnum.favorite.name.tr),
-          ),
-          DropdownMenuItem(
-            value: TabBarIconNameEnum.watched,
-            child: Text(TabBarIconNameEnum.watched.name.tr),
-          ),
-        ],
+        ),
+        initialValue: preferenceSetting.defaultTab.value,
+        onSelected: (TabBarIconNameEnum? newValue) =>
+            preferenceSetting.saveDefaultTab(newValue!),
+        itemBuilder: (context) => TabBarIconNameEnum.values
+            .map((tabBarIconNameEnum) => PopupMenuItem(
+                  value: tabBarIconNameEnum,
+                  child: Text(tabBarIconNameEnum.name.tr).small(),
+                ))
+            .toList(),
       ),
     );
   }
 
   Widget _buildSimpleDashboardMode() {
-    return SwitchListTile(
-      title: Text('simpleDashboardMode'.tr),
-      subtitle: Text('simpleDashboardModeHint'.tr),
-      value: preferenceSetting.simpleDashboardMode.value,
-      onChanged: preferenceSetting.saveSimpleDashboardMode,
+    return moonListTile(
+      title: 'simpleDashboardMode'.tr,
+      subtitle: 'simpleDashboardModeHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.simpleDashboardMode.value,
+        onChanged: preferenceSetting.saveSimpleDashboardMode,
+      ),
     );
   }
 
   Widget _buildShowBottomNavigation() {
-    return SwitchListTile(
-      title: Text('hideBottomBar'.tr),
-      value: preferenceSetting.hideBottomBar.value,
-      onChanged: preferenceSetting.saveHideBottomBar,
+    return moonListTile(
+      title: 'hideBottomBar'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.hideBottomBar.value,
+        onChanged: preferenceSetting.saveHideBottomBar,
+      ),
     );
   }
 
   Widget _buildHideScroll2TopButton() {
-    return ListTile(
-      title: Text('hideScroll2TopButton'.tr),
-      trailing: DropdownButton<Scroll2TopButtonModeEnum>(
-        value: preferenceSetting.hideScroll2TopButton.value,
-        elevation: 4,
-        alignment: AlignmentDirectional.centerEnd,
-        onChanged: (Scroll2TopButtonModeEnum? newValue) => preferenceSetting.saveHideScroll2TopButton(newValue!),
-        items: [
-          DropdownMenuItem(
-            value: Scroll2TopButtonModeEnum.scrollUp,
-            child: Text('whenScrollUp'.tr),
+    return moonListTile(
+      title: 'hideScroll2TopButton'.tr,
+      trailing: popupMenuButton<Scroll2TopButtonModeEnum>(
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: preferenceSetting.hideScroll2TopButton.value ==
+                    Scroll2TopButtonModeEnum.scrollUp
+                ? 'whenScrollUp'.tr
+                : preferenceSetting.hideScroll2TopButton.value ==
+                        Scroll2TopButtonModeEnum.scrollDown
+                    ? 'whenScrollDown'.tr
+                    : preferenceSetting.hideScroll2TopButton.value.name.tr,
           ),
-          DropdownMenuItem(
-            value: Scroll2TopButtonModeEnum.scrollDown,
-            child: Text('whenScrollDown'.tr),
-          ),
-          DropdownMenuItem(
-            value: Scroll2TopButtonModeEnum.never,
-            child: Text('never'.tr),
-          ),
-          DropdownMenuItem(
-            value: Scroll2TopButtonModeEnum.always,
-            child: Text('always'.tr),
-          ),
-        ],
+        ),
+        initialValue: preferenceSetting.hideScroll2TopButton.value,
+        onSelected: (Scroll2TopButtonModeEnum? newValue) =>
+            preferenceSetting.saveHideScroll2TopButton(newValue!),
+        itemBuilder: (context) => Scroll2TopButtonModeEnum.values
+            .map((scroll2TopButtonModeEnum) => PopupMenuItem(
+                  value: scroll2TopButtonModeEnum,
+                  child: Text(scroll2TopButtonModeEnum ==
+                          Scroll2TopButtonModeEnum.scrollUp
+                      ? 'whenScrollUp'.tr
+                      : scroll2TopButtonModeEnum ==
+                              Scroll2TopButtonModeEnum.scrollDown
+                          ? 'whenScrollDown'.tr
+                          : scroll2TopButtonModeEnum.name.tr).small(),
+                ))
+            .toList(),
       ),
     );
   }
 
   Widget _buildPreloadGalleryCover() {
-    return SwitchListTile(
-      title: Text('preloadGalleryCover'.tr),
-      subtitle: Text('preloadGalleryCoverHint'.tr),
-      value: preferenceSetting.preloadGalleryCover.value,
-      onChanged: preferenceSetting.savePreloadGalleryCover,
+    return moonListTile(
+      title: 'preloadGalleryCover'.tr,
+      subtitle: 'preloadGalleryCoverHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.preloadGalleryCover.value,
+        onChanged: preferenceSetting.savePreloadGalleryCover,
+      ),
     );
   }
 
   Widget _buildEnableSwipeBackGesture() {
-    return SwitchListTile(
-      title: Text('enableSwipeBackGesture'.tr),
-      subtitle: Text('needRestart'.tr),
-      value: preferenceSetting.enableSwipeBackGesture.value,
-      onChanged: preferenceSetting.saveEnableSwipeBackGesture,
+    return moonListTile(
+      title: 'enableSwipeBackGesture'.tr,
+      subtitle: 'needRestart'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.enableSwipeBackGesture.value,
+        onChanged: preferenceSetting.saveEnableSwipeBackGesture,
+      ),
     );
   }
 
   Widget _buildEnableLeftMenuDrawerGesture() {
-    return SwitchListTile(
-      title: Text('enableLeftMenuDrawerGesture'.tr),
-      value: preferenceSetting.enableLeftMenuDrawerGesture.value,
-      onChanged: preferenceSetting.saveEnableLeftMenuDrawerGesture,
+    return moonListTile(
+      title: 'enableLeftMenuDrawerGesture'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.enableLeftMenuDrawerGesture.value,
+        onChanged: preferenceSetting.saveEnableLeftMenuDrawerGesture,
+      ),
     );
   }
 
   Widget _buildQuickSearch() {
-    return SwitchListTile(
-      title: Text('enableQuickSearchDrawerGesture'.tr),
-      value: preferenceSetting.enableQuickSearchDrawerGesture.value,
-      onChanged: preferenceSetting.saveEnableQuickSearchDrawerGesture,
+    return moonListTile(
+      title: 'enableQuickSearchDrawerGesture'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.enableQuickSearchDrawerGesture.value,
+        onChanged: preferenceSetting.saveEnableQuickSearchDrawerGesture,
+      ),
     );
   }
 
   Widget _buildDrawerGestureEdgeWidth(BuildContext context) {
-    return ListTile(
-      title: Text('drawerGestureEdgeWidth'.tr),
+    return moonListTile(
+      title: 'drawerGestureEdgeWidth'.tr,
       trailing: Obx(() {
         return Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             SliderTheme(
-              data: SliderTheme.of(context).copyWith(showValueIndicator: ShowValueIndicator.always),
+              data: SliderTheme.of(context)
+                  .copyWith(showValueIndicator: ShowValueIndicator.always),
               child: Slider(
                 min: 20,
                 max: 300,
-                label: preferenceSetting.drawerGestureEdgeWidth.value.toString(),
-                value: preferenceSetting.drawerGestureEdgeWidth.value.toDouble(),
+                activeColor: UIConfig.primaryColor(context),
+                label:
+                    preferenceSetting.drawerGestureEdgeWidth.value.toString(),
+                value:
+                    preferenceSetting.drawerGestureEdgeWidth.value.toDouble(),
                 onChanged: (value) {
-                  preferenceSetting.drawerGestureEdgeWidth.value = value.toInt();
+                  preferenceSetting.drawerGestureEdgeWidth.value =
+                      value.toInt();
                 },
                 onChangeEnd: (value) {
                   preferenceSetting.saveDrawerGestureEdgeWidth(value.toInt());
@@ -303,156 +341,181 @@ class SettingPreferencePage extends StatelessWidget {
   }
 
   Widget _buildShowAllGalleryTitles() {
-    return SwitchListTile(
-      title: Text('showAllGalleryTitles'.tr),
-      subtitle: Text('showAllGalleryTitlesHint'.tr),
-      value: preferenceSetting.showAllGalleryTitles.value,
-      onChanged: preferenceSetting.saveShowAllGalleryTitles,
+    return moonListTile(
+      title: 'showAllGalleryTitles'.tr,
+      subtitle: 'showAllGalleryTitlesHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showAllGalleryTitles.value,
+        onChanged: preferenceSetting.saveShowAllGalleryTitles,
+      ),
     );
   }
 
   Widget _buildShowGalleryTagVoteStatus() {
-    return SwitchListTile(
-      title: Text('showGalleryTagVoteStatus'.tr),
-      subtitle: Text('showGalleryTagVoteStatusHint'.tr),
-      value: preferenceSetting.showGalleryTagVoteStatus.value,
-      onChanged: preferenceSetting.saveShowGalleryTagVoteStatus,
+    return moonListTile(
+      title: 'showGalleryTagVoteStatus'.tr,
+      subtitle: 'showGalleryTagVoteStatusHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showGalleryTagVoteStatus.value,
+        onChanged: preferenceSetting.saveShowGalleryTagVoteStatus,
+      ),
     );
   }
 
   Widget _buildShowComments() {
-    return SwitchListTile(
-      title: Text('showComments'.tr),
-      value: preferenceSetting.showComments.value,
-      onChanged: preferenceSetting.saveShowComments,
+    return moonListTile(
+      title: 'showComments'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showComments.value,
+        onChanged: preferenceSetting.saveShowComments,
+      ),
     );
   }
 
   Widget _buildShowAllComments() {
-    return SwitchListTile(
-      title: Text('showAllComments'.tr),
-      subtitle: Text('showAllCommentsHint'.tr),
-      value: preferenceSetting.showAllComments.value,
-      onChanged: preferenceSetting.saveShowAllComments,
+    return moonListTile(
+      title: 'showAllComments'.tr,
+      subtitle: 'showAllCommentsHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showAllComments.value,
+        onChanged: preferenceSetting.saveShowAllComments,
+      ),
     );
   }
 
   Widget _buildShowR18GImageDirectly() {
-    return SwitchListTile(
-      title: Text('showR18GImageDirectly'.tr),
-      value: preferenceSetting.showR18GImageDirectly.value,
-      onChanged: preferenceSetting.saveShowR18GImageDirectly,
+    return moonListTile(
+      title: 'showR18GImageDirectly'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showR18GImageDirectly.value,
+        onChanged: preferenceSetting.saveShowR18GImageDirectly,
+      ),
     );
   }
 
   Widget _buildEnableDefaultFavorite() {
-    return SwitchListTile(
-      title: Text('enableDefaultFavorite'.tr),
-      subtitle: Text(preferenceSetting.enableDefaultFavorite.isTrue ? 'enableDefaultFavoriteHint'.tr : 'disableDefaultFavoriteHint'.tr),
-      value: preferenceSetting.enableDefaultFavorite.value,
-      onChanged: preferenceSetting.saveEnableDefaultFavorite,
+    return moonListTile(
+      title: 'enableDefaultFavorite'.tr,
+      subtitle: preferenceSetting.enableDefaultFavorite.isTrue
+          ? 'enableDefaultFavoriteHint'.tr
+          : 'disableDefaultFavoriteHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.enableDefaultFavorite.value,
+        onChanged: preferenceSetting.saveEnableDefaultFavorite,
+      ),
     );
   }
 
   Widget _buildEnableDefaultTagSet() {
-    return SwitchListTile(
-      title: Text('enableDefaultTagSet'.tr),
-      subtitle: Text(preferenceSetting.enableDefaultTagSet.isTrue ? 'enableDefaultTagSetHint'.tr : 'disableDefaultTagSetHint'.tr),
-      value: preferenceSetting.enableDefaultTagSet.value,
-      onChanged: preferenceSetting.saveEnableDefaultTagSet,
+    return moonListTile(
+      title: 'enableDefaultTagSet'.tr,
+      subtitle: preferenceSetting.enableDefaultTagSet.isTrue
+          ? 'enableDefaultTagSetHint'.tr
+          : 'disableDefaultTagSetHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.enableDefaultTagSet.value,
+        onChanged: preferenceSetting.saveEnableDefaultTagSet,
+      ),
     );
   }
 
   Widget _buildLaunchInFullScreen() {
-    return SwitchListTile(
-      title: Text('launchInFullScreen'.tr),
-      subtitle: Text('launchInFullScreenHint'.tr),
-      value: preferenceSetting.launchInFullScreen.value,
-      onChanged: preferenceSetting.saveLaunchInFullScreen,
+    return moonListTile(
+      title: 'launchInFullScreen'.tr,
+      subtitle: 'launchInFullScreenHint'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.launchInFullScreen.value,
+        onChanged: preferenceSetting.saveLaunchInFullScreen,
+      ),
     );
   }
 
   Widget _buildTagSearchConfig() {
-    return ListTile(
-      title: Text('searchBehaviour'.tr),
-      subtitle: Text(
-        preferenceSetting.searchBehaviour.value == SearchBehaviour.inheritAll
-            ? 'inheritAllHint'.tr
-            : preferenceSetting.searchBehaviour.value == SearchBehaviour.inheritPartially
-                ? 'inheritPartiallyHint'.tr
-                : 'noneHint'.tr,
-      ),
-      trailing: DropdownButton<SearchBehaviour>(
-        value: preferenceSetting.searchBehaviour.value,
-        elevation: 4,
-        alignment: AlignmentDirectional.centerEnd,
-        onChanged: (SearchBehaviour? newValue) => preferenceSetting.saveTagSearchConfig(newValue!),
-        items: [
-          DropdownMenuItem(
-            value: SearchBehaviour.inheritAll,
-            child: Text('inheritAll'.tr),
+    return moonListTile(
+      title: 'searchBehaviour'.tr,
+      subtitle:
+          preferenceSetting.searchBehaviour.value == SearchBehaviour.inheritAll
+              ? 'inheritAllHint'.tr
+              : preferenceSetting.searchBehaviour.value ==
+                      SearchBehaviour.inheritPartially
+                  ? 'inheritPartiallyHint'.tr
+                  : 'noneHint'.tr,
+      trailing: popupMenuButton<SearchBehaviour>(
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: preferenceSetting.searchBehaviour.value.name.tr,
           ),
-          DropdownMenuItem(
-            value: SearchBehaviour.inheritPartially,
-            child: Text('inheritPartially'.tr),
-          ),
-          DropdownMenuItem(
-            value: SearchBehaviour.none,
-            child: Text('none'.tr),
-          ),
-        ],
+        ),
+        initialValue: preferenceSetting.searchBehaviour.value,
+        onSelected: (SearchBehaviour? newValue) =>
+            preferenceSetting.saveTagSearchConfig(newValue!),
+        itemBuilder: (context) => SearchBehaviour.values
+            .map((searchBehaviour) => PopupMenuItem(
+                  value: searchBehaviour,
+                  child: Text(searchBehaviour.name.tr).small(),
+                ))
+            .toList(),
       ),
     );
   }
 
   Widget _buildShowUtcTime() {
-    return SwitchListTile(
-      title: Text('showUtcTime'.tr),
-      value: preferenceSetting.showUtcTime.value,
-      onChanged: preferenceSetting.saveShowUtcTime,
+    return moonListTile(
+      title: 'showUtcTime'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showUtcTime.value,
+        onChanged: preferenceSetting.saveShowUtcTime,
+      ),
     );
   }
 
   Widget _buildBlockRules() {
-    return ListTile(
-      title: Text('blockingRules'.tr),
-      subtitle: Text('blockingRulesHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'blockingRules'.tr,
+      subtitle: 'blockingRulesHint'.tr,
+      trailing: MoonEhButton.md(
+          onTap: () => toRoute(Routes.blockingRules),
+          icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.blockingRules),
     );
   }
 
   Widget _buildShowDawnInfo() {
-    return SwitchListTile(
-      title: Text('showDawnInfo'.tr),
-      value: preferenceSetting.showDawnInfo.value,
-      onChanged: preferenceSetting.saveShowDawnInfo,
+    return moonListTile(
+      title: 'showDawnInfo'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showDawnInfo.value,
+        onChanged: preferenceSetting.saveShowDawnInfo,
+      ),
     );
   }
 
   Widget _buildShowEncounterMonster() {
-    return SwitchListTile(
-      title: Text('showEncounterMonster'.tr),
-      value: preferenceSetting.showHVInfo.value,
-      onChanged: preferenceSetting.saveShowHVInfo,
+    return moonListTile(
+      title: 'showEncounterMonster'.tr,
+      trailing: MoonSwitch(
+        value: preferenceSetting.showHVInfo.value,
+        onChanged: preferenceSetting.saveShowHVInfo,
+      ),
     );
   }
 
   Widget _buildUseBuiltInBlockedUsers() {
-    return ListTile(
-      title: Text('useBuiltInBlockedUsers'.tr),
-      subtitle: Text('useBuiltInBlockedUsersHint'.tr),
+    return moonListTile(
+      title: 'useBuiltInBlockedUsers'.tr,
+      subtitle: 'useBuiltInBlockedUsersHint'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            icon: const Icon(Icons.help),
-            onPressed: () => launchUrlString(
+          MoonEhButton(
+            icon: BootstrapIcons.question_circle,
+            onTap: () => launchUrlString(
               'https://raw.githubusercontent.com/jiangtian616/JHenTai/refs/heads/master/built_in_blocked_user.json',
               mode: LaunchMode.externalApplication,
             ),
           ),
-          Switch(
+          MoonSwitch(
             value: preferenceSetting.useBuiltInBlockedUsers.value,
             onChanged: preferenceSetting.saveUseBuiltInBlockedUsers,
           )

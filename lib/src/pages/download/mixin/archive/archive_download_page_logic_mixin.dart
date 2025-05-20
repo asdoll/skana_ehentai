@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/enum/config_enum.dart';
@@ -6,6 +7,7 @@ import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
 import 'package:skana_ehentai/src/mixin/scroll_to_top_logic_mixin.dart';
 import 'package:skana_ehentai/src/mixin/update_global_gallery_status_logic_mixin.dart';
 import 'package:skana_ehentai/src/setting/archive_bot_setting.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_archive_parse_source_select_dialog.dart';
 
 import '../../../../database/database.dart';
@@ -28,16 +30,21 @@ import '../basic/multi_select/multi_select_download_page_state_mixin.dart';
 import 'archive_download_page_state_mixin.dart';
 
 mixin ArchiveDownloadPageLogicMixin on GetxController
-    implements Scroll2TopLogicMixin, MultiSelectDownloadPageLogicMixin<ArchiveDownloadedData>, UpdateGlobalGalleryStatusLogicMixin {
+    implements
+        Scroll2TopLogicMixin,
+        MultiSelectDownloadPageLogicMixin<ArchiveDownloadedData>,
+        UpdateGlobalGalleryStatusLogicMixin {
   final String bodyId = 'bodyId';
 
   ArchiveDownloadPageStateMixin get archiveDownloadPageState;
 
   @override
-  MultiSelectDownloadPageStateMixin get multiSelectDownloadPageState => archiveDownloadPageState;
+  MultiSelectDownloadPageStateMixin get multiSelectDownloadPageState =>
+      archiveDownloadPageState;
 
   Future<void> handleChangeArchiveGroup(ArchiveDownloadedData archive) async {
-    String oldGroup = archiveDownloadService.archiveDownloadInfos[archive.gid]!.group;
+    String oldGroup =
+        archiveDownloadService.archiveDownloadInfos[archive.gid]!.group;
 
     ({String group, bool downloadOriginalImage})? result = await Get.dialog(
       EHDownloadDialog(
@@ -70,16 +77,18 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
   }
 
   @override
-  void handleLongPressOrSecondaryTapItem(ArchiveDownloadedData item, BuildContext context) {
+  void handleLongPressOrSecondaryTapItem(
+      ArchiveDownloadedData item, BuildContext context) {
     if (multiSelectDownloadPageState.inMultiSelectMode) {
       toggleSelectItem(item.gid);
     } else {
-      showBottomSheet(item, context);
+      showTrigger(item, context);
     }
   }
 
   Future<void> handleLongPressGroup(String groupName) {
-    if (archiveDownloadService.archiveDownloadInfos.values.every((a) => a.group != groupName)) {
+    if (archiveDownloadService.archiveDownloadInfos.values
+        .every((a) => a.group != groupName)) {
       return handleDeleteGroup(groupName);
     }
     return handleRenameGroup(groupName);
@@ -112,7 +121,7 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
   }
 
   Future<void> handleDeleteGroup(String oldGroup) async {
-    bool? success = await Get.dialog(EHDialog(title: 'deleteGroup'.tr + '?'));
+    bool? success = await Get.dialog(EHDialog(title: '${'deleteGroup'.tr}?'));
     if (success == null || !success) {
       return;
     }
@@ -131,21 +140,29 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
   }
 
   void handleRemoveItem(ArchiveDownloadedData archive) {
-    archiveDownloadService.update([archiveDownloadService.galleryCountChangedId]);
+    archiveDownloadService
+        .update([archiveDownloadService.galleryCountChangedId]);
   }
 
   Future<void> goToReadPage(ArchiveDownloadedData archive) async {
-    if (archiveDownloadService.archiveDownloadInfos[archive.gid]?.archiveStatus != ArchiveStatus.completed) {
+    if (archiveDownloadService
+            .archiveDownloadInfos[archive.gid]?.archiveStatus !=
+        ArchiveStatus.completed) {
       return;
     }
 
-    if (readSetting.useThirdPartyViewer.isTrue && readSetting.thirdPartyViewerPath.value != null) {
-      openThirdPartyViewer(archiveDownloadService.computeArchiveUnpackingPath(archive.title, archive.gid));
+    if (readSetting.useThirdPartyViewer.isTrue &&
+        readSetting.thirdPartyViewerPath.value != null) {
+      openThirdPartyViewer(archiveDownloadService.computeArchiveUnpackingPath(
+          archive.title, archive.gid));
     } else {
-      String? string = await localConfigService.read(configKey: ConfigEnum.readIndexRecord, subConfigKey: archive.gid.toString());
+      String? string = await localConfigService.read(
+          configKey: ConfigEnum.readIndexRecord,
+          subConfigKey: archive.gid.toString());
       int readIndexRecord = (string == null ? 0 : (int.tryParse(string) ?? 0));
 
-      List<GalleryImage> images = await archiveDownloadService.getUnpackedImages(archive.gid);
+      List<GalleryImage> images =
+          await archiveDownloadService.getUnpackedImages(archive.gid);
 
       toRoute(
         Routes.read,
@@ -159,96 +176,139 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
           isOriginal: archive.isOriginal,
           readProgressRecordStorageKey: archive.gid.toString(),
           images: images,
-          useSuperResolution: superResolutionService.get(archive.gid, SuperResolutionType.archive) != null,
+          useSuperResolution: superResolutionService.get(
+                  archive.gid, SuperResolutionType.archive) !=
+              null,
         ),
       );
     }
   }
 
-  void showBottomSheet(ArchiveDownloadedData archive, BuildContext context) {
-    ArchiveDownloadInfo? archiveDownloadInfo = archiveDownloadService.archiveDownloadInfos[archive.gid];
+  void showTrigger(ArchiveDownloadedData archive, BuildContext context) {
+    ArchiveDownloadInfo? archiveDownloadInfo =
+        archiveDownloadService.archiveDownloadInfos[archive.gid];
 
-    showCupertinoModalPopup(
+    showDialog(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
+      builder: (BuildContext context) => moonAlertDialog(
+        context: context,
+        title: archive.title,
+        columnActions: true,
+        actions: [
+          outlinedButton(
+            isFullWidth: true,
+            onPressed: backRoute,
+            label: 'cancel'.tr,
+          ),
           if (superResolutionSetting.modelDirectoryPath.value != null &&
-              (superResolutionService.get(archive.gid, SuperResolutionType.archive) == null ||
-                  superResolutionService.get(archive.gid, SuperResolutionType.archive)?.status == SuperResolutionStatus.paused))
-            CupertinoActionSheetAction(
-              child: Text('superResolution'.tr),
+              (superResolutionService.get(
+                          archive.gid, SuperResolutionType.archive) ==
+                      null ||
+                  superResolutionService
+                          .get(archive.gid, SuperResolutionType.archive)
+                          ?.status ==
+                      SuperResolutionStatus.paused))
+            filledButton(
+              label: 'superResolution'.tr,
+              isFullWidth: true,
               onPressed: () async {
                 backRoute();
 
-                if (superResolutionService.get(archive.gid, SuperResolutionType.archive) == null && archive.isOriginal) {
-                  bool? result = await Get.dialog(EHDialog(title: 'attention'.tr + '!', content: 'superResolveOriginalImageHint'.tr));
+                if (superResolutionService.get(
+                            archive.gid, SuperResolutionType.archive) ==
+                        null &&
+                    archive.isOriginal) {
+                  bool? result = await Get.dialog(EHDialog(
+                      title: '${'attention'.tr}!',
+                      content: 'superResolveOriginalImageHint'.tr));
                   if (result == false) {
                     return;
                   }
                 }
 
-                superResolutionService.superResolve(archive.gid, SuperResolutionType.archive);
+                superResolutionService.superResolve(
+                    archive.gid, SuperResolutionType.archive);
               },
             ),
-          if (superResolutionService.get(archive.gid, SuperResolutionType.archive)?.status == SuperResolutionStatus.running)
-            CupertinoActionSheetAction(
-              child: Text('stopSuperResolution'.tr),
+          if (superResolutionService
+                  .get(archive.gid, SuperResolutionType.archive)
+                  ?.status ==
+              SuperResolutionStatus.running)
+            filledButton(
+              isFullWidth: true,
+              label: 'stopSuperResolution'.tr,
               onPressed: () async {
                 backRoute();
 
-                superResolutionService.pauseSuperResolve(archive.gid, SuperResolutionType.archive).then((_) => toast("success".tr));
+                superResolutionService
+                    .pauseSuperResolve(archive.gid, SuperResolutionType.archive)
+                    .then((_) => toast("success".tr));
               },
             ),
-          if (superResolutionService.get(archive.gid, SuperResolutionType.archive)?.status == SuperResolutionStatus.paused ||
-              superResolutionService.get(archive.gid, SuperResolutionType.archive)?.status == SuperResolutionStatus.success)
-            CupertinoActionSheetAction(
-              child: Text('deleteSuperResolvedImage'.tr),
+          if (superResolutionService
+                      .get(archive.gid, SuperResolutionType.archive)
+                      ?.status ==
+                  SuperResolutionStatus.paused ||
+              superResolutionService
+                      .get(archive.gid, SuperResolutionType.archive)
+                      ?.status ==
+                  SuperResolutionStatus.success)
+            filledButton(
+              isFullWidth: true,
+              label: 'deleteSuperResolvedImage'.tr,
               onPressed: () async {
                 backRoute();
 
-                superResolutionService.deleteSuperResolve(archive.gid, SuperResolutionType.archive).then((_) => toast("success".tr));
+                superResolutionService
+                    .deleteSuperResolve(
+                        archive.gid, SuperResolutionType.archive)
+                    .then((_) => toast("success".tr));
               },
             ),
           if (archiveDownloadInfo != null &&
-              archiveDownloadInfo.archiveStatus.code < ArchiveStatus.downloaded.code &&
+              archiveDownloadInfo.archiveStatus.code <
+                  ArchiveStatus.downloaded.code &&
               archiveDownloadInfo.parseSource == ArchiveParseSource.bot.code)
-            CupertinoActionSheetAction(
-              child: Text('changeParseSource2Official'.tr),
+            filledButton(
+              isFullWidth: true,
+              label: 'changeParseSource2Official'.tr,
               onPressed: () {
                 backRoute();
                 changeParseSource(archive.gid, ArchiveParseSource.official);
               },
             ),
           if (archiveDownloadInfo != null &&
-              archiveDownloadInfo.archiveStatus.code < ArchiveStatus.downloaded.code &&
+              archiveDownloadInfo.archiveStatus.code <
+                  ArchiveStatus.downloaded.code &&
               archiveBotSetting.isReady &&
-              archiveDownloadInfo.parseSource == ArchiveParseSource.official.code)
-            CupertinoActionSheetAction(
-              child: Text('changeParseSource2Bot'.tr),
+              archiveDownloadInfo.parseSource ==
+                  ArchiveParseSource.official.code)
+            filledButton(
+              isFullWidth: true,
+              label: 'changeParseSource2Bot'.tr,
               onPressed: () {
                 backRoute();
                 changeParseSource(archive.gid, ArchiveParseSource.bot);
               },
             ),
-          CupertinoActionSheetAction(
-            child: Text('changeGroup'.tr),
+          filledButton(
+            isFullWidth: true,
+            label: 'changeGroup'.tr,
             onPressed: () {
               backRoute();
               handleChangeArchiveGroup(archive);
             },
           ),
-          CupertinoActionSheetAction(
-            child: Text('delete'.tr, style: TextStyle(color: UIConfig.alertColor(context))),
+          filledButton(
+            isFullWidth: true,
+            label: 'delete'.tr,
+            color: UIConfig.alertColor(context),
             onPressed: () {
               handleRemoveItem(archive);
               backRoute();
             },
           ),
         ],
-        cancelButton: CupertinoActionSheetAction(
-          child: Text('cancel'.tr),
-          onPressed: backRoute,
-        ),
       ),
     );
   }
@@ -257,7 +317,8 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
     bool? ok = await Get.dialog(const ReUnlockDialog());
     if (ok ?? false) {
       await archiveDownloadService.cancelArchive(archive.gid);
-      await archiveDownloadService.downloadArchive(archive, resume: true, reParse: true);
+      await archiveDownloadService.downloadArchive(archive,
+          resume: true, reParse: true);
     }
   }
 
@@ -313,14 +374,15 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
       }
 
       exitSelectMode();
-      
+
       await Future.wait(futures);
       updateGlobalGalleryStatus();
     }
   }
 
   Future<void> handleChangeParseSource() async {
-    ArchiveParseSource? result = await Get.dialog(const EHArchiveParseSourceSelectDialog());
+    ArchiveParseSource? result =
+        await Get.dialog(const EHArchiveParseSourceSelectDialog());
 
     if (result == null) {
       return;
@@ -335,7 +397,8 @@ mixin ArchiveDownloadPageLogicMixin on GetxController
     updateSafely([bottomAppbarId, bodyId]);
   }
 
-  Future<void> changeParseSource(int gid, ArchiveParseSource parseSource) async {
+  Future<void> changeParseSource(
+      int gid, ArchiveParseSource parseSource) async {
     return archiveDownloadService.changeParseSource(gid, parseSource);
   }
 }

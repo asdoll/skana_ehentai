@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:blur/blur.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
@@ -11,6 +12,8 @@ import 'package:skana_ehentai/src/pages/download/mixin/archive/archive_download_
 import 'package:skana_ehentai/src/pages/download/mixin/archive/archive_download_page_mixin.dart';
 import 'package:skana_ehentai/src/pages/download/mixin/archive/archive_download_page_state_mixin.dart';
 import 'package:skana_ehentai/src/service/super_resolution_service.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../../model/gallery_image.dart';
 import '../../../../routes/routes.dart';
@@ -22,15 +25,23 @@ import '../mixin/grid_download_page_mixin.dart';
 import 'archive_grid_download_page_logic.dart';
 import 'archive_grid_download_page_state.dart';
 
-class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, MultiSelectDownloadPageMixin, ArchiveDownloadPageMixin, GridBasePage {
-  ArchiveGridDownloadPage({Key? key}) : super(key: key);
+class ArchiveGridDownloadPage extends StatelessWidget
+    with
+        Scroll2TopPageMixin,
+        MultiSelectDownloadPageMixin,
+        ArchiveDownloadPageMixin,
+        GridBasePage {
+  ArchiveGridDownloadPage({super.key});
 
   @override
   final DownloadPageGalleryType galleryType = DownloadPageGalleryType.archive;
   @override
-  final ArchiveGridDownloadPageLogic logic = Get.put<ArchiveGridDownloadPageLogic>(ArchiveGridDownloadPageLogic(), permanent: true);
+  final ArchiveGridDownloadPageLogic logic =
+      Get.put<ArchiveGridDownloadPageLogic>(ArchiveGridDownloadPageLogic(),
+          permanent: true);
   @override
-  final ArchiveGridDownloadPageState state = Get.find<ArchiveGridDownloadPageLogic>().state;
+  final ArchiveGridDownloadPageState state =
+      Get.find<ArchiveGridDownloadPageLogic>().state;
 
   @override
   ArchiveDownloadPageLogicMixin get archiveDownloadPageLogic => logic;
@@ -45,56 +56,78 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
         global: false,
         init: logic,
         id: logic.editButtonId,
-        builder: (_) => IconButton(
-          icon: const Icon(Icons.sort),
-          selectedIcon: const Icon(Icons.save),
-          onPressed: logic.toggleEditMode,
-          isSelected: state.inEditMode,
+        builder: (_) => MoonEhButton.md(
+          icon: state.inEditMode
+              ? BootstrapIcons.floppy
+              : BootstrapIcons.filter_left,
+          onTap: logic.toggleEditMode,
         ),
       ),
-      PopupMenuButton(
+      popupMenuButton(
         itemBuilder: (context) {
           return [
             PopupMenuItem(
               value: 0,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [const Icon(Icons.view_list), const SizedBox(width: 12), Text('switch2ListMode'.tr)],
+                children: [
+                  moonIcon(icon: BootstrapIcons.view_list),
+                  const SizedBox(width: 12),
+                  Text('switch2ListMode'.tr).small()
+                ],
               ),
             ),
             PopupMenuItem(
               value: 1,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [const Icon(Icons.done_all), const SizedBox(width: 12), Text('multiSelect'.tr)],
+                children: [
+                  moonIcon(icon: BootstrapIcons.check2_all),
+                  const SizedBox(width: 12),
+                  Text('multiSelect'.tr).small()
+                ],
               ),
             ),
             PopupMenuItem(
               value: 2,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [const Icon(Icons.play_arrow), const SizedBox(width: 12), Text('resumeAllTasks'.tr)],
+                children: [
+                  moonIcon(icon: BootstrapIcons.play_circle),
+                  const SizedBox(width: 12),
+                  Text('resumeAllTasks'.tr).small()
+                ],
               ),
             ),
             PopupMenuItem(
               value: 3,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [const Icon(Icons.pause), const SizedBox(width: 12), Text('pauseAllTasks'.tr)],
+                children: [
+                  moonIcon(icon: BootstrapIcons.pause_circle),
+                  const SizedBox(width: 12),
+                  Text('pauseAllTasks'.tr).small()
+                ],
               ),
             ),
             PopupMenuItem(
               value: 4,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [const Icon(Icons.search), const SizedBox(width: 12), Text('search'.tr)],
+                children: [
+                  moonIcon(icon: BootstrapIcons.search),
+                  const SizedBox(width: 12),
+                  Text('search'.tr).small()
+                ],
               ),
             ),
           ];
         },
         onSelected: (value) {
           if (value == 0) {
-            DownloadPageBodyTypeChangeNotification(bodyType: DownloadPageBodyType.list).dispatch(context);
+            DownloadPageBodyTypeChangeNotification(
+                    bodyType: DownloadPageBodyType.list)
+                .dispatch(context);
           }
           if (value == 1) {
             if (state.inEditMode) {
@@ -122,8 +155,10 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
   }
 
   @override
-  GridGroup groupBuilder(BuildContext context, String groupName, bool inEditMode) {
-    List<ArchiveDownloadedData> archives = state.galleryObjectsWithGroup(groupName);
+  GridGroup groupBuilder(
+      BuildContext context, String groupName, bool inEditMode) {
+    List<ArchiveDownloadedData> archives =
+        state.galleryObjectsWithGroup(groupName);
 
     return GridGroup(
       groupName: groupName,
@@ -134,9 +169,12 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
             (archive) => GetBuilder<ArchiveDownloadService>(
               id: '${ArchiveDownloadService.archiveStatusId}::${archive.gid}',
               builder: (_) {
-                Widget cover = buildGroupInnerImage(GalleryImage(url: archive.coverUrl));
+                Widget cover =
+                    buildGroupInnerImage(GalleryImage(url: archive.coverUrl));
 
-                if (archiveDownloadService.archiveDownloadInfos[archive.gid]?.archiveStatus == ArchiveStatus.completed) {
+                if (archiveDownloadService
+                        .archiveDownloadInfos[archive.gid]?.archiveStatus ==
+                    ArchiveStatus.completed) {
                   return cover;
                 }
 
@@ -146,8 +184,9 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
                     blur: 1,
                     blurColor: UIConfig.downloadPageGridCoverBlurColor,
                     colorOpacity: 0.6,
+                    overlay: const Icon(BootstrapIcons.download,
+                        color: UIConfig.downloadPageGridCoverOverlayColor),
                     child: cover,
-                    overlay: const Icon(Icons.download, color: UIConfig.downloadPageGridCoverOverlayColor),
                   ),
                 );
               },
@@ -155,26 +194,33 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
           )
           .toList(),
       onTap: inEditMode ? null : () => logic.enterGroup(groupName),
-      onLongPress: inEditMode ? null : () => logic.handleLongPressGroup(groupName),
-      onSecondTap: inEditMode ? null : () => logic.handleLongPressGroup(groupName),
+      onLongPress:
+          inEditMode ? null : () => logic.handleLongPressGroup(groupName),
+      onSecondTap:
+          inEditMode ? null : () => logic.handleLongPressGroup(groupName),
     );
   }
 
   @override
-  GridGallery galleryBuilder(BuildContext context, ArchiveDownloadedData archive, bool inEditMode) {
+  GridGallery galleryBuilder(
+      BuildContext context, ArchiveDownloadedData archive, bool inEditMode) {
     return GridGallery(
       title: archive.title,
       widget: GetBuilder<ArchiveGridDownloadPageLogic>(
         id: '${logic.itemCardId}::${archive.gid}',
         builder: (_) {
-          ArchiveDownloadInfo archiveDownloadInfo = archiveDownloadService.archiveDownloadInfos[archive.gid]!;
+          ArchiveDownloadInfo archiveDownloadInfo =
+              archiveDownloadService.archiveDownloadInfos[archive.gid]!;
 
           return GetBuilder<ArchiveDownloadService>(
             id: '${ArchiveDownloadService.archiveStatusId}::${archive.gid}',
             builder: (_) {
-              Widget cover = buildGalleryImage(GalleryImage(url: archive.coverUrl));
+              Widget cover =
+                  buildGalleryImage(GalleryImage(url: archive.coverUrl));
 
-              if (archiveDownloadService.archiveDownloadInfos[archive.gid]?.archiveStatus == ArchiveStatus.completed) {
+              if (archiveDownloadService
+                      .archiveDownloadInfos[archive.gid]?.archiveStatus ==
+                  ArchiveStatus.completed) {
                 if (state.selectedGids.contains(archive.gid)) {
                   return Stack(
                     children: [cover, _buildSelectedIcon()],
@@ -198,21 +244,28 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
                   _buildCircularProgressIndicator(archive, archiveDownloadInfo),
                   _buildDownloadProgress(archive, archiveDownloadInfo),
                   _buildActionButton(archiveDownloadInfo, archive),
-                  if (state.selectedGids.contains(archive.gid)) _buildSelectedIcon(),
+                  if (state.selectedGids.contains(archive.gid))
+                    _buildSelectedIcon(),
                 ],
               );
             },
           );
         },
       ),
-      parseFromBot: archiveDownloadService.archiveDownloadInfos[archive.gid]?.parseSource == ArchiveParseSource.bot.code,
+      parseFromBot: archiveDownloadService
+              .archiveDownloadInfos[archive.gid]?.parseSource ==
+          ArchiveParseSource.bot.code,
       isOriginal: archive.isOriginal,
       gid: archive.gid,
       superResolutionType: SuperResolutionType.archive,
       onTapWidget: inEditMode ? null : () => logic.handleTapItem(archive),
       onTapTitle: inEditMode ? null : () => logic.handleTapTitle(archive),
-      onLongPress: inEditMode ? null : () => logic.handleLongPressOrSecondaryTapItem(archive, context),
-      onSecondTap: inEditMode ? null : () => logic.handleLongPressOrSecondaryTapItem(archive, context),
+      onLongPress: inEditMode
+          ? null
+          : () => logic.handleLongPressOrSecondaryTapItem(archive, context),
+      onSecondTap: inEditMode
+          ? null
+          : () => logic.handleLongPressOrSecondaryTapItem(archive, context),
       onTertiaryTap: inEditMode ? null : () => logic.handleTapTitle(archive),
     );
   }
@@ -222,15 +275,20 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: UIConfig.downloadPageGridViewSelectIconColor),
+          border:
+              Border.all(color: UIConfig.downloadPageGridViewSelectIconColor),
           color: UIConfig.downloadPageGridViewSelectIconBackGroundColor,
         ),
-        child: const Icon(Icons.check, color: UIConfig.downloadPageGridViewSelectIconColor),
+        child: Transform.translate(
+            offset: Offset(0, 1),
+            child: Icon(BootstrapIcons.check2,
+                color: UIConfig.downloadPageGridViewSelectIconColor)),
       ),
     );
   }
 
-  Center _buildCircularProgressIndicator(ArchiveDownloadedData archive, ArchiveDownloadInfo archiveDownloadInfo) {
+  Center _buildCircularProgressIndicator(
+      ArchiveDownloadedData archive, ArchiveDownloadInfo archiveDownloadInfo) {
     return Center(
       child: GetBuilder<ArchiveDownloadService>(
         id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
@@ -240,7 +298,8 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
             minHeight: UIConfig.downloadPageGridViewCircularProgressSize,
           ),
           child: CircularProgressIndicator(
-            value: archiveDownloadInfo.speedComputer.downloadedBytes / archiveDownloadInfo.size,
+            value: archiveDownloadInfo.speedComputer.downloadedBytes /
+                archiveDownloadInfo.size,
             color: UIConfig.downloadPageGridProgressColor,
             backgroundColor: UIConfig.downloadPageGridProgressBackGroundColor,
           ),
@@ -249,47 +308,59 @@ class ArchiveGridDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
     );
   }
 
-  Center _buildDownloadProgress(ArchiveDownloadedData archive, ArchiveDownloadInfo archiveDownloadInfo) {
+  Center _buildDownloadProgress(
+      ArchiveDownloadedData archive, ArchiveDownloadInfo archiveDownloadInfo) {
     return Center(
       child: GetBuilder<ArchiveDownloadService>(
         id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
         builder: (_) => Text(
           '${byte2String(archiveDownloadInfo.speedComputer.downloadedBytes.toDouble())} / ${byte2String(archiveDownloadInfo.size.toDouble())}',
-          style: const TextStyle(fontSize: UIConfig.downloadPageGridViewInfoTextSize, color: UIConfig.downloadPageGridTextColor),
-        ),
+          style: const TextStyle(
+              fontSize: UIConfig.downloadPageGridViewInfoTextSize,
+              color: UIConfig.downloadPageGridTextColor),
+        ).xSmall(),
       ).marginOnly(top: 60),
     );
   }
 
-  GestureDetector _buildActionButton(ArchiveDownloadInfo archiveDownloadInfo, ArchiveDownloadedData archive) {
+  GestureDetector  _buildActionButton(
+      ArchiveDownloadInfo archiveDownloadInfo, ArchiveDownloadedData archive) {
     return GestureDetector(
-      onTap: () => archiveDownloadInfo.archiveStatus == ArchiveStatus.needReUnlock
-          ? logic.handleReUnlockArchive(archive)
-          : archiveDownloadInfo.archiveStatus == ArchiveStatus.paused
-              ? archiveDownloadService.resumeDownloadArchive(archive.gid)
-              : archiveDownloadService.pauseDownloadArchive(archive.gid),
+      onTap: () =>
+          archiveDownloadInfo.archiveStatus == ArchiveStatus.needReUnlock
+              ? logic.handleReUnlockArchive(archive)
+              : archiveDownloadInfo.archiveStatus == ArchiveStatus.paused
+                  ? archiveDownloadService.resumeDownloadArchive(archive.gid)
+                  : archiveDownloadService.pauseDownloadArchive(archive.gid),
       child: Center(
         child: GetBuilder<ArchiveDownloadService>(
           id: '${ArchiveDownloadService.archiveStatusId}::${archive.gid}',
-          builder: (_) =>
-              archiveDownloadInfo.archiveStatus.code >= ArchiveStatus.unlocking.code && archiveDownloadInfo.archiveStatus.code <= ArchiveStatus.downloading.code
-                  ? GetBuilder<ArchiveDownloadService>(
-                      id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
-                      builder: (_) => Text(
-                        archiveDownloadInfo.speedComputer.speed,
-                        style: const TextStyle(fontSize: UIConfig.downloadPageGridViewSpeedTextSize, color: UIConfig.downloadPageGridTextColor),
-                      ),
-                    )
-                  : Icon(
-                      archiveDownloadInfo.archiveStatus == ArchiveStatus.needReUnlock
-                          ? Icons.lock_open
-                          : archiveDownloadInfo.archiveStatus == ArchiveStatus.paused
-                              ? Icons.play_arrow
-                              : archiveDownloadInfo.archiveStatus == ArchiveStatus.completed
-                                  ? Icons.done
-                                  : Icons.file_open,
-                      color: UIConfig.downloadPageGridTextColor,
-                    ),
+          builder: (_) => archiveDownloadInfo.archiveStatus.code >=
+                      ArchiveStatus.unlocking.code &&
+                  archiveDownloadInfo.archiveStatus.code <=
+                      ArchiveStatus.downloading.code
+              ? GetBuilder<ArchiveDownloadService>(
+                  id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
+                  builder: (_) => Text(
+                    archiveDownloadInfo.speedComputer.speed,
+                    style: const TextStyle(
+                        fontSize: UIConfig.downloadPageGridViewSpeedTextSize,
+                        color: UIConfig.downloadPageGridTextColor),
+                  ),
+                )
+              : Icon(
+                  archiveDownloadInfo.archiveStatus ==
+                          ArchiveStatus.needReUnlock
+                      ? BootstrapIcons.unlock
+                      : archiveDownloadInfo.archiveStatus ==
+                              ArchiveStatus.paused
+                          ? BootstrapIcons.play
+                          : archiveDownloadInfo.archiveStatus ==
+                                  ArchiveStatus.completed
+                              ? BootstrapIcons.check2
+                              : BootstrapIcons.file_arrow_up,
+                  color: UIConfig.downloadPageGridTextColor,
+                ),
         ),
       ),
     );

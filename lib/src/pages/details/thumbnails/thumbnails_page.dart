@@ -6,6 +6,7 @@ import 'package:skana_ehentai/src/mixin/scroll_to_top_page_mixin.dart';
 import 'package:skana_ehentai/src/pages/details/thumbnails/thumbnails_page_logic.dart';
 import 'package:skana_ehentai/src/pages/details/thumbnails/thumbnails_page_state.dart';
 import 'package:skana_ehentai/src/service/gallery_download_service.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_image.dart';
 import 'package:skana_ehentai/src/widget/keep_alive.dart';
 
@@ -51,8 +52,8 @@ class ThumbnailsPage extends StatelessWidget with Scroll2TopPageMixin {
   }
 
   AppBar buildAppBar() {
-    return AppBar(
-      title: Text(_mainTitleText, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+    return appBar(
+      title: _mainTitleText,
       actions: [
         IconButton(
           icon: const Icon(FontAwesomeIcons.paperPlane, size: 21),

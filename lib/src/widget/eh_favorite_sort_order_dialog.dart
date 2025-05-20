@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../model/gallery_page.dart';
 import '../utils/route_util.dart';
@@ -10,7 +12,8 @@ class EHFavoriteSortOrderDialog extends StatefulWidget {
   const EHFavoriteSortOrderDialog({super.key, this.init});
 
   @override
-  State<EHFavoriteSortOrderDialog> createState() => _EHFavoriteSortOrderDialogState();
+  State<EHFavoriteSortOrderDialog> createState() =>
+      _EHFavoriteSortOrderDialogState();
 }
 
 class _EHFavoriteSortOrderDialogState extends State<EHFavoriteSortOrderDialog> {
@@ -24,30 +27,35 @@ class _EHFavoriteSortOrderDialogState extends State<EHFavoriteSortOrderDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('orderBy'.tr),
-      content: Column(
+    return moonAlertDialog(
+      context: context,
+      title: 'orderBy'.tr,
+      contentWidget: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioListTile(
-            title: Text('favoritedTime'.tr),
-            value: FavoriteSortOrder.favoritedTime,
-            groupValue: _sortOrder,
-            onChanged: (value) => setState(() => _sortOrder = value),
-          ),
-          RadioListTile(
-            title: Text('publishedTime'.tr),
-            value: FavoriteSortOrder.publishedTime,
-            groupValue: _sortOrder,
-            onChanged: (value) => setState(() => _sortOrder = value),
-          ),
+          moonListTile(
+              title: 'favoritedTime'.tr,
+              onTap: () =>
+                  setState(() => _sortOrder = FavoriteSortOrder.favoritedTime),
+              trailing: MoonRadio(
+                  value: FavoriteSortOrder.favoritedTime,
+                  groupValue: _sortOrder,
+                  onChanged: (_) {setState(() => _sortOrder = FavoriteSortOrder.favoritedTime);})),
+          moonListTile(
+              title: 'publishedTime'.tr,
+              onTap: () =>
+                  setState(() => _sortOrder = FavoriteSortOrder.publishedTime),
+              trailing: MoonRadio(
+                  value: FavoriteSortOrder.publishedTime,
+                  groupValue: _sortOrder,
+                  onChanged: (_) {setState(() => _sortOrder = FavoriteSortOrder.publishedTime);})),
         ],
-      ),
+      ).paddingBottom(16),
       actions: [
-        TextButton(onPressed: backRoute, child: Text('cancel'.tr)),
-        TextButton(child: Text('OK'.tr), onPressed: () => backRoute(result: _sortOrder)),
+        outlinedButton(onPressed: backRoute, label: 'cancel'.tr),
+        filledButton(
+            label: 'OK'.tr, onPressed: () => backRoute(result: _sortOrder)),
       ],
-      actionsPadding: const EdgeInsets.only(left: 24, right: 24, bottom: 12),
     );
   }
 }

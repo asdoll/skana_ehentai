@@ -1,28 +1,26 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../base/base_page.dart';
 import 'history_page_logic.dart';
 import 'history_page_state.dart';
 
 class HistoryPage extends BasePage {
-  // ignore: prefer_const_constructors_in_immutables, use_super_parameters
-  HistoryPage({
-    Key? key,
-    bool showMenuButton = false,
-    bool showTitle = false,
-    String? name,
+  const HistoryPage({
+    super.key,
+    super.showMenuButton,
+    super.showTitle,
+    super.name,
   }) : super(
-          key: key,
-          showMenuButton: showMenuButton,
-          showTitle: showTitle,
           showJumpButton: true,
           showScroll2TopButton: true,
-          name: name,
         );
 
   @override
-  HistoryPageLogic get logic => Get.put<HistoryPageLogic>(HistoryPageLogic(), permanent: true);
+  HistoryPageLogic get logic =>
+      Get.put<HistoryPageLogic>(HistoryPageLogic(), permanent: true);
 
   @override
   HistoryPageState get state => Get.find<HistoryPageLogic>().state;
@@ -30,7 +28,9 @@ class HistoryPage extends BasePage {
   @override
   List<Widget> buildAppBarActions() {
     return [
-      IconButton(icon: const Icon(Icons.delete_outline_outlined, size: 27), onPressed: logic.handleTapDeleteButton),
+      MoonEhButton.md(
+          icon: BootstrapIcons.trash,
+          onTap: logic.handleTapDeleteButton),
       ...super.buildAppBarActions(),
     ];
   }

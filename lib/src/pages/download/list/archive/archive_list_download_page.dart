@@ -1,14 +1,16 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/database/database.dart';
 import 'package:skana_ehentai/src/mixin/scroll_to_top_page_mixin.dart';
 import 'package:skana_ehentai/src/model/gallery_url.dart';
 import 'package:skana_ehentai/src/pages/download/mixin/archive/archive_download_page_logic_mixin.dart';
 import 'package:skana_ehentai/src/pages/download/mixin/archive/archive_download_page_state_mixin.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/grouped_list.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../../model/gallery_image.dart';
 import '../../../../routes/routes.dart';
@@ -31,11 +33,18 @@ import '../../mixin/basic/multi_select/multi_select_download_page_mixin.dart';
 import 'archive_list_download_page_logic.dart';
 import 'archive_list_download_page_state.dart';
 
-class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, MultiSelectDownloadPageMixin, ArchiveDownloadPageMixin {
-  ArchiveListDownloadPage({Key? key}) : super(key: key);
+class ArchiveListDownloadPage extends StatelessWidget
+    with
+        Scroll2TopPageMixin,
+        MultiSelectDownloadPageMixin,
+        ArchiveDownloadPageMixin {
+  ArchiveListDownloadPage({super.key});
 
-  final ArchiveListDownloadPageLogic logic = Get.put<ArchiveListDownloadPageLogic>(ArchiveListDownloadPageLogic(), permanent: true);
-  final ArchiveListDownloadPageState state = Get.find<ArchiveListDownloadPageLogic>().state;
+  final ArchiveListDownloadPageLogic logic =
+      Get.put<ArchiveListDownloadPageLogic>(ArchiveListDownloadPageLogic(),
+          permanent: true);
+  final ArchiveListDownloadPageState state =
+      Get.find<ArchiveListDownloadPageLogic>().state;
 
   @override
   ArchiveDownloadPageLogicMixin get archiveDownloadPageLogic => logic;
@@ -54,57 +63,81 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
   }
 
   AppBar buildAppBar(BuildContext context) {
-    return AppBar(
+    return appBar(
       centerTitle: true,
       leading: styleSetting.isInV2Layout
-          ? IconButton(icon: const Icon(FontAwesomeIcons.bars, size: 20), onPressed: () => TapMenuButtonNotification().dispatch(context))
+          ? NormalDrawerButton(
+              onTap: () => TapMenuButtonNotification().dispatch(context),
+            )
           : null,
-      titleSpacing: 0,
-      title: const DownloadPageSegmentControl(galleryType: DownloadPageGalleryType.archive),
+      titleWidget: const DownloadPageSegmentControl(
+          galleryType: DownloadPageGalleryType.archive),
       actions: [
-        PopupMenuButton(
+        popupMenuButton(
           itemBuilder: (context) {
             return [
               PopupMenuItem(
                 value: 0,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [const Icon(Icons.grid_view), const SizedBox(width: 12), Text('switch2GridMode'.tr)],
+                  children: [
+                    moonIcon(icon: BootstrapIcons.grid),
+                    const SizedBox(width: 12),
+                    Text('switch2GridMode'.tr).small()
+                  ],
                 ),
               ),
               PopupMenuItem(
                 value: 1,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [const Icon(Icons.done_all), const SizedBox(width: 12), Text('multiSelect'.tr)],
+                  children: [
+                    moonIcon(icon: BootstrapIcons.check2_all),
+                    const SizedBox(width: 12),
+                    Text('multiSelect'.tr).small()
+                  ],
                 ),
               ),
               PopupMenuItem(
                 value: 2,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [const Icon(Icons.play_arrow), const SizedBox(width: 12), Text('resumeAllTasks'.tr)],
+                  children: [
+                    moonIcon(icon: BootstrapIcons.play_circle),
+                    const SizedBox(width: 12),
+                    Text('resumeAllTasks'.tr).small()
+                  ],
                 ),
               ),
               PopupMenuItem(
                 value: 3,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [const Icon(Icons.pause), const SizedBox(width: 12), Text('pauseAllTasks'.tr)],
+                  children: [
+                    moonIcon(icon: BootstrapIcons.pause_circle),
+                    const SizedBox(width: 12),
+                    Text('pauseAllTasks'.tr).small()
+                  ],
                 ),
               ),
               PopupMenuItem(
                 value: 4,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [const Icon(Icons.search), const SizedBox(width: 12), Text('search'.tr)],
+                  children: [
+                    moonIcon(icon: BootstrapIcons.search),
+                    const SizedBox(width: 12),
+                    Text('search'.tr).small()
+                  ],
                 ),
               ),
             ];
           },
           onSelected: (value) {
             if (value == 0) {
-              DownloadPageBodyTypeChangeNotification(bodyType: DownloadPageBodyType.grid).dispatch(context);
+              DownloadPageBodyTypeChangeNotification(
+                      bodyType: DownloadPageBodyType.grid)
+                  .dispatch(context);
             }
             if (value == 1) {
               logic.enterSelectMode();
@@ -136,16 +169,25 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
             builder: (_, __) => !state.displayGroupsCompleter.isCompleted
                 ? const Center()
                 : GroupedList<String, ArchiveDownloadedData>(
-                    maxGalleryNum4Animation: performanceSetting.maxGalleryNum4Animation.value,
+                    maxGalleryNum4Animation:
+                        performanceSetting.maxGalleryNum4Animation.value,
                     scrollController: state.scrollController,
                     controller: state.groupedListController,
-                    groups: Map.fromEntries(archiveDownloadService.allGroups.map((e) => MapEntry(e, state.displayGroups.contains(e)))),
+                    groups: Map.fromEntries(archiveDownloadService.allGroups
+                        .map((e) =>
+                            MapEntry(e, state.displayGroups.contains(e)))),
                     elements: archiveDownloadService.archives,
-                    elementGroup: (ArchiveDownloadedData archive) => archiveDownloadService.archiveDownloadInfos[archive.gid]!.group,
-                    groupBuilder: (context, groupName, isOpen) => _groupBuilder(context, groupName, isOpen).marginAll(5),
-                    elementBuilder: (BuildContext context, String group, ArchiveDownloadedData archive, isOpen) => _itemBuilder(context, archive),
+                    elementGroup: (ArchiveDownloadedData archive) =>
+                        archiveDownloadService
+                            .archiveDownloadInfos[archive.gid]!.group,
+                    groupBuilder: (context, groupName, isOpen) =>
+                        _groupBuilder(context, groupName, isOpen).marginAll(5),
+                    elementBuilder: (BuildContext context, String group,
+                            ArchiveDownloadedData archive, isOpen) =>
+                        _itemBuilder(context, archive),
                     groupUniqueKey: (String group) => group,
-                    elementUniqueKey: (ArchiveDownloadedData archive) => archive.gid.toString(),
+                    elementUniqueKey: (ArchiveDownloadedData archive) =>
+                        archive.gid.toString(),
                   ),
           ),
         ),
@@ -167,14 +209,17 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
         ),
         child: Row(
           children: [
-            const SizedBox(width: UIConfig.downloadPageGroupHeaderWidth, child: Center(child: Icon(Icons.folder_open))),
+            SizedBox(
+                width: UIConfig.downloadPageGroupHeaderWidth,
+                child:
+                    Center(child: moonIcon(icon: BootstrapIcons.folder2_open))),
             Text(
-              '$groupName${'(' + archiveDownloadService.archivesWithGroup(groupName).length.toString() + ')'}',
+              '$groupName${'(${archiveDownloadService.archivesWithGroup(groupName).length})'}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-            ),
+            ).subHeader(),
             const Expanded(child: SizedBox()),
-            GroupOpenIndicator(isOpen: isOpen).marginOnly(right: 8),
+            GroupOpenIndicator(isOpen: isOpen).marginOnly(right: 12),
           ],
         ),
       ),
@@ -182,34 +227,12 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
   }
 
   Widget _itemBuilder(BuildContext context, ArchiveDownloadedData archive) {
-    return Slidable(
-      key: Key(archive.gid.toString()),
-      endActionPane: _buildEndActionPane(context, archive),
-      child: GestureDetector(
-        onSecondaryTap: () => logic.handleLongPressOrSecondaryTapItem(archive, context),
-        onLongPress: () => logic.handleLongPressOrSecondaryTapItem(archive, context),
-        child: _buildCard(context, archive).marginAll(5),
-      ),
-    );
-  }
-
-  ActionPane _buildEndActionPane(BuildContext context, ArchiveDownloadedData archive) {
-    return ActionPane(
-      motion: const DrawerMotion(),
-      extentRatio: 0.3,
-      children: [
-        SlidableAction(
-          icon: Icons.bookmark,
-          backgroundColor: UIConfig.downloadPageActionBackGroundColor(context),
-          onPressed: (_) => logic.handleChangeArchiveGroup(archive),
-        ),
-        SlidableAction(
-          icon: Icons.delete,
-          foregroundColor: UIConfig.alertColor(context),
-          backgroundColor: UIConfig.downloadPageActionBackGroundColor(context),
-          onPressed: (BuildContext context) => logic.handleRemoveItem(archive),
-        ),
-      ],
+    return GestureDetector(
+      onSecondaryTap: () =>
+          logic.handleLongPressOrSecondaryTapItem(archive, context),
+      onLongPress: () =>
+          logic.handleLongPressOrSecondaryTapItem(archive, context),
+      child: _buildCard(context, archive).marginSymmetric(horizontal: 5,vertical: 2),
     );
   }
 
@@ -220,9 +243,14 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
         decoration: state.selectedGids.contains(archive.gid)
             ? BoxDecoration(
                 color: UIConfig.downloadPageCardSelectedColor(context),
-                borderRadius: BorderRadius.circular(UIConfig.downloadPageCardBorderRadius),
+                borderRadius: BorderRadius.circular(
+                    UIConfig.downloadPageCardBorderRadius),
               )
-            : null,
+            : BoxDecoration(
+                color: UIConfig.downloadPageCardColor(context),
+                borderRadius: BorderRadius.circular(
+                    UIConfig.downloadPageCardBorderRadius),
+              ),
         height: UIConfig.downloadPageCardHeight,
         child: Row(
           children: [
@@ -239,13 +267,15 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
       behavior: HitTestBehavior.opaque,
       onTap: () => toRoute(
         Routes.details,
-        arguments: DetailsPageArgument(galleryUrl: GalleryUrl.parse(archive.galleryUrl)),
+        arguments: DetailsPageArgument(
+            galleryUrl: GalleryUrl.parse(archive.galleryUrl)),
       ),
       child: EHImage(
         galleryImage: GalleryImage(url: archive.coverUrl),
         containerWidth: UIConfig.downloadPageCoverWidth,
         containerHeight: UIConfig.downloadPageCoverHeight,
-        borderRadius: BorderRadius.circular(UIConfig.downloadPageCardBorderRadius),
+        borderRadius:
+            BorderRadius.circular(UIConfig.downloadPageCardBorderRadius),
         fit: BoxFit.fitWidth,
         maxBytes: 2 * 1024 * 1024,
       ),
@@ -271,7 +301,9 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
                   _buildInfoFooter(context, archive),
                 ],
               ),
-              if (state.selectedGids.contains(archive.gid)) const Positioned(child: Center(child: Icon(Icons.check_circle))),
+              if (state.selectedGids.contains(archive.gid))
+                const Positioned(
+                    child: Center(child: Icon(Icons.check_circle))),
             ],
           ),
         ),
@@ -288,8 +320,7 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
           archive.title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: UIConfig.downloadPageCardTitleSize, height: 1.2),
-        ),
+        ).subHeader(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -297,12 +328,16 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
             if (archive.uploader != null)
               Text(
                 archive.uploader!,
-                style: TextStyle(fontSize: UIConfig.downloadPageCardTextSize, color: UIConfig.downloadPageCardTextColor(context)),
-              ),
+                style: TextStyle(
+                    color: UIConfig.downloadPageCardTextColor(context)),
+              ).small(),
             Text(
-              preferenceSetting.showUtcTime.isTrue ? archive.publishTime : DateUtil.transformUtc2LocalTimeString(archive.publishTime),
-              style: TextStyle(fontSize: UIConfig.downloadPageCardTextSize, color: UIConfig.downloadPageCardTextColor(context)),
-            ),
+              preferenceSetting.showUtcTime.isTrue
+                  ? archive.publishTime
+                  : DateUtil.transformUtc2LocalTimeString(archive.publishTime),
+              style: TextStyle(
+                  color: UIConfig.downloadPageCardTextColor(context)),
+            ).small(),
           ],
         ).marginOnly(top: 5),
       ],
@@ -324,8 +359,10 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
     );
   }
 
-  Widget _buildReUnlockButton(BuildContext context, ArchiveDownloadedData archive) {
-    ArchiveDownloadInfo archiveDownloadInfo = archiveDownloadService.archiveDownloadInfos[archive.gid]!;
+  Widget _buildReUnlockButton(
+      BuildContext context, ArchiveDownloadedData archive) {
+    ArchiveDownloadInfo archiveDownloadInfo =
+        archiveDownloadService.archiveDownloadInfos[archive.gid]!;
 
     return GetBuilder<ArchiveDownloadService>(
       id: '${ArchiveDownloadService.archiveStatusId}::${archive.gid}',
@@ -336,14 +373,17 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
 
         return GestureDetector(
           onTap: () => logic.handleReUnlockArchive(archive),
-          child: Icon(Icons.lock_open, size: 18, color: UIConfig.alertColor(context)),
+          child: Icon(BootstrapIcons.unlock,
+              size: UIConfig.downloadPageBotIconSize+1, color: UIConfig.alertColor(context)),
         ).marginOnly(right: 8);
       },
     );
   }
 
-  Widget _buildParseFromBot(BuildContext context, ArchiveDownloadedData archive) {
-    ArchiveDownloadInfo archiveDownloadInfo = archiveDownloadService.archiveDownloadInfos[archive.gid]!;
+  Widget _buildParseFromBot(
+      BuildContext context, ArchiveDownloadedData archive) {
+    ArchiveDownloadInfo archiveDownloadInfo =
+        archiveDownloadService.archiveDownloadInfos[archive.gid]!;
     return GetBuilder<ArchiveListDownloadPageLogic>(
       global: false,
       init: logic,
@@ -361,7 +401,7 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
             border: Border.all(color: UIConfig.resumePauseButtonColor(context)),
           ),
           child: Icon(
-            Icons.smart_toy_outlined,
+            BootstrapIcons.robot,
             size: UIConfig.downloadPageBotIconSize,
             color: UIConfig.resumePauseButtonColor(context),
           ),
@@ -383,18 +423,23 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: UIConfig.resumePauseButtonColor(context)),
       ),
-      child: Text(
+      child: Transform.translate(offset: Offset(0,-1),child:Text(
         'original'.tr,
-        style: TextStyle(color: UIConfig.resumePauseButtonColor(context), fontWeight: FontWeight.bold, fontSize: 9),
-      ),
+        style: TextStyle(
+            color: UIConfig.resumePauseButtonColor(context),
+            fontWeight: FontWeight.bold,
+            fontSize: 10),
+      )).paddingBottom(1),
     );
   }
 
-  Widget _buildSuperResolutionLabel(BuildContext context, ArchiveDownloadedData archive) {
+  Widget _buildSuperResolutionLabel(
+      BuildContext context, ArchiveDownloadedData archive) {
     return GetBuilder<srs.SuperResolutionService>(
       id: '${srs.SuperResolutionService.superResolutionId}::${archive.gid}',
       builder: (_) {
-        srs.SuperResolutionInfo? superResolutionInfo = superResolutionService.get(archive.gid, srs.SuperResolutionType.archive);
+        srs.SuperResolutionInfo? superResolutionInfo = superResolutionService
+            .get(archive.gid, srs.SuperResolutionType.archive);
 
         if (superResolutionInfo == null) {
           return const SizedBox();
@@ -404,29 +449,40 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
           margin: const EdgeInsets.symmetric(horizontal: 6),
           padding: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            borderRadius: superResolutionInfo.status == srs.SuperResolutionStatus.success ? null : BorderRadius.circular(4),
+            borderRadius:
+                superResolutionInfo.status == srs.SuperResolutionStatus.success
+                    ? null
+                    : BorderRadius.circular(4),
             border: Border.all(color: UIConfig.resumePauseButtonColor(context)),
-            shape: superResolutionInfo.status == srs.SuperResolutionStatus.success ? BoxShape.circle : BoxShape.rectangle,
+            shape:
+                superResolutionInfo.status == srs.SuperResolutionStatus.success
+                    ? BoxShape.circle
+                    : BoxShape.rectangle,
           ),
           child: Text(
             superResolutionInfo.status == srs.SuperResolutionStatus.paused
                 ? 'AI'
-                : superResolutionInfo.status == srs.SuperResolutionStatus.success
+                : superResolutionInfo.status ==
+                        srs.SuperResolutionStatus.success
                     ? 'AI'
                     : 'AI(${superResolutionInfo.imageStatuses.fold<int>(0, (previousValue, element) => previousValue + (element == srs.SuperResolutionStatus.success ? 1 : 0))}/${superResolutionInfo.imageStatuses.length})',
             style: TextStyle(
-              fontSize: 9,
+              fontSize: 10,
               color: UIConfig.resumePauseButtonColor(context),
-              decoration: superResolutionInfo.status == srs.SuperResolutionStatus.paused ? TextDecoration.lineThrough : null,
+              decoration:
+                  superResolutionInfo.status == srs.SuperResolutionStatus.paused
+                      ? TextDecoration.lineThrough
+                      : null,
             ),
-          ),
+          ).paddingBottom(1),
         );
       },
     );
   }
 
   Widget _buildButton(BuildContext context, ArchiveDownloadedData archive) {
-    ArchiveDownloadInfo archiveDownloadInfo = archiveDownloadService.archiveDownloadInfos[archive.gid]!;
+    ArchiveDownloadInfo archiveDownloadInfo =
+        archiveDownloadService.archiveDownloadInfos[archive.gid]!;
 
     return GetBuilder<ArchiveDownloadService>(
       id: '${ArchiveDownloadService.archiveStatusId}::${archive.gid}',
@@ -437,11 +493,11 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
               : archiveDownloadService.pauseDownloadArchive(archive.gid),
           child: Icon(
             archiveDownloadInfo.archiveStatus.code <= ArchiveStatus.paused.code
-                ? Icons.play_arrow
+                ? BootstrapIcons.play
                 : archiveDownloadInfo.archiveStatus == ArchiveStatus.completed
-                    ? Icons.done
-                    : Icons.pause,
-            size: 22,
+                    ? BootstrapIcons.check2
+                    : BootstrapIcons.pause,
+            size: 26,
             color: UIConfig.resumePauseButtonColor(context),
           ),
         );
@@ -450,7 +506,8 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
   }
 
   Widget _buildInfoFooter(BuildContext context, ArchiveDownloadedData archive) {
-    ArchiveDownloadInfo archiveDownloadInfo = archiveDownloadService.archiveDownloadInfos[archive.gid]!;
+    ArchiveDownloadInfo archiveDownloadInfo =
+        archiveDownloadService.archiveDownloadInfos[archive.gid]!;
 
     return GetBuilder<ArchiveDownloadService>(
       id: '${ArchiveDownloadService.archiveStatusId}::${archive.gid}',
@@ -460,40 +517,54 @@ class ArchiveListDownloadPage extends StatelessWidget with Scroll2TopPageMixin, 
           children: [
             Row(
               children: [
-                if (archiveDownloadInfo.archiveStatus == ArchiveStatus.downloading)
+                if (archiveDownloadInfo.archiveStatus ==
+                    ArchiveStatus.downloading)
                   GetBuilder<ArchiveDownloadService>(
                     id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
                     builder: (_) => Text(
                       archiveDownloadInfo.speedComputer.speed,
-                      style: TextStyle(fontSize: UIConfig.downloadPageCardTextSize, color: UIConfig.downloadPageCardTextColor(context)),
-                    ),
+                      style: TextStyle(
+                          fontSize: UIConfig.downloadPageCardTextSize,
+                          color: UIConfig.downloadPageCardTextColor(context)),
+                    ).small(),
                   ),
                 const Expanded(child: SizedBox()),
-                if (archiveDownloadInfo.archiveStatus.code <= ArchiveStatus.downloading.code)
+                if (archiveDownloadInfo.archiveStatus.code <=
+                    ArchiveStatus.downloading.code)
                   GetBuilder<ArchiveDownloadService>(
                     id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
                     builder: (_) => Text(
                       '${byte2String(archiveDownloadInfo.speedComputer.downloadedBytes.toDouble())}/${byte2String(archiveDownloadInfo.size.toDouble())}',
-                      style: TextStyle(fontSize: UIConfig.downloadPageCardTextSize, color: UIConfig.downloadPageCardTextColor(context)),
-                    ),
+                      style: TextStyle(
+                          fontSize: UIConfig.downloadPageCardTextSize,
+                          color: UIConfig.downloadPageCardTextColor(context)),
+                    ).small(),
                   ),
-                if (archiveDownloadInfo.archiveStatus != ArchiveStatus.downloading)
+                if (archiveDownloadInfo.archiveStatus !=
+                    ArchiveStatus.downloading)
                   Text(
                     archiveDownloadInfo.archiveStatus.name.tr,
-                    style: TextStyle(fontSize: UIConfig.downloadPageCardTextSize, color: UIConfig.downloadPageCardTextColor(context), height: 1),
-                  ).marginOnly(left: 8),
+                    style: TextStyle(
+                        fontSize: UIConfig.downloadPageCardTextSize,
+                        color: UIConfig.downloadPageCardTextColor(context),
+                        height: 1),
+                  ).small().marginOnly(left: 8),
               ],
             ),
-            if (archiveDownloadInfo.archiveStatus.code <= ArchiveStatus.downloading.code)
+            if (archiveDownloadInfo.archiveStatus.code <=
+                ArchiveStatus.downloading.code)
               SizedBox(
                 height: UIConfig.downloadPageProgressIndicatorHeight,
                 child: GetBuilder<ArchiveDownloadService>(
                   id: '${ArchiveDownloadService.archiveSpeedComputerId}::${archive.gid}::${archive.isOriginal}',
-                  builder: (_) => LinearProgressIndicator(
-                    value: archiveDownloadInfo.speedComputer.downloadedBytes / archiveDownloadInfo.size,
-                    color: archiveDownloadInfo.archiveStatus.code <= ArchiveStatus.paused.code
-                        ? UIConfig.downloadPageProgressPausedIndicatorColor(context)
-                        : UIConfig.downloadPageProgressIndicatorColor(context),
+                  builder: (_) => MoonLinearProgress(
+                    value: archiveDownloadInfo.speedComputer.downloadedBytes /
+                        archiveDownloadInfo.size,
+                    color: archiveDownloadInfo.archiveStatus.code <=
+                            ArchiveStatus.paused.code
+                        ? UIConfig.downloadPageProgressPausedIndicatorColor(
+                            context)
+                        : null,
                   ),
                 ),
               ).marginOnly(top: 6),

@@ -221,6 +221,7 @@ class en_US {
       'toggleMenu': 'Toggle menu',
       'share': 'Share',
       'save': 'Save to Pictures',
+      'selectDate': 'Select a Date',
 
       /// setting page
       'account': 'Account',

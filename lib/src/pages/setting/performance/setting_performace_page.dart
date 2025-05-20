@@ -1,7 +1,11 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../config/ui_config.dart';
 import '../../../setting/performance_setting.dart';
@@ -16,7 +20,7 @@ class SettingPerformancePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('performanceSetting'.tr)),
+      appBar: appBar(title: 'performanceSetting'.tr),
       body: ListView(
         padding: const EdgeInsets.only(top: 16),
         children: [
@@ -27,18 +31,18 @@ class SettingPerformancePage extends StatelessWidget {
   }
 
   Widget _buildMaxGalleryNum4Animation(BuildContext context) {
-    return ListTile(
-      title: Text('maxGalleryNum4Animation'.tr),
-      subtitle: Text('maxGalleryNum4AnimationHint'.tr),
+    return moonListTile(
+      title: 'maxGalleryNum4Animation'.tr,
+      subtitle: 'maxGalleryNum4AnimationHint'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: 50,
-            child: TextField(
+            child: MoonTextInput(
               controller: maxGalleryNum4AnimationController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(isDense: true, labelStyle: TextStyle(fontSize: 12)),
+              textInputSize: MoonTextInputSize.sm,
               textAlign: TextAlign.center,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
@@ -46,8 +50,9 @@ class SettingPerformancePage extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
+          MoonEhButton.md(
+            icon: BootstrapIcons.check2,
+            onTap: () {
               int? value = int.tryParse(maxGalleryNum4AnimationController.value.text);
               if (value == null) {
                 return;
@@ -55,7 +60,7 @@ class SettingPerformancePage extends StatelessWidget {
               performanceSetting.setMaxGalleryNum4Animation(value);
               toast('saveSuccess'.tr);
             },
-            icon: Icon(Icons.check, color: UIConfig.resumePauseButtonColor(context)),
+            color: UIConfig.resumePauseButtonColor(context),
           ),
         ],
       ),

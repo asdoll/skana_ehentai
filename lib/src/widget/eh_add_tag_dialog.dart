@@ -1,12 +1,15 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
 import 'package:skana_ehentai/src/extension/list_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/pages/search/mixin/search_page_mixin.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:throttling/throttling.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -28,44 +31,52 @@ class EHAddTagDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Row(
+    return moonAlertDialog(
+      context: context,
+      title: 'addTag'.tr,
+      contentWidget: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text('addTag'.tr),
-          const Expanded(child: SizedBox()),
-          if (tagTranslationService.isReady) Text('useTranslation'.tr, style: const TextStyle(fontSize: 14)),
           if (tagTranslationService.isReady)
-            GetBuilder<EHAddTagDialogLogic>(
-              id: EHAddTagDialogLogic.checkBoxId,
-              builder: (_) => Checkbox(
-                value: state.useTranslation,
-                onChanged: (value) {
-                  state.useTranslation = value!;
-                  logic.updateSafely([EHAddTagDialogLogic.checkBoxId]);
-                },
-              ),
+            Row(
+              children: [
+                Text('useTranslation'.tr).small(),
+                GetBuilder<EHAddTagDialogLogic>(
+                  id: EHAddTagDialogLogic.checkBoxId,
+                  builder: (_) => MoonCheckbox(
+                    value: state.useTranslation,
+                    onChanged: (value) {
+                      state.useTranslation = value!;
+                      logic.updateSafely([EHAddTagDialogLogic.checkBoxId]);
+                    },
+                  ),
+                ),
+              ],
             ),
+          SizedBox(
+            width: UIConfig.addTagDialogWidth,
+            height: UIConfig.addTagDialogHeight,
+            child: Column(
+              children: [
+                _buildSearchField(),
+                _buildNoDataIndicator(),
+                Expanded(child: _buildSuggestions(context)),
+              ],
+            ),
+          )
         ],
       ),
-      content: SizedBox(
-        width: UIConfig.addTagDialogWidth,
-        height: UIConfig.addTagDialogHeight,
-        child: Column(
-          children: [
-            _buildSearchField(),
-            _buildNoDataIndicator(),
-            Expanded(child: _buildSuggestions(context)),
-          ],
-        ),
-      ),
       actions: [
-        IconButton(
-          icon: Icon(Icons.help, color: UIConfig.primaryColor(context)),
-          onPressed: () => launchUrlString('https://ehwiki.org/wiki/Gallery_Tagging', mode: LaunchMode.externalApplication),
+        MoonButton.icon(
+          icon: Icon(BootstrapIcons.question_circle, color: UIConfig.primaryColor(context), size: 20,),
+          onTap: () => launchUrlString(
+              'https://ehwiki.org/wiki/Gallery_Tagging',
+              mode: LaunchMode.externalApplication),
         ),
-        TextButton(child: Text('OK'.tr), onPressed: () => backRoute(result: state.keyword)),
+        filledButton(
+            label: 'OK'.tr,
+            onPressed: () => backRoute(result: state.keyword)),
       ],
-      actionsPadding: const EdgeInsets.only(left: 24, right: 24, bottom: 12),
     );
   }
 
@@ -73,7 +84,7 @@ class EHAddTagDialog extends StatelessWidget {
     return GetBuilder<EHAddTagDialogLogic>(
       id: EHAddTagDialogLogic.searchFieldId,
       builder: (_) {
-        return TextField(
+        return MoonTextInput(
           focusNode: state.focusNode,
           textInputAction: TextInputAction.search,
           textAlignVertical: TextAlignVertical.center,
@@ -82,24 +93,17 @@ class EHAddTagDialog extends StatelessWidget {
               text: state.keyword,
 
               /// make cursor stay at last letter
-              selection: TextSelection.fromPosition(TextPosition(offset: state.keyword.length)),
+              selection: TextSelection.fromPosition(
+                  TextPosition(offset: state.keyword.length)),
             ),
           ),
           onChanged: (text) {
             state.keyword = text;
             logic.waitAndSearchTags();
           },
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: 'addTagHint'.tr,
-            hintStyle: const TextStyle(fontSize: 14),
-            contentPadding: EdgeInsets.zero,
-            prefixIcon: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(child: const Icon(Icons.search), onTap: logic.waitAndSearchTags),
-            ),
-            suffixIcon: _buildLoadingIndicator(),
-          ),
+          hintText: 'addTagHint'.tr,
+          leading: moonIcon(icon: BootstrapIcons.search),
+          trailing: _buildLoadingIndicator(),
         );
       },
     );
@@ -108,14 +112,18 @@ class EHAddTagDialog extends StatelessWidget {
   Widget _buildLoadingIndicator() {
     return GetBuilder<EHAddTagDialogLogic>(
       id: EHAddTagDialogLogic.loadingIndicatorId,
-      builder: (_) => state.searchLoadingState == LoadingState.loading ? const CupertinoActivityIndicator() : const SizedBox(),
+      builder: (_) => state.searchLoadingState == LoadingState.loading
+          ? const CupertinoActivityIndicator()
+          : const SizedBox(),
     );
   }
 
   Widget _buildNoDataIndicator() {
     return GetBuilder<EHAddTagDialogLogic>(
       id: EHAddTagDialogLogic.loadingIndicatorId,
-      builder: (_) => state.searchLoadingState == LoadingState.noData ? Text('noData'.tr).marginOnly(top: 24) : const SizedBox(),
+      builder: (_) => state.searchLoadingState == LoadingState.noData
+          ? Text('noData'.tr).appHeader().marginOnly(top: 24)
+          : const SizedBox(),
     );
   }
 
@@ -125,42 +133,56 @@ class EHAddTagDialog extends StatelessWidget {
       builder: (_) => ListView.builder(
         padding: const EdgeInsets.only(top: 12),
         itemCount: state.suggestions.length,
-        itemBuilder: (_, int index) => ListTile(
-          dense: true,
+        itemBuilder: (_, int index) => moonListTileWidgets(
           onTap: () {
             logic.defaultOnTap(state.suggestions[index].tagData);
           },
-          title: state.suggestions[index].tagData.tagName == null
+          label: state.suggestions[index].tagData.tagName == null
               ? highlightRawTag(
                   context,
                   state.suggestions[index],
-                  TextStyle(fontSize: UIConfig.searchPageSuggestionTitleTextSize, color: UIConfig.searchPageSuggestionTitleColor(context)),
-                  const TextStyle(fontSize: UIConfig.searchPageSuggestionTitleTextSize, color: UIConfig.searchPageSuggestionHighlightColor),
+                  TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                      color: UIConfig.searchPageSuggestionTitleColor(context)),
+                  const TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                      color: UIConfig.searchPageSuggestionHighlightColor),
                 )
               : highlightTranslatedTag(
                   context,
                   state.suggestions[index],
-                  TextStyle(fontSize: UIConfig.searchPageSuggestionTitleTextSize, color: UIConfig.searchPageSuggestionTitleColor(context)),
-                  const TextStyle(fontSize: UIConfig.searchPageSuggestionTitleTextSize, color: UIConfig.searchPageSuggestionHighlightColor),
+                  TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                      color: UIConfig.searchPageSuggestionTitleColor(context)),
+                  const TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                      color: UIConfig.searchPageSuggestionHighlightColor),
                 ),
-          subtitle: state.suggestions[index].tagData.tagName == null
+          content: state.suggestions[index].tagData.tagName == null
               ? null
               : highlightRawTag(
                   context,
                   state.suggestions[index],
-                  TextStyle(fontSize: UIConfig.searchPageSuggestionSubTitleTextSize, color: UIConfig.searchPageSuggestionSubTitleColor(context)),
-                  const TextStyle(fontSize: UIConfig.searchPageSuggestionSubTitleTextSize, color: UIConfig.searchPageSuggestionHighlightColor),
+                  TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
+                      color:
+                          UIConfig.searchPageSuggestionSubTitleColor(context)),
+                  const TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
+                      color: UIConfig.searchPageSuggestionHighlightColor),
                 ),
-          trailing: const Icon(Icons.add),
+          trailing: const Icon(BootstrapIcons.plus),
         ),
       ).enableMouseDrag(withScrollBar: true),
     );
   }
 
-  RichText highlightKeyword(BuildContext context, String rawText, String currentKeyword, bool isSubTitle) {
+  RichText highlightKeyword(BuildContext context, String rawText,
+      String currentKeyword, bool isSubTitle) {
     List<TextSpan> children = <TextSpan>[];
 
-    List<int> matchIndexes = currentKeyword.allMatches(rawText).map((match) => match.start).toList();
+    List<int> matchIndexes =
+        currentKeyword.allMatches(rawText).map((match) => match.start).toList();
 
     int indexHandling = 0;
     for (int index in matchIndexes) {
@@ -169,8 +191,12 @@ class EHAddTagDialog extends StatelessWidget {
           TextSpan(
             text: rawText.substring(indexHandling, index),
             style: TextStyle(
-              fontSize: isSubTitle ? UIConfig.searchPageSuggestionSubTitleTextSize : UIConfig.searchPageSuggestionTitleTextSize,
-              color: isSubTitle ? UIConfig.searchPageSuggestionSubTitleColor(context) : UIConfig.searchPageSuggestionTitleColor(context),
+              fontSize: isSubTitle
+                  ? UIConfig.searchPageSuggestionSubTitleTextSize
+                  : UIConfig.searchPageSuggestionTitleTextSize,
+              color: isSubTitle
+                  ? UIConfig.searchPageSuggestionSubTitleColor(context)
+                  : UIConfig.searchPageSuggestionTitleColor(context),
             ),
           ),
         );
@@ -180,7 +206,9 @@ class EHAddTagDialog extends StatelessWidget {
         TextSpan(
           text: currentKeyword,
           style: TextStyle(
-            fontSize: isSubTitle ? UIConfig.searchPageSuggestionSubTitleTextSize : UIConfig.searchPageSuggestionTitleTextSize,
+            fontSize: isSubTitle
+                ? UIConfig.searchPageSuggestionSubTitleTextSize
+                : UIConfig.searchPageSuggestionTitleTextSize,
             color: UIConfig.searchPageSuggestionHighlightColor,
           ),
         ),
@@ -194,8 +222,12 @@ class EHAddTagDialog extends StatelessWidget {
         TextSpan(
           text: rawText.substring(indexHandling, rawText.length),
           style: TextStyle(
-            fontSize: isSubTitle ? UIConfig.searchPageSuggestionSubTitleTextSize : UIConfig.searchPageSuggestionTitleTextSize,
-            color: isSubTitle ? UIConfig.searchPageSuggestionSubTitleColor(context) : UIConfig.searchPageSuggestionTitleColor(context),
+            fontSize: isSubTitle
+                ? UIConfig.searchPageSuggestionSubTitleTextSize
+                : UIConfig.searchPageSuggestionTitleTextSize,
+            color: isSubTitle
+                ? UIConfig.searchPageSuggestionSubTitleColor(context)
+                : UIConfig.searchPageSuggestionTitleColor(context),
           ),
         ),
       );
@@ -242,10 +274,12 @@ class EHAddTagDialogLogic extends GetxController {
     updateSafely([loadingIndicatorId]);
 
     if (state.useTranslation && tagTranslationService.isReady) {
-      state.suggestions = await tagTranslationService.searchTags(lastKeyWord, limit: 100);
+      state.suggestions =
+          await tagTranslationService.searchTags(lastKeyWord, limit: 100);
     } else {
       try {
-        List<EHRawTag> tags = await ehRequest.requestTagSuggestion(lastKeyWord, EHSpiderParser.tagSuggestion2TagList);
+        List<EHRawTag> tags = await ehRequest.requestTagSuggestion(
+            lastKeyWord, EHSpiderParser.tagSuggestion2TagList);
         state.suggestions = tags
             .map((t) => (
                   searchText: lastKeyWord,
@@ -255,10 +289,19 @@ class EHAddTagDialogLogic extends GetxController {
                   operator: null,
                   score: 0.0,
                   namespaceMatch: t.namespace.contains(lastKeyWord)
-                      ? (start: t.namespace.indexOf(lastKeyWord), end: t.namespace.indexOf(lastKeyWord) + lastKeyWord.length)
+                      ? (
+                          start: t.namespace.indexOf(lastKeyWord),
+                          end: t.namespace.indexOf(lastKeyWord) +
+                              lastKeyWord.length
+                        )
                       : null,
                   translatedNamespaceMatch: null,
-                  keyMatch: t.key.contains(lastKeyWord) ? (start: t.key.indexOf(lastKeyWord), end: t.key.indexOf(lastKeyWord) + lastKeyWord.length) : null,
+                  keyMatch: t.key.contains(lastKeyWord)
+                      ? (
+                          start: t.key.indexOf(lastKeyWord),
+                          end: t.key.indexOf(lastKeyWord) + lastKeyWord.length
+                        )
+                      : null,
                   tagNameMatch: null,
                 ))
             .toList();
@@ -295,7 +338,8 @@ class EHAddTagDialogState {
 
   bool useTranslation = true;
 
-  final Debouncing searchDebouncing = Debouncing(duration: const Duration(milliseconds: 300));
+  final Debouncing searchDebouncing =
+      Debouncing(duration: const Duration(milliseconds: 300));
   LoadingState searchLoadingState = LoadingState.idle;
   FocusNode focusNode = FocusNode();
 }

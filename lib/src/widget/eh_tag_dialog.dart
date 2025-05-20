@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,12 @@ import 'package:skana_ehentai/src/setting/preference_setting.dart';
 import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
 import 'package:skana_ehentai/src/utils/route_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_tag_set_dialog.dart';
 import 'package:skana_ehentai/src/widget/eh_warning_image.dart';
 import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
 import 'package:like_button/like_button.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../config/ui_config.dart';
@@ -37,16 +40,16 @@ class EHTagDialog extends StatefulWidget {
   final ValueChanged<bool>? onTagVoted;
 
   const EHTagDialog({
-    Key? key,
+    super.key,
     required this.tagData,
     required this.gid,
     required this.token,
     required this.apikey,
     this.onTagVoted,
-  }) : super(key: key);
+  });
 
   @override
-  _EHTagDialogState createState() => _EHTagDialogState();
+  State<EHTagDialog> createState() => _EHTagDialogState();
 }
 
 class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
@@ -65,49 +68,56 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: GestureDetector(
-        child: Text('${widget.tagData.namespace}:${widget.tagData.key}'),
-        onTap: () => FlutterClipboard.copy('${widget.tagData.namespace}:"${widget.tagData.key}"').then((_) => toast('hasCopiedToClipboard'.tr)),
-      ),
-      contentPadding: const EdgeInsets.only(left: 12, right: 12, bottom: 12, top: 12),
-      children: [
-        if (widget.tagData.tagName != null) ...[
-          _buildInfo(),
-          const Divider(height: 1).marginOnly(top: 16),
-        ],
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildVoteUpButton(),
-            _buildVoteDownButton(),
-            _buildWatchTagButton(),
-            _buildHideTagButton(),
-            if (userSetting.hasLoggedIn()) _buildGoToTagSetsButton(),
-          ],
-        ).marginOnly(top: 12),
-      ],
-    ).enableMouseDrag();
+    return moonAlertDialog(
+            context: context,
+            title: '${widget.tagData.namespace}:${widget.tagData.key}',
+            contentWidget: Column(children: [
+              if (widget.tagData.tagName != null) ...[
+                _buildInfo(),
+                Divider(height: 1, color: UIConfig.layoutDividerColor(context))
+                    .marginOnly(top: 16),
+              ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildVoteUpButton(),
+                  _buildVoteDownButton(),
+                  _buildWatchTagButton(),
+                  _buildHideTagButton(),
+                  if (userSetting.hasLoggedIn()) _buildGoToTagSetsButton(),
+                ],
+              ).marginOnly(top: 12),
+            ]),
+            titleAction: () => FlutterClipboard.copy(
+                    '${widget.tagData.namespace}:"${widget.tagData.key}"')
+                .then((_) => toast('hasCopiedToClipboard'.tr)),
+            scrollable: false)
+        .enableMouseDrag();
   }
 
   Widget _buildInfo() {
-    String content = widget.tagData.fullTagName! + widget.tagData.intro! + widget.tagData.links!;
+    String content = widget.tagData.fullTagName! +
+        widget.tagData.intro! +
+        widget.tagData.links!;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 50,
         maxHeight: 400,
-        minWidth: 200,
-        maxWidth: 200,
+        minWidth: 250,
+        maxWidth: 250,
       ),
       child: EHWheelSpeedController(
         controller: scrollController,
         child: HtmlWidget(
           content,
-          renderMode: ListViewMode(shrinkWrap: true, controller: scrollController),
+          renderMode:
+              ListViewMode(shrinkWrap: true, controller: scrollController),
           textStyle: const TextStyle(fontSize: 12),
-          onErrorBuilder: (context, element, error) => Text('$element error: $error'),
-          onLoadingBuilder: (context, element, loadingProgress) => const CircularProgressIndicator(),
+          onErrorBuilder: (context, element, error) =>
+              Text('$element error: $error'),
+          onLoadingBuilder: (context, element, loadingProgress) =>
+              progressIndicator(context),
           onTapUrl: launchUrlString,
           customWidgetBuilder: (element) {
             if (element.localName != 'img') {
@@ -115,9 +125,10 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
             }
             return Center(
               child: EHWarningImage(
-                warning: preferenceSetting.showR18GImageDirectly.isFalse && element.attributes['nsfw'] == 'R18G',
+                warning: preferenceSetting.showR18GImageDirectly.isFalse &&
+                    element.attributes['nsfw'] == 'R18G',
                 src: element.attributes['src']!,
-              ).marginSymmetric(vertical: 20),
+              ).rounded(8).marginSymmetric(vertical: 20),
             );
           },
         ).paddingSymmetric(horizontal: 12),
@@ -128,22 +139,32 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
   Widget _buildVoteUpButton() {
     return LikeButton(
       likeBuilder: (bool liked) => Icon(
-        Icons.thumb_up,
+        liked
+            ? BootstrapIcons.hand_thumbs_up_fill
+            : BootstrapIcons.hand_thumbs_up,
         size: UIConfig.tagDialogButtonSize,
-        color: liked ? UIConfig.tagDialogLikedButtonColor(context) : UIConfig.tagDialogButtonColor(context),
+        color: liked
+            ? UIConfig.tagDialogLikedButtonColor(context)
+            : UIConfig.tagDialogButtonColor(context),
       ),
-      onTap: (bool liked) => liked ? Future.value(true) : vote(isVotingUp: true),
+      onTap: (bool liked) =>
+          liked ? Future.value(true) : vote(isVotingUp: true),
     );
   }
 
   Widget _buildVoteDownButton() {
     return LikeButton(
       likeBuilder: (bool liked) => Icon(
-        Icons.thumb_down,
+        liked
+            ? BootstrapIcons.hand_thumbs_down_fill
+            : BootstrapIcons.hand_thumbs_down,
         size: UIConfig.tagDialogButtonSize,
-        color: liked ? UIConfig.tagDialogLikedButtonColor(context) : UIConfig.tagDialogButtonColor(context),
+        color: liked
+            ? UIConfig.tagDialogLikedButtonColor(context)
+            : UIConfig.tagDialogButtonColor(context),
       ),
-      onTap: (bool liked) => liked ? Future.value(true) : vote(isVotingUp: false),
+      onTap: (bool liked) =>
+          liked ? Future.value(true) : vote(isVotingUp: false),
     );
   }
 
@@ -151,13 +172,21 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
     return LikeButton(
       isLiked: myTagsSetting.containWatchedOnlineTag(widget.tagData),
       likeBuilder: (bool liked) => Icon(
-        Icons.favorite,
+        liked ? BootstrapIcons.heart_fill : BootstrapIcons.heart,
         size: UIConfig.tagDialogButtonSize,
-        color: liked ? UIConfig.tagDialogLikedButtonColor(context) : UIConfig.tagDialogButtonColor(context),
+        color: liked
+            ? UIConfig.tagDialogLikedButtonColor(context)
+            : UIConfig.tagDialogButtonColor(context),
       ),
-      onTap: (bool liked) => liked ? Future.value(true) : handleAddWatchedTag(true, useDefault: preferenceSetting.enableDefaultTagSet.isTrue),
-      onLongPress:
-          preferenceSetting.enableDefaultTagSet.isFalse ? null : (bool liked) => liked ? Future.value(true) : handleAddWatchedTag(true, useDefault: false),
+      onTap: (bool liked) => liked
+          ? Future.value(true)
+          : handleAddWatchedTag(true,
+              useDefault: preferenceSetting.enableDefaultTagSet.isTrue),
+      onLongPress: preferenceSetting.enableDefaultTagSet.isFalse
+          ? null
+          : (bool liked) => liked
+              ? Future.value(true)
+              : handleAddWatchedTag(true, useDefault: false),
     );
   }
 
@@ -165,20 +194,28 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
     return LikeButton(
       isLiked: myTagsSetting.containHiddenOnlineTag(widget.tagData),
       likeBuilder: (bool liked) => Icon(
-        Icons.visibility_off,
+        BootstrapIcons.eye_slash,
         size: UIConfig.tagDialogButtonSize,
-        color: liked ? UIConfig.tagDialogLikedButtonColor(context) : UIConfig.tagDialogButtonColor(context),
+        color: liked
+            ? UIConfig.tagDialogLikedButtonColor(context)
+            : UIConfig.tagDialogButtonColor(context),
       ),
-      onTap: (bool liked) => liked ? Future.value(true) : handleAddWatchedTag(false, useDefault: preferenceSetting.enableDefaultTagSet.isTrue),
-      onLongPress:
-          preferenceSetting.enableDefaultTagSet.isFalse ? null : (bool liked) => liked ? Future.value(true) : handleAddWatchedTag(false, useDefault: false),
+      onTap: (bool liked) => liked
+          ? Future.value(true)
+          : handleAddWatchedTag(false,
+              useDefault: preferenceSetting.enableDefaultTagSet.isTrue),
+      onLongPress: preferenceSetting.enableDefaultTagSet.isFalse
+          ? null
+          : (bool liked) => liked
+              ? Future.value(true)
+              : handleAddWatchedTag(false, useDefault: false),
     );
   }
 
   Widget _buildGoToTagSetsButton() {
     return LikeButton(
       likeBuilder: (_) => Icon(
-        Icons.settings,
+        BootstrapIcons.gear,
         size: UIConfig.tagDialogButtonSize,
         color: UIConfig.tagDialogButtonColor(context),
       ),
@@ -196,7 +233,8 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
       return false;
     }
 
-    if (voteUpState == LoadingState.loading || voteDownState == LoadingState.loading) {
+    if (voteUpState == LoadingState.loading ||
+        voteDownState == LoadingState.loading) {
       return true;
     }
 
@@ -264,22 +302,27 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
     }
   }
 
-  Future<bool> handleAddWatchedTag(bool watch, {required bool useDefault}) async {
+  Future<bool> handleAddWatchedTag(bool watch,
+      {required bool useDefault}) async {
     if (!userSetting.hasLoggedIn()) {
       showLoginToast();
       return false;
     }
 
-    if (addWatchedTagState == LoadingState.loading || addHiddenTagState == LoadingState.loading) {
+    if (addWatchedTagState == LoadingState.loading ||
+        addHiddenTagState == LoadingState.loading) {
       return true;
     }
 
-    if (useDefault && preferenceSetting.enableDefaultTagSet.isTrue && userSetting.defaultTagSetNo.value != null) {
+    if (useDefault &&
+        preferenceSetting.enableDefaultTagSet.isTrue &&
+        userSetting.defaultTagSetNo.value != null) {
       _doAddNewTagSet(userSetting.defaultTagSetNo.value!, watch);
       return true;
     }
 
-    ({int tagSetNo, bool remember})? result = await Get.dialog(const EHTagSetDialog());
+    ({int tagSetNo, bool remember})? result =
+        await Get.dialog(const EHTagSetDialog());
     if (result == null) {
       return false;
     }
@@ -293,7 +336,8 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
   }
 
   Future<void> _doAddNewTagSet(int tagSetNumber, bool watch) async {
-    log.info('Add new watched tag: ${widget.tagData.namespace}:${widget.tagData.key},tagSetNumber:$tagSetNumber, watch:$watch');
+    log.info(
+        'Add new watched tag: ${widget.tagData.namespace}:${widget.tagData.key},tagSetNumber:$tagSetNumber, watch:$watch');
 
     if (watch) {
       addWatchedTagState = LoadingState.loading;
@@ -336,7 +380,9 @@ class _EHTagDialogState extends State<EHTagDialog> with LoginRequiredMixin {
       addHiddenTagState = LoadingState.success;
     }
 
-    toast(watch ? 'addNewWatchedTagSetSuccess'.tr : 'addNewHiddenTagSetSuccess'.tr);
+    toast(watch
+        ? 'addNewWatchedTagSetSuccess'.tr
+        : 'addNewHiddenTagSetSuccess'.tr);
 
     myTagsSetting.refreshOnlineTagSets(tagSetNumber);
   }

@@ -39,10 +39,9 @@ Widget EHGalleryCollection({
             decoration: listMode == ListMode.flat || listMode == ListMode.flatWithoutTags
                 ? BoxDecoration(
                     color: UIConfig.backGroundColor(context),
-                    border: Border(bottom: BorderSide(width: 0.5, color: Theme.of(context).dividerColor)),
+                    border: Border(bottom: BorderSide(width: 0.5, color: Theme.of(context).dividerColor.withValues(alpha: 0.5))),
                   )
                 : null,
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             child: EHGalleryListCard(
               gallery: gallerys[index],
               downloaded: galleryDownloadService.containGallery(gallerys[index].gid) || archiveDownloadService.containArchive(gallerys[index].gid),
@@ -70,13 +69,13 @@ Widget EHGalleryCollection({
         gridDelegate: styleSetting.crossAxisCountInWaterFallFlow.value == null
             ? SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: listMode == ListMode.waterfallFlowBig ? UIConfig.waterFallFlowCardWidthBig : UIConfig.waterFallFlowCardWidthSmall,
-                mainAxisSpacing: listMode == ListMode.waterfallFlowBig ? 10 : 5,
-                crossAxisSpacing: 5,
+                mainAxisSpacing: listMode == ListMode.waterfallFlowBig ? 3 : 1,
+                crossAxisSpacing: 2,
               )
             : SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                 crossAxisCount: styleSetting.crossAxisCountInWaterFallFlow.value!,
-                mainAxisSpacing: listMode == ListMode.waterfallFlowBig ? 10 : 5,
-                crossAxisSpacing: 5,
+                mainAxisSpacing: listMode == ListMode.waterfallFlowBig ? 3 : 1,
+                crossAxisSpacing: 2,
               ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {

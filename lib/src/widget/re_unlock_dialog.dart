@@ -1,24 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-
-import '../config/ui_config.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import '../utils/route_util.dart';
 
 class ReUnlockDialog extends StatelessWidget {
-  const ReUnlockDialog({Key? key}) : super(key: key);
+  const ReUnlockDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text('reUnlock'.tr + ' ?'),
-      content: Text('reUnlockHint'.tr),
+    return moonAlertDialog(
+      context: context,
+      title: '${'reUnlock'.tr} ?',
+      content: 'reUnlockHint'.tr,
       actions: [
-        CupertinoDialogAction(
-          child: Text('cancel'.tr),
+        outlinedButton(
           onPressed: backRoute,
+          label: 'cancel'.tr,
         ),
-        CupertinoDialogAction(
-          child: Text('OK'.tr, style: TextStyle(color: UIConfig.alertColor(context))),
+        filledButton(
+          label: 'OK'.tr,
           onPressed: () => backRoute(result: true),
         ),
       ],

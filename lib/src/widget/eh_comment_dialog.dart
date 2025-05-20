@@ -1,9 +1,12 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../exception/eh_site_exception.dart';
 import '../network/eh_request.dart';
@@ -24,15 +27,15 @@ class EHCommentDialog extends StatefulWidget {
   final int? commentId;
 
   const EHCommentDialog({
-    Key? key,
+    super.key,
     required this.type,
     required this.title,
     this.initText = '',
     this.commentId,
-  }) : super(key: key);
+  });
 
   @override
-  EHCommentDialogState createState() => EHCommentDialogState();
+  State<EHCommentDialog> createState() => EHCommentDialogState();
 }
 
 class EHCommentDialogState extends State<EHCommentDialog> {
@@ -49,24 +52,23 @@ class EHCommentDialogState extends State<EHCommentDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title),
-      content: TextField(
+    return moonAlertDialog(
+      context:context,
+      title: widget.title,
+      contentWidget: MoonTextInput(
         autofocus: true,
         controller: controller,
         minLines: 1,
         maxLines: 10,
         onChanged: (String text) => content = text,
-        decoration: InputDecoration(
-          isDense: true,
-          alignLabelWithHint: true,
-          labelText: 'atLeast3Characters'.tr,
-          labelStyle: const TextStyle(fontSize: 14),
-        ),
-      ),
+        hintText: 'atLeast3Characters'.tr,
+      ).paddingBottom(16),
       actions: [
         if (sendCommentState == LoadingState.loading) const CupertinoActivityIndicator(radius: 10),
-        TextButton(child: const Icon(Icons.send), onPressed: _sendComment)
+        MoonButton.icon(
+          onTap: _sendComment,
+          icon: const Icon(BootstrapIcons.send),
+        )
       ],
     );
   }

@@ -1,7 +1,9 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/consts/eh_consts.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
@@ -11,6 +13,7 @@ import 'package:skana_ehentai/src/setting/site_setting.dart';
 import 'package:skana_ehentai/src/setting/user_setting.dart';
 import 'package:skana_ehentai/src/utils/cookie_util.dart';
 import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:retry/retry.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -22,7 +25,7 @@ import '../../../utils/route_util.dart';
 import '../../../utils/snack_util.dart';
 
 class SettingEHPage extends StatefulWidget {
-  const SettingEHPage({Key? key}) : super(key: key);
+  const SettingEHPage({super.key});
 
   @override
   State<SettingEHPage> createState() => _SettingEHPageState();
@@ -55,7 +58,7 @@ class _SettingEHPageState extends State<SettingEHPage> {
       return const SizedBox();
     }
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('ehSetting'.tr)),
+      appBar: appBar(title: 'ehSetting'.tr),
       body: Obx(
         () => ListView(
           padding: const EdgeInsets.only(top: 16),
@@ -74,16 +77,18 @@ class _SettingEHPageState extends State<SettingEHPage> {
   }
 
   Widget _buildSiteSegmentControl() {
-    return ListTile(
-      title: Text('site'.tr),
-      onTap: () => ehSetting.saveSite(ehSetting.site.value == 'EH' ? 'EX' : 'EH'),
-      trailing: CupertinoSlidingSegmentedControl<String>(
-        groupValue: ehSetting.site.value,
-        children: const {
-          'EH': Text('E-Hentai'),
-          'EX': Text('EXHentai'),
-        },
-        onValueChanged: (value) => ehSetting.saveSite(value ?? 'EH'),
+    return moonListTile(
+      title: 'site'.tr,
+      onTap: () =>
+          ehSetting.saveSite(ehSetting.site.value == 'EH' ? 'EX' : 'EH'),
+      trailing: MoonSegmentedControl(
+        initialIndex: ehSetting.site.value == 'EH' ? 0 : 1,
+        segments: [
+          Segment(label: Text('E-Hentai')),
+          Segment(label: Text('EXHentai'))
+        ],
+        onSegmentChanged: (value) =>
+            ehSetting.saveSite(value == 0 ? 'EH' : 'EX'),
       ),
     );
   }
@@ -93,28 +98,30 @@ class _SettingEHPageState extends State<SettingEHPage> {
       return const SizedBox();
     }
 
-    return SwitchListTile(
-      title: Text('redirect2Eh'.tr),
-      subtitle: Text('redirect2EhHint'.tr),
-      value: ehSetting.redirect2Eh.value,
-      onChanged: ehSetting.saveRedirect2Eh,
+    return moonListTile(
+      title: 'redirect2Eh'.tr,
+      subtitle: 'redirect2EhHint'.tr,
+      onTap: () => ehSetting.saveRedirect2Eh(!ehSetting.redirect2Eh.value),
+      trailing: MoonSwitch(
+          value: ehSetting.redirect2Eh.value,
+          onChanged: ehSetting.saveRedirect2Eh),
     ).fadeIn();
   }
 
   Widget _buildProfile() {
-    return ListTile(
-      title: Text('profileSetting'.tr),
-      subtitle: Text('chooseProfileHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'profileSetting'.tr,
+      subtitle: 'chooseProfileHint'.tr,
+      trailing: moonIcon(icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.profile),
     );
   }
 
   Widget _buildSiteSetting() {
-    return ListTile(
-      title: Text('siteSetting'.tr),
-      subtitle: Text('siteSettingHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'siteSetting'.tr,
+      subtitle: 'siteSettingHint'.tr,
+      trailing: moonIcon(icon: BootstrapIcons.chevron_right),
       onTap: () async {
         if (GetPlatform.isDesktop) {
           launchUrlString(EHConsts.EUconfig);
@@ -138,66 +145,57 @@ class _SettingEHPageState extends State<SettingEHPage> {
   Widget _buildImageLimit() {
     return GestureDetector(
       onLongPress: resetLimit,
-      child: ListTile(
-        title: Text('imageLimits'.tr),
-        subtitle: LoadingStateIndicator(
+      child: moonListTile(
+        title: 'imageLimits'.tr,
+        subtitleWidget: LoadingStateIndicator(
           loadingState: imageLimitLoadingState,
           loadingWidgetBuilder: () => const Text(''),
           idleWidgetBuilder: () => const Text(''),
           errorWidgetSameWithIdle: true,
-          successWidgetBuilder: () => isDonator ? Text('${'resetCost'.tr} $resetCost GP').fadeIn() : Text('isNotDonator'.tr),
+          successWidgetBuilder: () => isDonator
+              ? Text('${'resetCost'.tr} $resetCost GP').subHeader().fadeIn()
+              : Text('isNotDonator'.tr).subHeader(),
         ),
         onTap: fetchDataFromHomePage,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LoadingStateIndicator(
-              useCupertinoIndicator: true,
-              loadingState: imageLimitLoadingState,
-              indicatorRadius: 10,
-              idleWidgetBuilder: () => const SizedBox(),
-              errorWidgetSameWithIdle: true,
-              successWidgetBuilder: () => isDonator ? Text('$currentConsumption / $totalLimit').fadeIn() : const Text(''),
-            ).marginOnly(right: 4),
-            const Icon(Icons.keyboard_arrow_right),
-          ],
-        ),
+        trailing: LoadingStateIndicator(
+          loadingState: imageLimitLoadingState,
+          indicatorRadius: 10,
+          idleWidgetBuilder: () => const SizedBox(),
+          errorWidgetSameWithIdle: true,
+          successWidgetBuilder: () => isDonator
+              ? Text('$currentConsumption / $totalLimit').small().fadeIn()
+              : const Text(''),
+        ).marginOnly(right: 4),
       ),
     );
   }
 
   Widget _buildAssets() {
-    return ListTile(
-      title: Text('assets'.tr),
-      subtitle: LoadingStateIndicator(
+    return moonListTile(
+      title: 'assets'.tr,
+      subtitleWidget: LoadingStateIndicator(
         loadingState: assetsLoadingState,
         loadingWidgetBuilder: () => const Text(''),
         idleWidgetBuilder: () => const Text(''),
         errorWidgetSameWithIdle: true,
-        successWidgetBuilder: () => Text('GP: $gp    Credits: $credit').fadeIn(),
+        successWidgetBuilder: () =>
+            Text('GP: $gp    Credits: $credit').subHeader().fadeIn(),
       ),
       onTap: getAssets,
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          LoadingStateIndicator(
-            useCupertinoIndicator: true,
-            loadingState: assetsLoadingState,
-            indicatorRadius: 10,
-            idleWidgetBuilder: () => const SizedBox(),
-            errorWidgetSameWithIdle: true,
-          ).marginOnly(right: 4),
-          const Icon(Icons.keyboard_arrow_right),
-        ],
-      ),
+      trailing: LoadingStateIndicator(
+        loadingState: assetsLoadingState,
+        indicatorRadius: 10,
+        idleWidgetBuilder: () => const SizedBox(),
+        errorWidgetSameWithIdle: true,
+      ).marginOnly(right: 4),
     );
   }
 
   Widget _buildMyTags() {
-    return ListTile(
-      title: Text('myTags'.tr),
-      subtitle: Text('myTagsHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'myTags'.tr,
+      subtitle: 'myTagsHint'.tr,
+      trailing: moonIcon(icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.tagSets),
     );
   }
@@ -216,11 +214,17 @@ class _SettingEHPageState extends State<SettingEHPage> {
       imageLimitLoadingState = LoadingState.loading;
     });
 
-    ({bool isDonator, int? currentConsumption, int? totalLimit, int? resetCost}) result;
+    ({
+      bool isDonator,
+      int? currentConsumption,
+      int? totalLimit,
+      int? resetCost
+    }) result;
     try {
       result = await retry(
         () async {
-          return ehRequest.requestHomePage(parser: EHSpiderParser.homePage2ImageLimit);
+          return ehRequest.requestHomePage(
+              parser: EHSpiderParser.homePage2ImageLimit);
         },
         retryIf: (e) => e is DioException,
         maxAttempts: 3,
@@ -272,7 +276,8 @@ class _SettingEHPageState extends State<SettingEHPage> {
 
     Map<String, String> assets;
     try {
-      assets = await ehRequest.requestExchangePage(parser: EHSpiderParser.exchangePage2Assets);
+      assets = await ehRequest.requestExchangePage(
+          parser: EHSpiderParser.exchangePage2Assets);
     } on DioException catch (e) {
       log.error('Get eh assets failed', e.errorMsg);
       snack('Get eh failed'.tr, e.errorMsg ?? '', isShort: false);

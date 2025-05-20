@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/enum/config_type_enum.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../utils/route_util.dart';
 
@@ -19,35 +21,31 @@ class _EHConfigTypeSelectDialogState extends State<EHConfigTypeSelectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title),
-      contentPadding: const EdgeInsets.only(top: 24, left: 24, right: 24),
-      content: Column(
+    return moonAlertDialog(
+      context: context,
+      title: widget.title,
+      contentWidget: Column(
         mainAxisSize: MainAxisSize.min,
         children: CloudConfigTypeEnum.values
-            .map((e) => CheckboxListTile(
-                  title: Text(e.name.tr),
-                  value: selected.contains(e),
-                  onChanged: (bool? value) {
-                    setStateSafely(() {
-                      if (value ?? false) {
+            .map((e) => moonListTile(
+                  title: e.name.tr,
+                  trailing: MoonSwitch(
+                    value: selected.contains(e),
+                    onChanged: (bool? value) {
+                      setStateSafely(() {
+                        if (value ?? false) {
                         selected.add(e);
                       } else {
                         selected.remove(e);
                       }
                     });
                   },
-                ))
+                )))
             .toList(),
-      ),
+      ).paddingBottom(16),
       actions: [
-        TextButton(onPressed: backRoute, child: Text('cancel'.tr)),
-        TextButton(
-          onPressed: () {
-            backRoute(result: selected);
-          },
-          child: Text('OK'.tr),
-        ),
+        outlinedButton(onPressed: backRoute, label: 'cancel'.tr),
+        filledButton(onPressed: () => backRoute(result: selected), label: 'OK'.tr),
       ],
     );
   }

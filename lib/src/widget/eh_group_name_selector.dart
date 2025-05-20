@@ -1,9 +1,12 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:simple_animations/animation_controller_extension/animation_controller_extension.dart';
 import 'package:simple_animations/animation_mixin/animation_mixin.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../config/ui_config.dart';
 
@@ -14,7 +17,8 @@ class EHGroupNameSelector extends StatefulWidget {
   final List<String> candidates;
   final ValueChanged<String>? listener;
 
-  const EHGroupNameSelector({Key? key, this.currentGroup, required this.candidates, this.listener}) : super(key: key);
+  const EHGroupNameSelector(
+      {super.key, this.currentGroup, required this.candidates, this.listener});
 
   @override
   State<EHGroupNameSelector> createState() => _EHGroupNameSelectorState();
@@ -77,7 +81,7 @@ class _EHGroupNameSelectorState extends State<EHGroupNameSelector> {
       child: Text(
         'existingGroup'.tr,
         style: TextStyle(fontSize: UIConfig.groupSelectorChipsHintTextSize),
-      ),
+      ).small(),
     );
   }
 
@@ -91,9 +95,10 @@ class _EHGroupNameSelectorState extends State<EHGroupNameSelector> {
           init: logic,
           builder: (_) => ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.symmetric(horizontal: 4),
             itemCount: widget.candidates.length,
-            itemBuilder: (context, index) => _chipBuilder(context, index).marginOnly(right: 4),
+            itemBuilder: (context, index) =>
+                _chipBuilder(context, index).marginOnly(right: 4),
           ).enableMouseDrag(withScrollBar: false),
         ),
       ),
@@ -115,14 +120,11 @@ class _EHGroupNameSelectorState extends State<EHGroupNameSelector> {
 
   Widget _buildTextField() {
     return Center(
-      child: TextField(
-        decoration: InputDecoration(
-          isDense: true,
-          alignLabelWithHint: true,
-          labelText: 'groupName'.tr,
-          labelStyle: const TextStyle(fontSize: UIConfig.groupSelectorTextFieldLabelTextSize),
-        ),
-        style: const TextStyle(fontSize: UIConfig.groupSelectorTextFieldTextSize),
+      child: MoonTextInput(
+        hintText: 'groupName'.tr,
+        hasFloatingLabel: true,
+        style:
+            const TextStyle(fontSize: UIConfig.groupSelectorTextFieldTextSize),
         controller: textEditingController,
         onChanged: (value) {
           bool hasSelectedCandidateBefore = hasSelectedCandidate;
@@ -132,12 +134,13 @@ class _EHGroupNameSelectorState extends State<EHGroupNameSelector> {
             logic.updateSafely([chipsId]);
           }
         },
-      ),
+      ).paddingVertical(4),
     );
   }
 
   void _updateSelectedCandidate() {
-    hasSelectedCandidate = widget.candidates.contains(textEditingController.text);
+    hasSelectedCandidate =
+        widget.candidates.contains(textEditingController.text);
   }
 }
 
@@ -146,7 +149,8 @@ class GroupChip extends StatefulWidget {
   final bool selected;
   final VoidCallback? onTap;
 
-  const GroupChip({Key? key, required this.text, required this.selected, this.onTap}) : super(key: key);
+  const GroupChip(
+      {super.key, required this.text, required this.selected, this.onTap});
 
   @override
   State<GroupChip> createState() => _GroupChipState();
@@ -155,7 +159,8 @@ class GroupChip extends StatefulWidget {
 class _GroupChipState extends State<GroupChip> with AnimationMixin {
   bool _selected = false;
 
-  late Animation<double> animation = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
+  late Animation<double> animation =
+      CurvedAnimation(parent: controller, curve: Curves.easeInOut);
 
   @override
   void initState() {
@@ -186,11 +191,13 @@ class _GroupChipState extends State<GroupChip> with AnimationMixin {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
           height: 26,
           decoration: BoxDecoration(
-            color: _selected ? UIConfig.groupSelectorSelectedChipColor(context) : UIConfig.groupSelectorChipColor(context),
-            borderRadius: BorderRadius.circular(10),
+            color: _selected
+                ? UIConfig.groupSelectorSelectedChipColor(context)
+                : UIConfig.groupSelectorChipColor(context),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -198,12 +205,21 @@ class _GroupChipState extends State<GroupChip> with AnimationMixin {
               Align(
                 heightFactor: animation.value,
                 widthFactor: animation.value,
-                child: Transform.scale(scale: animation.value, child: Icon(Icons.check, size: 12, color: UIConfig.groupSelectorTextColor(context))),
+                child: Transform.scale(
+                    scale: animation.value,
+                    child: Icon(BootstrapIcons.check2,
+                        size: 12,
+                        color: UIConfig.groupSelectorTextColor(context))),
               ).marginOnly(right: animation.value),
               Text(
                 widget.text,
-                style: TextStyle(fontSize: UIConfig.groupSelectorChipTextSize, height: 1, color: UIConfig.groupSelectorTextColor(context)),
-              ),
+                style: TextStyle(
+                    fontSize: UIConfig.groupSelectorChipTextSize,
+                    height: 1,
+                    color: _selected
+                        ? UIConfig.groupSelectorTextColor(context)
+                        : Colors.black),
+              ).small(),
             ],
           ),
         ),

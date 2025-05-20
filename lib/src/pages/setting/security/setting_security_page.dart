@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/setting/security_setting.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_app_password_setting_dialog.dart';
 
 class SettingSecurityPage extends StatelessWidget {
-  const SettingSecurityPage({Key? key}) : super(key: key);
+  const SettingSecurityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('securitySetting'.tr)),
+      appBar: appBar(title: 'securitySetting'.tr),
       body: Obx(
         () => ListView(
           padding: const EdgeInsets.only(top: 16),
@@ -28,20 +30,23 @@ class SettingSecurityPage extends StatelessWidget {
   }
 
   Widget _buildEnableBlurBackgroundApp() {
-    return SwitchListTile(
-      title: Text('enableBlurBackgroundApp'.tr),
-      value: securitySetting.enableBlur.value,
-      onChanged: securitySetting.saveEnableBlur,
+    return moonListTile(
+      title: 'enableBlurBackgroundApp'.tr,
+      trailing: MoonSwitch(
+        value: securitySetting.enableBlur.value,
+        onChanged: securitySetting.saveEnableBlur,
+      ),
     );
   }
 
   Widget _buildEnablePasswordAuth() {
-    return SwitchListTile(
-      title: Text('enablePasswordAuth'.tr),
-      value: securitySetting.enablePasswordAuth.value,
-      onChanged: (value) async {
-        if (value) {
-          String? password = await Get.dialog(const EHAppPasswordSettingDialog());
+    return moonListTile(
+      title: 'enablePasswordAuth'.tr,
+      trailing: MoonSwitch(
+        value: securitySetting.enablePasswordAuth.value,
+        onChanged: (value) async {
+          if (value) {
+            String? password = await Get.dialog(const EHAppPasswordSettingDialog());
 
           if (password != null) {
             securitySetting.savePassword(password);
@@ -53,31 +58,38 @@ class SettingSecurityPage extends StatelessWidget {
 
         securitySetting.saveEnablePasswordAuth(value);
       },
+      ),
     );
   }
 
   Widget _buildEnableBiometricAuth() {
-    return SwitchListTile(
-      title: Text('enableBiometricAuth'.tr),
-      value: securitySetting.enableBiometricAuth.value,
-      onChanged: securitySetting.saveEnableBiometricAuth,
+    return moonListTile(
+      title: 'enableBiometricAuth'.tr,
+      trailing: MoonSwitch(
+        value: securitySetting.enableBiometricAuth.value,
+        onChanged: securitySetting.saveEnableBiometricAuth,
+      ),
     );
   }
 
   Widget _buildEnableAuthOnResume() {
-    return SwitchListTile(
-      title: Text('enableAuthOnResume'.tr),
-      subtitle: Text('enableAuthOnResumeHints'.tr),
-      value: securitySetting.enableAuthOnResume.value,
-      onChanged: securitySetting.saveEnableAuthOnResume,
+    return moonListTile(
+      title: 'enableAuthOnResume'.tr,
+      subtitle: 'enableAuthOnResumeHints'.tr,
+      trailing: MoonSwitch(
+        value: securitySetting.enableAuthOnResume.value,
+        onChanged: securitySetting.saveEnableAuthOnResume,
+      ),
     );
   }
 
   Widget _buildHideImagesInAlbum() {
-    return SwitchListTile(
-      title: Text('hideImagesInAlbum'.tr),
-      value: securitySetting.hideImagesInAlbum.value,
-      onChanged: securitySetting.saveHideImagesInAlbum,
+    return moonListTile(
+      title: 'hideImagesInAlbum'.tr,
+      trailing: MoonSwitch(
+        value: securitySetting.hideImagesInAlbum.value,
+        onChanged: securitySetting.saveHideImagesInAlbum,
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/mixin/scroll_to_top_logic_mixin.dart';
 import 'package:skana_ehentai/src/mixin/scroll_to_top_state_mixin.dart';
 
@@ -17,10 +18,18 @@ mixin Scroll2TopPageMixin on Widget {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           child: scroll2TopLogic.shouldDisplayFAB
-              ? FloatingActionButton(
-                  child: const Icon(Icons.arrow_upward),
-                  heroTag: null,
-                  onPressed: scroll2TopLogic.scroll2Top,
+              ? MoonButton.icon(
+                  buttonSize: MoonButtonSize.lg,
+                  showBorder: true,
+                  borderColor: Get
+                      .context?.moonTheme?.buttonTheme.colors.borderColor
+                      .withValues(alpha: 0.5),
+                  backgroundColor: Get.context?.moonTheme?.tokens.colors.zeno,
+                  onTap: scroll2TopLogic.scroll2Top,
+                  icon: Icon(
+                    Icons.arrow_upward,
+                    color: Colors.white,
+                  ),
                 )
               : null,
         );

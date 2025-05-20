@@ -1,9 +1,13 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/setting/network_setting.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../routes/routes.dart';
 import '../../../utils/route_util.dart';
@@ -15,12 +19,12 @@ class SettingNetworkPage extends StatelessWidget {
   final TextEditingController connectTimeoutController = TextEditingController(text: networkSetting.connectTimeout.value.toString());
   final TextEditingController receiveTimeoutController = TextEditingController(text: networkSetting.receiveTimeout.value.toString());
 
-  SettingNetworkPage({Key? key}) : super(key: key);
+  SettingNetworkPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('networkSetting'.tr)),
+      appBar: appBar(title: 'networkSetting'.tr),
       body: Obx(
         () => ListView(
           padding: const EdgeInsets.only(top: 16),
@@ -38,86 +42,119 @@ class SettingNetworkPage extends StatelessWidget {
   }
 
   Widget _buildEnableDomainFronting() {
-    return SwitchListTile(
-      title: Text('enableDomainFronting'.tr),
-      subtitle: Text('bypassSNIBlocking'.tr),
-      value: networkSetting.enableDomainFronting.value,
-      onChanged: networkSetting.saveEnableDomainFronting,
+    return moonListTile(
+      title: 'enableDomainFronting'.tr,
+      subtitle: 'bypassSNIBlocking'.tr,
+      trailing: Switch(
+        value: networkSetting.enableDomainFronting.value,
+        onChanged: networkSetting.saveEnableDomainFronting,
+      ),
     );
   }
 
   Widget _buildProxyAddress() {
-    return ListTile(
-      title: Text('proxyAddress'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right).marginOnly(right: 4),
+    return moonListTile(
+      title: 'proxyAddress'.tr,
+      trailing: MoonEhButton.md(onTap: () => toRoute(Routes.proxy), icon: Icons.keyboard_arrow_right),
       onTap: () => toRoute(Routes.proxy),
     );
   }
 
   Widget _buildPageCacheMaxAge() {
-    return ListTile(
-      title: Text('pageCacheMaxAge'.tr),
-      subtitle: Text('pageCacheMaxAgeHint'.tr),
-      trailing: DropdownButton<Duration>(
-        value: networkSetting.pageCacheMaxAge.value,
-        elevation: 4,
-        alignment: AlignmentDirectional.centerEnd,
-        onChanged: (Duration? newValue) => networkSetting.savePageCacheMaxAge(newValue!),
-        items: [
-          DropdownMenuItem(child: Text('1m'.tr), value: const Duration(minutes: 1)),
-          DropdownMenuItem(child: Text('10m'.tr), value: const Duration(minutes: 10)),
-          DropdownMenuItem(child: Text('1h'.tr), value: const Duration(hours: 1)),
-          DropdownMenuItem(child: Text('1d'.tr), value: const Duration(days: 1)),
-          DropdownMenuItem(child: Text('3d'.tr), value: const Duration(days: 3)),
+    return moonListTile(
+      title: 'pageCacheMaxAge'.tr,
+      subtitle: 'pageCacheMaxAgeHint'.tr,
+      trailing: popupMenuButton<Duration>(
+        itemBuilder: (context) => [
+          PopupMenuItem(value: Duration(minutes: 1), child: Text('1m'.tr).small()),
+          PopupMenuItem(value: Duration(minutes: 10), child: Text('10m'.tr).small()),
+          PopupMenuItem(value: Duration(hours: 1), child: Text('1h'.tr).small()),
+          PopupMenuItem(value: Duration(days: 1), child: Text('1d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 3), child: Text('3d'.tr).small()),
         ],
+        onSelected: (Duration value) => networkSetting.savePageCacheMaxAge(value),
+        initialValue: networkSetting.pageCacheMaxAge.value,
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: networkSetting.pageCacheMaxAge.value == Duration(minutes: 1)
+                ? '1m'.tr
+                : networkSetting.pageCacheMaxAge.value == Duration(minutes: 10)
+                    ? '10m'.tr
+                    : networkSetting.pageCacheMaxAge.value == Duration(hours: 1)
+                        ? '1h'.tr
+                        : networkSetting.pageCacheMaxAge.value == Duration(days: 1)
+                            ? '1d'.tr
+                            : '3d'.tr,
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildCacheImageExpireDuration() {
-    return ListTile(
-      title: Text('cacheImageExpireDuration'.tr),
-      subtitle: Text('cacheImageExpireDurationHint'.tr),
-      trailing: DropdownButton<Duration>(
-        value: networkSetting.cacheImageExpireDuration.value,
-        elevation: 4,
-        alignment: AlignmentDirectional.centerEnd,
-        onChanged: (Duration? newValue) => networkSetting.saveCacheImageExpireDuration(newValue!),
-        items: [
-          DropdownMenuItem(child: Text('1d'.tr), value: const Duration(days: 1)),
-          DropdownMenuItem(child: Text('2d'.tr), value: const Duration(days: 2)),
-          DropdownMenuItem(child: Text('3d'.tr), value: const Duration(days: 3)),
-          DropdownMenuItem(child: Text('5d'.tr), value: const Duration(days: 5)),
-          DropdownMenuItem(child: Text('7d'.tr), value: const Duration(days: 7)),
-          DropdownMenuItem(child: Text('14d'.tr), value: const Duration(days: 14)),
-          DropdownMenuItem(child: Text('30d'.tr), value: const Duration(days: 30)),
+    return moonListTile(
+      title: 'cacheImageExpireDuration'.tr,
+      subtitle: 'cacheImageExpireDurationHint'.tr,
+      trailing: popupMenuButton<Duration>(
+        itemBuilder: (context) => [
+          PopupMenuItem(value: Duration(days: 1), child: Text('1d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 2), child: Text('2d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 3), child: Text('3d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 5), child: Text('5d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 7), child: Text('7d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 14), child: Text('14d'.tr).small()),
+          PopupMenuItem(value: Duration(days: 30), child: Text('30d'.tr).small()),
         ],
+        onSelected: (Duration value) => networkSetting.saveCacheImageExpireDuration(value),
+        initialValue: networkSetting.cacheImageExpireDuration.value,
+        child: IgnorePointer(
+          child: filledButton(
+            onPressed: () {},
+            label: networkSetting.cacheImageExpireDuration.value == Duration(days: 1)
+                ? '1d'.tr
+                : networkSetting.cacheImageExpireDuration.value == Duration(days: 2)
+                    ? '2d'.tr
+                  : networkSetting.cacheImageExpireDuration.value == Duration(days: 3)
+                      ? '3d'.tr
+                      : networkSetting.cacheImageExpireDuration.value == Duration(days: 5)
+                          ? '5d'.tr
+                          : networkSetting.cacheImageExpireDuration.value == Duration(days: 7)
+                              ? '7d'.tr
+                              : networkSetting.cacheImageExpireDuration.value == Duration(days: 14)
+                                  ? '14d'.tr
+                                  : '30d'.tr,
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildConnectTimeout(BuildContext context) {
-    return ListTile(
-      title: Text('connectTimeout'.tr),
+    return moonListTile(
+      title: 'connectTimeout'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: 50,
-            child: TextField(
+            child: MoonTextInput(
               controller: connectTimeoutController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(isDense: true, labelStyle: TextStyle(fontSize: 12)),
               textAlign: TextAlign.center,
+              textInputSize: MoonTextInputSize.sm,
+              
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 IntRangeTextInputFormatter(minValue: 0),
               ],
             ),
           ),
-          Text('ms', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
-          IconButton(
-            onPressed: () {
+          const SizedBox(width: 8),
+          Text('ms', style: UIConfig.settingPageListTileTrailingTextStyle(context)).small(),
+          MoonEhButton.md(
+            color: UIConfig.resumePauseButtonColor(context),
+            onTap: () {
               int? value = int.tryParse(connectTimeoutController.value.text);
               if (value == null) {
                 return;
@@ -125,7 +162,7 @@ class SettingNetworkPage extends StatelessWidget {
               networkSetting.saveConnectTimeout(value);
               toast('saveSuccess'.tr);
             },
-            icon: Icon(Icons.check, color: UIConfig.resumePauseButtonColor(context)),
+            icon: BootstrapIcons.check2,
           ),
         ],
       ),
@@ -133,26 +170,28 @@ class SettingNetworkPage extends StatelessWidget {
   }
 
   Widget _buildReceiveTimeout(BuildContext context) {
-    return ListTile(
-      title: Text('receiveTimeout'.tr),
+    return moonListTile(
+      title: 'receiveTimeout'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: 50,
-            child: TextField(
+            child: MoonTextInput(
               controller: receiveTimeoutController,
-              decoration: const InputDecoration(isDense: true, labelStyle: TextStyle(fontSize: 12)),
               textAlign: TextAlign.center,
+              textInputSize: MoonTextInputSize.sm,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 IntRangeTextInputFormatter(minValue: 0),
               ],
             ),
           ),
-          Text('ms', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
-          IconButton(
-            onPressed: () {
+          const SizedBox(width: 8),
+          Text('ms', style: UIConfig.settingPageListTileTrailingTextStyle(context)).small(),
+          MoonEhButton.md(
+            color: UIConfig.resumePauseButtonColor(context),
+            onTap: () {
               int? value = int.tryParse(receiveTimeoutController.value.text);
               if (value == null) {
                 return;
@@ -160,7 +199,7 @@ class SettingNetworkPage extends StatelessWidget {
               networkSetting.saveReceiveTimeout(value);
               toast('saveSuccess'.tr);
             },
-            icon: Icon(Icons.check, color: UIConfig.resumePauseButtonColor(context)),
+            icon: BootstrapIcons.check2,
           ),
         ],
       ),

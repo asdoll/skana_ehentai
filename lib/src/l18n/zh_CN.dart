@@ -220,6 +220,7 @@ class zh_CN {
       'toggleMenu': '展示/隐藏菜单',
       'share': '分享',
       'save': '保存至图库',
+      'selectDate': '选择日期',
 
       /// setting page
       'account': '账户',

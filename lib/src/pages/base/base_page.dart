@@ -1,11 +1,13 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/pages/layout/mobile_v2/notification/tap_menu_button_notification.dart';
 import 'package:skana_ehentai/src/setting/style_setting.dart';
 import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../config/ui_config.dart';
 import '../../mixin/scroll_to_top_logic_mixin.dart';
@@ -26,14 +28,14 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
   final String? name;
 
   const BasePage({
-    Key? key,
+    super.key,
     this.showMenuButton = false,
     this.showJumpButton = false,
     this.showFilterButton = false,
     this.showScroll2TopButton = false,
     this.showTitle = false,
     this.name,
-  }) : super(key: key);
+  });
 
   L get logic;
 
@@ -60,26 +62,24 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
   }
 
   AppBar? buildAppBar(BuildContext context) {
-    return AppBar(
+    return appBar(
       leading: showMenuButton ? buildAppBarMenuButton(context) : null,
-      title: showTitle ? Text(name!) : null,
-      centerTitle: true,
+      title: showTitle ? name! : "",
       actions: buildAppBarActions(),
     );
   }
 
   Widget buildAppBarMenuButton(BuildContext context) {
-    return IconButton(
-      icon: const Icon(FontAwesomeIcons.bars, size: 20),
-      onPressed: () => TapMenuButtonNotification().dispatch(context),
+    return NormalDrawerButton(
+      onTap: () => TapMenuButtonNotification().dispatch(context),
     );
   }
 
   List<Widget> buildAppBarActions() {
     return [
       if (showJumpButton && state.gallerys.isNotEmpty)
-        IconButton(icon: const Icon(FontAwesomeIcons.paperPlane, size: 20), onPressed: logic.handleTapJumpButton),
-      if (showFilterButton) IconButton(icon: const Icon(Icons.filter_alt_outlined, size: 28), onPressed: logic.handleTapFilterButton),
+        MoonEhButton.md(onTap: logic.handleTapJumpButton, icon: BootstrapIcons.send),
+      if (showFilterButton) MoonEhButton.md(onTap: logic.handleTapFilterButton, icon: BootstrapIcons.funnel),
     ];
   }
 
@@ -104,6 +104,7 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
                   physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   scrollBehavior: UIConfig.scrollBehaviourWithScrollBarWithMouse,
                   slivers: <Widget>[
+                    SliverToBoxAdapter(child: SizedBox(height: 4)),
                     buildPullDownIndicator(),
                     buildGalleryCollection(context),
                     buildLoadMoreIndicator(),
@@ -139,6 +140,7 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
     return CupertinoSliverRefreshControl(
       refreshTriggerPullDistance: UIConfig.refreshTriggerPullDistance,
       onRefresh: logic.handlePullDown,
+      builder: buildRefreshIndicator,
     );
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/utils/route_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import 'eh_group_name_selector.dart';
 
@@ -35,7 +37,8 @@ class _EHDownloadDialogState extends State<EHDownloadDialog> {
   void initState() {
     super.initState();
 
-    group = widget.currentGroup ?? widget.candidates.firstOrNull ?? 'default'.tr;
+    group =
+        widget.currentGroup ?? widget.candidates.firstOrNull ?? 'default'.tr;
     candidates = List.of(widget.candidates);
     candidates.remove(group);
     candidates.insert(0, group);
@@ -44,28 +47,29 @@ class _EHDownloadDialogState extends State<EHDownloadDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title),
-      contentPadding: const EdgeInsets.only(left: 24, right: 24, bottom: 12, top: 24),
-      actionsPadding: const EdgeInsets.only(left: 24, right: 20, bottom: 12),
-      content: _buildBody(),
-      actions: [
-        TextButton(onPressed: backRoute, child: Text('cancel'.tr)),
-        TextButton(
-          onPressed: () {
-            if (group.isEmpty) {
-              toast('invalid'.tr);
-              backRoute();
-              return;
-            }
-            backRoute(
-              result: (group: group, downloadOriginalImage: downloadOriginalImage),
-            );
-          },
-          child: Text('OK'.tr),
-        ),
-      ],
-    );
+    return moonAlertDialog(
+        context: context,
+        title: widget.title,
+        contentWidget: _buildBody(),
+        actions: [
+          outlinedButton(onPressed: backRoute, label: 'cancel'.tr),
+          filledButton(
+            onPressed: () {
+              if (group.isEmpty) {
+                toast('invalid'.tr);
+                backRoute();
+                return;
+              }
+              backRoute(
+                result: (
+                  group: group,
+                  downloadOriginalImage: downloadOriginalImage
+                ),
+              );
+            },
+            label: 'OK'.tr,
+          ),
+        ]);
   }
 
   Widget _buildBody() {
@@ -79,7 +83,8 @@ class _EHDownloadDialogState extends State<EHDownloadDialog> {
             candidates: candidates,
             listener: (g) => group = g,
           ),
-          if (widget.showDownloadOriginalImageCheckBox) _buildDownloadOriginalImageCheckBox().marginOnly(top: 16),
+          if (widget.showDownloadOriginalImageCheckBox)
+            _buildDownloadOriginalImageCheckBox().marginOnly(top: 8),
         ],
       ),
     );
@@ -94,11 +99,14 @@ class _EHDownloadDialogState extends State<EHDownloadDialog> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('downloadOriginalImage'.tr + ' ?', style: const TextStyle(fontSize: UIConfig.groupDialogCheckBoxTextSize)),
-          Checkbox(
+          Text('${'downloadOriginalImage'.tr} ?',
+                  style: const TextStyle(
+                      fontSize: UIConfig.groupDialogCheckBoxTextSize))
+              .small(),
+          MoonCheckbox(
             value: downloadOriginalImage,
-            activeColor: UIConfig.groupDialogCheckBoxColor(context),
-            onChanged: (bool? value) => setState(() => downloadOriginalImage = (value ?? true)),
+            onChanged: (bool? value) =>
+                setState(() => downloadOriginalImage = (value ?? true)),
           ),
         ],
       ),

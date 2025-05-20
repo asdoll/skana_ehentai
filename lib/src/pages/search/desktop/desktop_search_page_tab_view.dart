@@ -10,7 +10,7 @@ import '../mixin/search_page_state_mixin.dart';
 
 class DesktopSearchPageTabView extends BasePage<DesktopSearchPageTabLogic, DesktopSearchPageTabState>
     with SearchPageMixin<DesktopSearchPageTabLogic, DesktopSearchPageTabState> {
-  const DesktopSearchPageTabView({Key? key, required this.logic}) : super(key: key, showJumpButton: true, showScroll2TopButton: true);
+  const DesktopSearchPageTabView({super.key, required this.logic}) : super(showJumpButton: true, showScroll2TopButton: true);
 
   @override
   final DesktopSearchPageTabLogic logic;

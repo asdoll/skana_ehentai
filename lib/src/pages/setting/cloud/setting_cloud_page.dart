@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart' show BootstrapIcons;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
@@ -55,8 +56,8 @@ class _SettingCloudPageState extends State<SettingCloudPage> {
         children: [
           LoadingStateIndicator(
             loadingState: _loadingState,
-            successWidgetBuilder: () => const Icon(Icons.check, color: Colors.green),
-            errorWidgetBuilder: () => const Icon(Icons.close, color: Colors.red),
+            successWidgetBuilder: () => const Icon(BootstrapIcons.check2, color: Colors.green),
+            errorWidgetBuilder: () => const Icon(BootstrapIcons.x, color: Colors.red),
           ),
         ],
       ),

@@ -1,11 +1,15 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart'
+    show MoonButtonSize, MoonFilledButton;
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/model/gallery_archive.dart';
 import 'package:skana_ehentai/src/setting/archive_bot_setting.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_asset.dart';
 import 'package:skana_ehentai/src/widget/eh_group_name_selector.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
@@ -24,15 +28,15 @@ class EHArchiveDialog extends StatefulWidget {
   final String archivePageUrl;
 
   const EHArchiveDialog({
-    Key? key,
+    super.key,
     required this.title,
     this.currentGroup,
     required this.candidates,
     required this.archivePageUrl,
-  }) : super(key: key);
+  });
 
   @override
-  _EHArchiveDialogState createState() => _EHArchiveDialogState();
+  State<EHArchiveDialog> createState() => _EHArchiveDialogState();
 }
 
 class _EHArchiveDialogState extends State<EHArchiveDialog> {
@@ -45,7 +49,8 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
   void initState() {
     super.initState();
 
-    group = widget.currentGroup ?? widget.candidates.firstOrNull ?? 'default'.tr;
+    group =
+        widget.currentGroup ?? widget.candidates.firstOrNull ?? 'default'.tr;
     candidates = List.of(widget.candidates);
     candidates.remove(group);
     candidates.insert(0, group);
@@ -54,9 +59,10 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('chooseArchive'.tr),
-      content: SizedBox(
+    return moonAlertDialog(
+      context:context,
+      title:'chooseArchive'.tr,
+      contentWidget: SizedBox(
         height: UIConfig.archiveDialogBodyHeight,
         child: LoadingStateIndicator(
           loadingState: loadingState,
@@ -71,9 +77,14 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        EHGroupNameSelector(candidates: candidates, currentGroup: group, listener: (g) => group = g),
-        if (archive.creditCount != null && archive.gpCount != null) EHAsset(gpCount: archive.gpCount!, creditCount: archive.creditCount!).marginOnly(top: 12),
-        Expanded(child: _buildButtons().marginOnly(top: 12)),
+        EHGroupNameSelector(
+            candidates: candidates,
+            currentGroup: group,
+            listener: (g) => group = g),
+        if (archive.creditCount != null && archive.gpCount != null)
+          EHAsset(gpCount: archive.gpCount!, creditCount: archive.creditCount!)
+              .marginOnly(top: 4),
+        Expanded(child: _buildButtons().marginOnly(top: 4)),
       ],
     );
   }
@@ -88,7 +99,12 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
           text: 'resample'.tr,
           callback: _canAffordDownload(isOriginal: false)
               ? () => backRoute(
-                    result: (useBot: false, isOriginal: false, size: _computeSizeInBytes(isOriginal: false), group: group),
+                    result: (
+                      useBot: false,
+                      isOriginal: false,
+                      size: _computeSizeInBytes(isOriginal: false),
+                      group: group
+                    ),
                   )
               : null,
         ),
@@ -98,7 +114,12 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
           text: 'original'.tr,
           callback: _canAffordDownload(isOriginal: true)
               ? () => backRoute(
-                    result: (useBot: false, isOriginal: true, size: _computeSizeInBytes(isOriginal: true), group: group),
+                    result: (
+                      useBot: false,
+                      isOriginal: true,
+                      size: _computeSizeInBytes(isOriginal: true),
+                      group: group
+                    ),
                   )
               : null,
         ),
@@ -106,9 +127,14 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
           _ArchiveButtonSet(
             cost: 'Free!',
             size: archive.originalSize,
-            icon: const Icon(Icons.smart_toy_outlined),
+            icon: const Icon(BootstrapIcons.robot),
             callback: () => backRoute(
-              result: (useBot: true, isOriginal: true, size: _computeSizeInBytes(isOriginal: true), group: group),
+              result: (
+                useBot: true,
+                isOriginal: true,
+                size: _computeSizeInBytes(isOriginal: true),
+                group: group
+              ),
             ),
           ),
       ],
@@ -119,7 +145,9 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
     setState(() => loadingState = LoadingState.loading);
 
     try {
-      archive = await ehRequest.get(url: widget.archivePageUrl, parser: EHSpiderParser.archivePage2Archive);
+      archive = await ehRequest.get(
+          url: widget.archivePageUrl,
+          parser: EHSpiderParser.archivePage2Archive);
     } on DioException catch (e) {
       log.error('getGalleryArchiveFailed'.tr, e.errorMsg);
       snack('getGalleryArchiveFailed'.tr, e.errorMsg ?? '');
@@ -131,13 +159,15 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
       setStateSafely(() => loadingState = LoadingState.error);
       return;
     } on Exception catch (_) {
-      snack('getGalleryArchiveFailed'.tr, 'parseGalleryArchiveFailed'.tr, isShort: true);
+      snack('getGalleryArchiveFailed'.tr, 'parseGalleryArchiveFailed'.tr,
+          isShort: true);
       if (mounted) {
         setState(() => loadingState = LoadingState.error);
       }
       return;
     } on Error catch (_) {
-      snack('getGalleryArchiveFailed'.tr, 'parseGalleryArchiveFailed'.tr, isShort: true);
+      snack('getGalleryArchiveFailed'.tr, 'parseGalleryArchiveFailed'.tr,
+          isShort: true);
       if (mounted) {
         setState(() => loadingState = LoadingState.error);
       }
@@ -160,9 +190,11 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
         return false;
       }
       if (archive.originalCost.contains('GP')) {
-        return (archive.gpCount ?? double.maxFinite) >= int.parse(archive.originalCost.split(' ')[0]);
+        return (archive.gpCount ?? double.maxFinite) >=
+            int.parse(archive.originalCost.split(' ')[0]);
       }
-      return (archive.creditCount ?? double.maxFinite) >= int.parse(archive.originalCost.split(' ')[0]);
+      return (archive.creditCount ?? double.maxFinite) >=
+          int.parse(archive.originalCost.split(' ')[0]);
     } else {
       if (archive.resampleCost == null || archive.resampleCost == 'N/A') {
         return false;
@@ -176,14 +208,17 @@ class _EHArchiveDialogState extends State<EHArchiveDialog> {
         return true;
       }
       if (archive.resampleCost!.contains('GP')) {
-        return (archive.gpCount ?? double.maxFinite) >= int.parse(archive.resampleCost!.split(' ')[0]);
+        return (archive.gpCount ?? double.maxFinite) >=
+            int.parse(archive.resampleCost!.split(' ')[0]);
       }
-      return (archive.creditCount ?? double.maxFinite) >= int.parse(archive.resampleCost!.split(' ')[0]);
+      return (archive.creditCount ?? double.maxFinite) >=
+          int.parse(archive.resampleCost!.split(' ')[0]);
     }
   }
 
   int _computeSizeInBytes({required bool isOriginal}) {
-    String sizeString = isOriginal ? archive.originalSize : archive.resampleSize!;
+    String sizeString =
+        isOriginal ? archive.originalSize : archive.resampleSize!;
 
     List<String> parts = sizeString.split(' ');
     double number = double.parse(parts[0]);
@@ -207,13 +242,12 @@ class _ArchiveButtonSet extends StatelessWidget {
   final VoidCallback? callback;
 
   const _ArchiveButtonSet({
-    Key? key,
     this.cost,
     this.size,
     this.text,
     this.icon,
     this.callback,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -223,22 +257,30 @@ class _ArchiveButtonSet extends StatelessWidget {
         if (cost != null)
           Text(
             cost!,
-            style: TextStyle(color: UIConfig.archiveDialogCostTextColor(context), fontSize: UIConfig.archiveDialogCostTextSize),
-          ),
-        ElevatedButton(
-          onPressed: callback,
-          child: Row(
-            children: [
-              if (text != null) Text(text!, style: const TextStyle(fontSize: UIConfig.archiveDialogDownloadTextSize)),
-              if (icon != null) icon!,
-            ],
-          ),
-        ),
+            style: TextStyle(
+                color: UIConfig.archiveDialogCostTextColor(context),
+                fontSize: UIConfig.archiveDialogCostTextSize),
+          ).small(),
+        MoonFilledButton(
+            onTap: callback,
+            buttonSize: MoonButtonSize.sm,
+            label: Row(
+              children: [
+                if (text != null)
+                  Text(text!,
+                          style: const TextStyle(
+                              fontSize: UIConfig.archiveDialogDownloadTextSize))
+                      .small(),
+                if (icon != null) icon!,
+              ],
+            )),
         if (size != null)
           Text(
             size!,
-            style: TextStyle(color: UIConfig.archiveDialogCostTextColor(context), fontSize: UIConfig.archiveDialogCostTextSize),
-          ),
+            style: TextStyle(
+                color: UIConfig.archiveDialogCostTextColor(context),
+                fontSize: UIConfig.archiveDialogCostTextSize),
+          ).small(),
       ],
     );
   }

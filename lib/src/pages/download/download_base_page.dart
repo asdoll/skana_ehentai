@@ -1,14 +1,15 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/enum/config_enum.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/pages/download/grid/local/local_gallery_grid_page.dart';
 import 'package:skana_ehentai/src/service/local_config_service.dart';
 import 'package:simple_animations/animation_controller_extension/animation_controller_extension.dart';
 import 'package:simple_animations/animation_mixin/animation_mixin.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import '../../config/ui_config.dart';
 import 'grid/archive/archive_grid_download_page.dart';
 import 'grid/gallery/gallery_grid_download_page.dart';
@@ -17,7 +18,7 @@ import 'list/gallery/gallery_list_download_page.dart';
 import 'list/local/local_gallery_list_page.dart';
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key}) : super(key: key);
+  const DownloadPage({super.key});
 
   @override
   State<DownloadPage> createState() => _DownloadPageState();
@@ -25,16 +26,21 @@ class DownloadPage extends StatefulWidget {
 
 class _DownloadPageState extends State<DownloadPage> {
   DownloadPageGalleryType galleryType = DownloadPageGalleryType.download;
-  DownloadPageBodyType bodyType = GetPlatform.isMobile ? DownloadPageBodyType.list : DownloadPageBodyType.grid;
+  DownloadPageBodyType bodyType = GetPlatform.isMobile
+      ? DownloadPageBodyType.list
+      : DownloadPageBodyType.grid;
   Completer<void> bodyTypeCompleter = Completer<void>();
 
   @override
   void initState() {
     super.initState();
 
-    localConfigService.read(configKey: ConfigEnum.downloadPageBodyType).then((bodyTypeString) {
+    localConfigService
+        .read(configKey: ConfigEnum.downloadPageBodyType)
+        .then((bodyTypeString) {
       if (bodyTypeString != null) {
-        bodyType = DownloadPageBodyType.values[int.tryParse(bodyTypeString) ?? 0];
+        bodyType =
+            DownloadPageBodyType.values[int.tryParse(bodyTypeString) ?? 0];
       }
     }).whenComplete(() {
       bodyTypeCompleter.complete();
@@ -50,7 +56,9 @@ class _DownloadPageState extends State<DownloadPage> {
             galleryType = notification.galleryType ?? galleryType;
             bodyType = notification.bodyType ?? bodyType;
           });
-          localConfigService.write(configKey: ConfigEnum.downloadPageBodyType, value: (notification.bodyType ?? bodyType).index.toString());
+          localConfigService.write(
+              configKey: ConfigEnum.downloadPageBodyType,
+              value: (notification.bodyType ?? bodyType).index.toString());
           return true;
         },
         child: FutureBuilder(
@@ -59,15 +67,24 @@ class _DownloadPageState extends State<DownloadPage> {
               ? const Center()
               : galleryType == DownloadPageGalleryType.download
                   ? bodyType == DownloadPageBodyType.list
-                      ? GalleryListDownloadPage(key: const PageStorageKey('GalleryListDownloadBody'))
-                      : GalleryGridDownloadPage(key: const PageStorageKey('GalleryGridDownloadBody'))
+                      ? GalleryListDownloadPage(
+                          key: const PageStorageKey('GalleryListDownloadBody'))
+                      : GalleryGridDownloadPage(
+                          key: const PageStorageKey('GalleryGridDownloadBody'))
                   : galleryType == DownloadPageGalleryType.archive
                       ? bodyType == DownloadPageBodyType.list
-                          ? ArchiveListDownloadPage(key: const PageStorageKey('ArchiveListDownloadBody'))
-                          : ArchiveGridDownloadPage(key: const PageStorageKey('ArchiveGridDownloadBody'))
+                          ? ArchiveListDownloadPage(
+                              key: const PageStorageKey(
+                                  'ArchiveListDownloadBody'))
+                          : ArchiveGridDownloadPage(
+                              key: const PageStorageKey(
+                                  'ArchiveGridDownloadBody'))
                       : bodyType == DownloadPageBodyType.list
-                          ? LocalGalleryListPage(key: const PageStorageKey('LocalGalleryListBody'))
-                          : LocalGalleryGridPage(key: const PageStorageKey('LocalGalleryGridBody')),
+                          ? LocalGalleryListPage(
+                              key: const PageStorageKey('LocalGalleryListBody'))
+                          : LocalGalleryGridPage(
+                              key:
+                                  const PageStorageKey('LocalGalleryGridBody')),
         ),
       ),
     ).enableMouseDrag();
@@ -85,42 +102,72 @@ class DownloadPageBodyTypeChangeNotification extends Notification {
   DownloadPageBodyTypeChangeNotification({this.galleryType, this.bodyType});
 }
 
-class DownloadPageSegmentControl extends StatelessWidget {
+class DownloadPageSegmentControl extends StatefulWidget {
   final DownloadPageGalleryType galleryType;
 
-  const DownloadPageSegmentControl({Key? key, required this.galleryType}) : super(key: key);
+  const DownloadPageSegmentControl({super.key, required this.galleryType});
 
   @override
+  State<DownloadPageSegmentControl> createState() =>
+      _DownloadPageSegmentControlState();
+}
+
+class _DownloadPageSegmentControlState
+    extends State<DownloadPageSegmentControl> {
+  @override
   Widget build(BuildContext context) {
-    return CupertinoSlidingSegmentedControl<DownloadPageGalleryType>(
-      groupValue: galleryType,
+    return MoonSegmentedControl(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-      children: {
-        DownloadPageGalleryType.download: SizedBox(
-          width: UIConfig.downloadPageSegmentedControlWidth,
-          child: Center(
-            child: Text(
-              'download'.tr,
-              style: const TextStyle(fontSize: UIConfig.downloadPageSegmentedTextSize, fontWeight: FontWeight.bold),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+      segmentedControlSize: MoonSegmentedControlSize.sm,
+      initialIndex: widget.galleryType == DownloadPageGalleryType.archive
+          ? 1
+          : widget.galleryType == DownloadPageGalleryType.local
+              ? 2
+              : 0,
+      isExpanded: true,
+      segments: [
+        Segment(
+          label: Text(
+            'download'.tr,
+            style: const TextStyle(
+                fontSize: UIConfig.downloadPageSegmentedTextSize,
+                fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        DownloadPageGalleryType.archive: Text(
-          'archive'.tr,
-          style: const TextStyle(fontSize: UIConfig.downloadPageSegmentedTextSize, fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        Segment(
+          label: Text(
+            'archive'.tr,
+            style: const TextStyle(
+                fontSize: UIConfig.downloadPageSegmentedTextSize,
+                fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
-        DownloadPageGalleryType.local: Text(
-          'local'.tr,
-          style: const TextStyle(fontSize: UIConfig.downloadPageSegmentedTextSize, fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        Segment(
+          label: Text(
+            'local'.tr,
+            style: const TextStyle(
+                fontSize: UIConfig.downloadPageSegmentedTextSize,
+                fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        )
+      ],
+      onSegmentChanged: (value) {
+        setState(() {
+          DownloadPageBodyTypeChangeNotification(
+                  galleryType: value == 0
+                      ? DownloadPageGalleryType.download
+                      : value == 1
+                          ? DownloadPageGalleryType.archive
+                          : DownloadPageGalleryType.local)
+              .dispatch(context);
+        });
       },
-      onValueChanged: (value) => DownloadPageBodyTypeChangeNotification(galleryType: value!).dispatch(context),
     );
   }
 }
@@ -128,15 +175,17 @@ class DownloadPageSegmentControl extends StatelessWidget {
 class GroupOpenIndicator extends StatefulWidget {
   final bool isOpen;
 
-  const GroupOpenIndicator({Key? key, required this.isOpen}) : super(key: key);
+  const GroupOpenIndicator({super.key, required this.isOpen});
 
   @override
   State<GroupOpenIndicator> createState() => _GroupOpenIndicatorState();
 }
 
-class _GroupOpenIndicatorState extends State<GroupOpenIndicator> with AnimationMixin {
+class _GroupOpenIndicatorState extends State<GroupOpenIndicator>
+    with AnimationMixin {
   bool isOpen = false;
-  late Animation<double> animation = Tween<double>(begin: 0.0, end: -0.25).animate(controller);
+  late Animation<double> animation =
+      Tween<double>(begin: 0.0, end: -0.25).animate(controller);
 
   @override
   void initState() {
@@ -168,7 +217,7 @@ class _GroupOpenIndicatorState extends State<GroupOpenIndicator> with AnimationM
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: animation,
-      child: const Icon(Icons.keyboard_arrow_left),
+      child: moonIcon(icon:BootstrapIcons.caret_left),
     );
   }
 }

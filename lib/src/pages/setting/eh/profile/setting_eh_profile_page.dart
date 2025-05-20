@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:retry/retry.dart';
 
@@ -35,14 +36,15 @@ class _SettingEHProfilePageState extends State<SettingEHProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('profileSetting'.tr)),
+      appBar: appBar(title: 'profileSetting'.tr),
       body: _buildProfile(),
     );
   }
 
   Widget _buildProfile() {
     if (loadingState != LoadingState.success) {
-      return LoadingStateIndicator(loadingState: loadingState, errorTapCallback: _loadProfile);
+      return LoadingStateIndicator(
+          loadingState: loadingState, errorTapCallback: _loadProfile);
     }
 
     int number = profiles.firstWhere((p) => p.selected).number;
@@ -50,24 +52,27 @@ class _SettingEHProfilePageState extends State<SettingEHProfilePage> {
       child: ListView(
         padding: const EdgeInsets.only(top: 16),
         children: [
-          ListTile(
-            title: Text('selectedProfile'.tr),
-            subtitle: Text('resetIfSwitchSite'.tr),
-            trailing: DropdownButton<int>(
-              value: number,
-              elevation: 4,
-              alignment: AlignmentDirectional.centerEnd,
-              onChanged: (int? newValue) {
-                ehRequest.storeEHCookies([Cookie('sp', newValue?.toString() ?? '1')]);
+          moonListTile(
+            title: 'selectedProfile'.tr,
+            subtitle: 'resetIfSwitchSite'.tr,
+            trailing: popupMenuButton<int>(
+              child: IgnorePointer(
+                  child: filledButton(
+                label: profiles[number-1].name,
+                onPressed: () {},
+              )),
+              onSelected: (int? newValue) {
+                ehRequest.storeEHCookies(
+                    [Cookie('sp', newValue?.toString() ?? '1')]);
                 setState(() {
                   for (Profile value in profiles) {
                     value.selected = value.number == newValue;
                   }
                 });
               },
-              items: profiles
+              itemBuilder: (context) => profiles
                   .map(
-                    (p) => DropdownMenuItem(child: Text(p.name), value: p.number),
+                    (p) => PopupMenuItem(value: p.number, child: Text(p.name).small()),
                   )
                   .toList(),
             ),
@@ -92,7 +97,8 @@ class _SettingEHProfilePageState extends State<SettingEHProfilePage> {
     }) settings;
     try {
       settings = await retry(
-        () => ehRequest.requestSettingPage(EHSpiderParser.settingPage2SiteSetting),
+        () => ehRequest
+            .requestSettingPage(EHSpiderParser.settingPage2SiteSetting),
         retryIf: (e) => e is DioException,
         maxAttempts: 3,
       );

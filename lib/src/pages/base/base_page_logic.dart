@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:skana_ehentai/src/enum/config_enum.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
@@ -12,6 +14,7 @@ import 'package:skana_ehentai/src/model/gallery_page.dart';
 import 'package:skana_ehentai/src/model/search_config.dart';
 import 'package:skana_ehentai/src/service/local_config_service.dart';
 import 'package:skana_ehentai/src/setting/preference_setting.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_search_config_dialog.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -58,7 +61,10 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
     super.onInit();
 
     if (useSearchConfig) {
-      localConfigService.read(configKey: ConfigEnum.searchConfig, subConfigKey: searchConfigKey).then((searchConfigString) {
+      localConfigService
+          .read(
+              configKey: ConfigEnum.searchConfig, subConfigKey: searchConfigKey)
+          .then((searchConfigString) {
         if (searchConfigString != null) {
           Map<String, dynamic> map = jsonDecode(searchConfigString);
           state.searchConfig = SearchConfig.fromJson(map);
@@ -116,7 +122,10 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
         'refreshGalleryFailed'.tr,
         e.message,
         isShort: true,
-        onPressed: e.referLink == null ? null : () => launchUrlString(e.referLink!, mode: LaunchMode.externalApplication),
+        onPressed: e.referLink == null
+            ? null
+            : () => launchUrlString(e.referLink!,
+                mode: LaunchMode.externalApplication),
       );
       state.refreshState = LoadingState.error;
       updateSafely([refreshStateId]);
@@ -129,7 +138,8 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
       return;
     }
 
-    List<Gallery> gallerys = await postHandleNewGallerys(galleryPage.gallerys, cleanDuplicate: false);
+    List<Gallery> gallerys = await postHandleNewGallerys(galleryPage.gallerys,
+        cleanDuplicate: false);
 
     state.gallerys = gallerys;
     state.totalCount = galleryPage.totalCount;
@@ -140,7 +150,9 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
 
     state.refreshState = LoadingState.idle;
 
-    if (state.nextGid == null && state.prevGid == null && state.gallerys.isEmpty) {
+    if (state.nextGid == null &&
+        state.prevGid == null &&
+        state.gallerys.isEmpty) {
       state.loadingState = LoadingState.noData;
     } else if (state.nextGid == null) {
       state.loadingState = LoadingState.noMore;
@@ -202,7 +214,10 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
         'getGallerysFailed'.tr,
         e.message,
         isShort: true,
-        onPressed: e.referLink == null ? null : () => launchUrlString(e.referLink!, mode: LaunchMode.externalApplication),
+        onPressed: e.referLink == null
+            ? null
+            : () => launchUrlString(e.referLink!,
+                mode: LaunchMode.externalApplication),
       );
       state.loadingState = prevState;
       updateSafely([loadingStateId]);
@@ -251,7 +266,10 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
         'getGallerysFailed'.tr,
         e.message,
         isShort: true,
-        onPressed: e.referLink == null ? null : () => launchUrlString(e.referLink!, mode: LaunchMode.externalApplication),
+        onPressed: e.referLink == null
+            ? null
+            : () => launchUrlString(e.referLink!,
+                mode: LaunchMode.externalApplication),
       );
       state.loadingState = LoadingState.error;
       updateSafely([loadingStateId]);
@@ -271,7 +289,9 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
     state.nextGid = galleryPage.nextGid;
     state.favoriteSortOrder = galleryPage.favoriteSortOrder;
 
-    if (state.nextGid == null && state.prevGid == null && state.gallerys.isEmpty) {
+    if (state.nextGid == null &&
+        state.prevGid == null &&
+        state.gallerys.isEmpty) {
       state.loadingState = LoadingState.noData;
     } else if (state.nextGid == null) {
       state.loadingState = LoadingState.noMore;
@@ -297,7 +317,8 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
 
     GalleryPageInfo galleryPage;
     try {
-      galleryPage = await getGalleryPage(nextGid: state.nextGid, prevGid: state.prevGid, seek: dateTime);
+      galleryPage = await getGalleryPage(
+          nextGid: state.nextGid, prevGid: state.prevGid, seek: dateTime);
     } on DioException catch (e) {
       log.error('getGallerysFailed'.tr, e.errorMsg);
       snack('getGallerysFailed'.tr, e.errorMsg ?? '', isShort: true);
@@ -310,7 +331,10 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
         'getGallerysFailed'.tr,
         e.message,
         isShort: true,
-        onPressed: e.referLink == null ? null : () => launchUrlString(e.referLink!, mode: LaunchMode.externalApplication),
+        onPressed: e.referLink == null
+            ? null
+            : () => launchUrlString(e.referLink!,
+                mode: LaunchMode.externalApplication),
       );
       state.loadingState = LoadingState.error;
       updateSafely([loadingStateId]);
@@ -333,7 +357,9 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
 
     state.seek = dateTime;
 
-    if (state.nextGid == null && state.prevGid == null && state.gallerys.isEmpty) {
+    if (state.nextGid == null &&
+        state.prevGid == null &&
+        state.gallerys.isEmpty) {
       state.loadingState = LoadingState.noData;
     } else if (state.nextGid == null) {
       state.loadingState = LoadingState.noMore;
@@ -345,25 +371,61 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
   }
 
   Future<void> handleTapJumpButton() async {
-    DateTime? dateTime = await showDatePicker(
-      context: Get.context!,
-      initialDate: state.seek,
-      currentDate: DateTime.now(),
-      firstDate: DateTime(2007),
-      lastDate: DateTime.now(),
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-    );
+    DateTime? dateTime = await showDialog(
+        context: Get.context!,
+        builder: (context) {
+          DateTime date = DateTime.now();
+          return Dialog(
+              child: ListView(shrinkWrap: true, children: [
+            MoonAlert(
+                borderColor: Get
+                    .context?.moonTheme?.buttonTheme.colors.borderColor
+                    .withValues(alpha: 0.5),
+                showBorder: true,
+                label: Text("selectDate".tr),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CalendarDatePicker2(
+                        config: CalendarDatePicker2Config(
+                            disableMonthPicker: true,
+                            selectedDayHighlightColor:
+                                context.moonTheme?.tokens.colors.frieza,
+                            selectedDayTextStyle: TextStyle(
+                                color: context.moonTheme?.tokens.colors.bulma),
+                            firstDate: DateTime(2007),
+                            lastDate: DateTime.now()),
+                        value: [date],
+                        onValueChanged: (value) => date = value.first),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      outlinedButton(
+                        label: "cancel".tr,
+                        onPressed: Get.back,
+                      ).paddingRight(8),
+                      filledButton(
+                        color: context.moonTheme?.tokens.colors.frieza,
+                        label: "OK".tr,
+                        onPressed: () => Get.back(result: date),
+                      ).paddingRight(8)
+                    ])
+                  ],
+                ))
+          ]));
+        });
 
     if (dateTime != null) {
       jumpPage(dateTime);
     }
   }
 
-  Future<void> handleTapFilterButton([EHSearchConfigDialogType searchConfigDialogType = EHSearchConfigDialogType.filter]) async {
+  Future<void> handleTapFilterButton(
+      [EHSearchConfigDialogType searchConfigDialogType =
+          EHSearchConfigDialogType.filter]) async {
     await state.searchConfigInitCompleter.future;
 
     Map<String, dynamic>? result = await Get.dialog(
-      EHSearchConfigDialog(searchConfig: state.searchConfig, type: searchConfigDialogType),
+      EHSearchConfigDialog(
+          searchConfig: state.searchConfig, type: searchConfigDialogType),
     );
 
     if (result == null) {
@@ -384,7 +446,8 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
   void handleTapGalleryCard(Gallery gallery) async {
     toRoute(
       Routes.details,
-      arguments: DetailsPageArgument(galleryUrl: gallery.galleryUrl, gallery: gallery),
+      arguments:
+          DetailsPageArgument(galleryUrl: gallery.galleryUrl, gallery: gallery),
     );
   }
 
@@ -392,7 +455,8 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
 
   void handleSecondaryTapCard(BuildContext context, Gallery gallery) async {}
 
-  Future<GalleryPageInfo> getGalleryPage({String? prevGid, String? nextGid, DateTime? seek}) async {
+  Future<GalleryPageInfo> getGalleryPage(
+      {String? prevGid, String? nextGid, DateTime? seek}) async {
     log.info('$runtimeType get data, prevGid:$prevGid, nextGid:$nextGid');
 
     await state.searchConfigInitCompleter.future;
@@ -414,7 +478,8 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
     );
   }
 
-  Future<List<Gallery>> postHandleNewGallerys(List<Gallery> gallerys, {bool cleanDuplicate = true}) async {
+  Future<List<Gallery>> postHandleNewGallerys(List<Gallery> gallerys,
+      {bool cleanDuplicate = true}) async {
     if (cleanDuplicate) {
       _cleanDuplicateGallery(gallerys);
     }
@@ -434,20 +499,28 @@ abstract class BasePageLogic extends GetxController with Scroll2TopLogicMixin {
 
   /// deal with the first and last page
   void _cleanDuplicateGallery(List<Gallery> newGallerys) {
-    newGallerys.removeWhere((newGallery) => state.gallerys.firstWhereOrNull((e) => e.galleryUrl == newGallery.galleryUrl) != null);
+    newGallerys.removeWhere((newGallery) =>
+        state.gallerys
+            .firstWhereOrNull((e) => e.galleryUrl == newGallery.galleryUrl) !=
+        null);
   }
 
-  Future<List<Gallery>> _filterByBlockingRules(List<Gallery> newGallerys) async {
+  Future<List<Gallery>> _filterByBlockingRules(
+      List<Gallery> newGallerys) async {
     if (newGallerys.isEmpty) {
       return newGallerys;
     }
 
     // if all gallerys are filtered, we keep the first one to indicate it
-    List<Gallery> filteredGallerys = await localBlockRuleService.executeRules(newGallerys);
+    List<Gallery> filteredGallerys =
+        await localBlockRuleService.executeRules(newGallerys);
     if (filteredGallerys.isNotEmpty) {
       return filteredGallerys;
     } else {
-      return newGallerys.sublist(0, 1).map((g) => g..blockedByLocalRules = true).toList();
+      return newGallerys
+          .sublist(0, 1)
+          .map((g) => g..blockedByLocalRules = true)
+          .toList();
     }
   }
 

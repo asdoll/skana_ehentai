@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,9 @@ import 'package:skana_ehentai/src/service/log.dart';
 import 'package:skana_ehentai/src/setting/archive_bot_setting.dart';
 import 'package:skana_ehentai/src/utils/archive_bot_response_parser.dart';
 import 'package:skana_ehentai/src/utils/snack_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_archive_bot_setting_dialog.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -18,7 +21,7 @@ import '../../../../model/archive_bot_response/archive_bot_response.dart';
 import '../../../../setting/preference_setting.dart';
 
 class ArchiveBotSettingsPage extends StatefulWidget {
-  const ArchiveBotSettingsPage({Key? key}) : super(key: key);
+  const ArchiveBotSettingsPage({super.key});
 
   @override
   State<ArchiveBotSettingsPage> createState() => _ArchiveBotSettingsPageState();
@@ -42,13 +45,12 @@ class _ArchiveBotSettingsPageState extends State<ArchiveBotSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('archiveBotSettings'.tr),
+      appBar: appBar(
+        title: 'archiveBotSettings'.tr,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.help),
-            onPressed: () {
+          MoonEhButton.md(
+            icon: BootstrapIcons.question_circle,
+            onTap: () {
               launchUrlString(
                 preferenceSetting.locale.value.languageCode == 'zh'
                     ? 'https://github.com/jiangtian616/JHenTai/wiki/%E5%BD%92%E6%A1%A3%E6%9C%BA%E5%99%A8%E4%BA%BA%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95'
@@ -70,24 +72,26 @@ class _ArchiveBotSettingsPageState extends State<ArchiveBotSettingsPage> {
   }
 
   Widget _buildApiKeySetting() {
-    return ListTile(
-      title: Text('apiSetting'.tr),
-      subtitle: Text(archiveBotSetting.apiKey.value == null ? 'apiKeyHint'.tr : archiveBotSetting.apiKey.value.toString()),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'apiSetting'.tr,
+      subtitle: archiveBotSetting.apiKey.value == null ? 'apiKeyHint'.tr : archiveBotSetting.apiKey.value.toString(),
+      trailing: MoonEhButton.md(
+        icon: BootstrapIcons.chevron_right,
+        onTap: _showApiKeyDialog,
+      ),
       onTap: _showApiKeyDialog,
     );
   }
 
   Widget _buildBalance() {
-    return ListTile(
-      title: Text('currentBalance'.tr),
+    return moonListTile(
+      title: 'currentBalance'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
             loadingState: _balanceState,
-            useCupertinoIndicator: true,
-            successWidgetBuilder: () => Text(_balance.value == null ? '' : '${_balance.value} GP'),
+            successWidgetBuilder: () => Text(_balance.value == null ? '' : '${_balance.value} GP').small(),
             errorWidgetBuilder: () => const Icon(Icons.error_outline),
           ),
         ],
@@ -97,17 +101,15 @@ class _ArchiveBotSettingsPageState extends State<ArchiveBotSettingsPage> {
   }
 
   Widget _buildCheckin() {
-    return ListTile(
-      title: Text('dailyCheckin'.tr),
+    return moonListTile(
+      title: 'dailyCheckin'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
             loadingState: _checkinState,
-            useCupertinoIndicator: true,
-            idleWidgetBuilder: () => const Icon(Icons.keyboard_arrow_right),
-            successWidgetBuilder: () => const Icon(Icons.check_circle_outline),
-            errorWidgetBuilder: () => const Icon(Icons.error_outline),
+            successWidgetBuilder: () => moonIcon(icon: BootstrapIcons.check_circle),
+            errorWidgetBuilder: () => moonIcon(icon: BootstrapIcons.exclamation_circle),
           ),
         ],
       ),

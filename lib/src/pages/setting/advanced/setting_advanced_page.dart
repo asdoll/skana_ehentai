@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/model/config.dart';
 import 'package:skana_ehentai/src/network/eh_request.dart';
@@ -16,6 +18,8 @@ import 'package:skana_ehentai/src/setting/advanced_setting.dart';
 import 'package:skana_ehentai/src/service/path_service.dart';
 import 'package:skana_ehentai/src/service/log.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:skana_ehentai/src/widget/loading_state_indicator.dart';
 import 'package:path/path.dart';
 
@@ -55,13 +59,14 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('advancedSetting'.tr)),
+      appBar: appBar(title: 'advancedSetting'.tr),
       body: Obx(
         () => ListView(
           padding: const EdgeInsets.only(top: 16),
           children: [
             _buildEnableLogging(),
-            if (advancedSetting.enableLogging.isTrue) _buildRecordAllLogs().fadeIn(),
+            if (advancedSetting.enableLogging.isTrue)
+              _buildRecordAllLogs().fadeIn(),
             _buildOpenLogs(),
             _buildClearLogs(context),
             _buildClearImageCache(context),
@@ -80,44 +85,52 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   }
 
   Widget _buildEnableLogging() {
-    return ListTile(
-      title: Text('enableLogging'.tr),
-      subtitle: Text('needRestart'.tr),
-      trailing: Switch(value: advancedSetting.enableLogging.value, onChanged: advancedSetting.saveEnableLogging),
+    return moonListTile(
+      title: 'enableLogging'.tr,
+      subtitle: 'needRestart'.tr,
+      trailing: MoonSwitch(
+        value: advancedSetting.enableLogging.value,
+        onChanged: advancedSetting.saveEnableLogging,
+      ),
     );
   }
 
   Widget _buildRecordAllLogs() {
-    return SwitchListTile(
-      title: Text('enableVerboseLogging'.tr),
-      subtitle: Text('needRestart'.tr),
-      value: advancedSetting.enableVerboseLogging.value,
-      onChanged: advancedSetting.saveEnableVerboseLogging,
+    return moonListTile(
+      title: 'enableVerboseLogging'.tr,
+      subtitle: 'needRestart'.tr,
+      trailing: MoonSwitch(
+        value: advancedSetting.enableVerboseLogging.value,
+        onChanged: advancedSetting.saveEnableVerboseLogging,
+      ),
     );
   }
 
   Widget _buildOpenLogs() {
-    return ListTile(
-      title: Text('openLog'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right).marginOnly(right: 4),
+    return moonListTile(
+      title: 'openLog'.tr,
+      trailing: MoonEhButton.md(
+          onTap: () => toRoute(Routes.logList),
+          icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.logList),
     );
   }
 
   Widget _buildClearLogs(BuildContext context) {
-    return ListTile(
-      title: Text('clearLogs'.tr),
-      subtitle: Text('longPress2Clear'.tr),
+    return moonListTile(
+      title: 'clearLogs'.tr,
+      subtitle: 'longPress2Clear'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
             loadingState: _logLoadingState,
-            useCupertinoIndicator: true,
             successWidgetBuilder: () => Text(
               _logSize,
-              style: TextStyle(color: UIConfig.resumePauseButtonColor(context), fontWeight: FontWeight.w500),
-            ),
+              style: TextStyle(
+                  color: UIConfig.resumePauseButtonColor(context),
+                  fontWeight: FontWeight.w500),
+            ).small(),
             errorTapCallback: _loadingLogSize,
           ).marginOnly(right: 8)
         ],
@@ -127,19 +140,20 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   }
 
   Widget _buildClearImageCache(BuildContext context) {
-    return ListTile(
-      title: Text('clearImagesCache'.tr),
-      subtitle: Text('longPress2Clear'.tr),
+    return moonListTile(
+      title: 'clearImagesCache'.tr,
+      subtitle: 'longPress2Clear'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
             loadingState: _imageCacheLoadingState,
-            useCupertinoIndicator: true,
             successWidgetBuilder: () => Text(
               _imageCacheSize,
-              style: TextStyle(color: UIConfig.resumePauseButtonColor(context), fontWeight: FontWeight.w500),
-            ),
+              style: TextStyle(
+                  color: UIConfig.resumePauseButtonColor(context),
+                  fontWeight: FontWeight.w500),
+            ).small(),
             errorTapCallback: _getImagesCacheSize,
           ).marginOnly(right: 8)
         ],
@@ -149,9 +163,9 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   }
 
   Widget _buildClearNetworkCache() {
-    return ListTile(
-      title: Text('clearPageCache'.tr),
-      subtitle: Text('longPress2Clear'.tr),
+    return moonListTile(
+      title: 'clearPageCache'.tr,
+      subtitle: 'longPress2Clear'.tr,
       onLongPress: () async {
         await ehRequest.removeAllCache();
         toast('clearSuccess'.tr, isCenter: false);
@@ -160,34 +174,54 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   }
 
   Widget _buildSuperResolution() {
-    return ListTile(
-      title: Text('superResolution'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right).marginOnly(right: 4),
+    return moonListTile(
+      title: 'superResolution'.tr,
+      trailing: MoonEhButton.md(
+          onTap: () => toRoute(Routes.superResolution),
+          icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.superResolution),
     );
   }
 
   Widget _buildCheckUpdate() {
-    return SwitchListTile(
-      title: Text('checkUpdateAfterLaunchingApp'.tr),
-      value: advancedSetting.enableCheckUpdate.value,
-      onChanged: advancedSetting.saveEnableCheckUpdate,
+    return moonListTile(
+      title: 'checkUpdateAfterLaunchingApp'.tr,
+      trailing: MoonSwitch(
+        value: advancedSetting.enableCheckUpdate.value,
+        onChanged: advancedSetting.saveEnableCheckUpdate,
+      ),
     );
   }
 
   Widget _buildCheckClipboard() {
-    return SwitchListTile(
-      title: Text('checkClipboard'.tr),
-      value: advancedSetting.enableCheckClipboard.value,
-      onChanged: advancedSetting.saveEnableCheckClipboard,
+    return moonListTile(
+      title: 'checkClipboard'.tr,
+      trailing: MoonSwitch(
+        value: advancedSetting.enableCheckClipboard.value,
+        onChanged: advancedSetting.saveEnableCheckClipboard,
+      ),
     );
   }
 
   Widget _buildVerifyAppLinks() {
-    return ListTile(
-      title: Text('verityAppLinks4Android12'.tr),
-      subtitle: Text('verityAppLinks4Android12Hint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right).marginOnly(right: 4),
+    return moonListTile(
+      title: 'verityAppLinks4Android12'.tr,
+      subtitle: 'verityAppLinks4Android12Hint'.tr,
+      trailing: MoonEhButton.md(
+        icon: BootstrapIcons.chevron_right,
+        onTap: () async {
+          try {
+            await const AndroidIntent(
+              action: 'android.settings.APP_OPEN_BY_DEFAULT_SETTINGS',
+              data: 'package:com.skanaone.skana_ehentai',
+            ).launch();
+          } on Exception catch (e) {
+            log.error(e);
+            log.uploadError(e);
+            toast('error'.tr);
+          }
+        },
+      ),
       onTap: () async {
         try {
           await const AndroidIntent(
@@ -204,26 +238,30 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   }
 
   Widget _buildInNoImageMode() {
-    return SwitchListTile(
-      title: Text('noImageMode'.tr),
-      value: advancedSetting.inNoImageMode.value,
-      onChanged: advancedSetting.saveInNoImageMode,
+    return moonListTile(
+      title: 'noImageMode'.tr,
+      trailing: MoonSwitch(
+        value: advancedSetting.inNoImageMode.value,
+        onChanged: advancedSetting.saveInNoImageMode,
+      ),
     );
   }
 
   Widget _buildImportData(BuildContext context) {
-    return ListTile(
-      title: Text('importData'.tr),
+    return moonListTile(
+      title: 'importData'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
             loadingState: _importDataLoadingState,
-            idleWidgetBuilder: () => const Icon(Icons.keyboard_arrow_right),
+            idleWidgetBuilder: () => MoonEhButton.md(
+              icon: BootstrapIcons.chevron_right,
+              onTap: () => _importData(context),
+            ),
             successWidgetSameWithIdle: true,
-            useCupertinoIndicator: true,
             errorWidgetSameWithIdle: true,
-          ).marginOnly(right: 8)
+          )
         ],
       ),
       onTap: () => _importData(context),
@@ -231,18 +269,20 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
   }
 
   Widget _buildExportData(BuildContext context) {
-    return ListTile(
-      title: Text('exportData'.tr),
+    return moonListTile(
+      title: 'exportData'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           LoadingStateIndicator(
             loadingState: _exportDataLoadingState,
-            idleWidgetBuilder: () => const Icon(Icons.keyboard_arrow_right),
+            idleWidgetBuilder: () => MoonEhButton.md(
+              icon: BootstrapIcons.chevron_right,
+              onTap: () => _exportData(context),
+            ),
             successWidgetSameWithIdle: true,
-            useCupertinoIndicator: true,
             errorWidgetSameWithIdle: true,
-          ).marginOnly(right: 8)
+          )
         ],
       ),
       onTap: () => _exportData(context),
@@ -295,7 +335,10 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
           if (!cacheImagesDirectory.existsSync()) {
             totalBytes = 0;
           } else {
-            totalBytes = cacheImagesDirectory.listSync().fold<int>(0, (previousValue, element) => previousValue += (element as File).lengthSync());
+            totalBytes = cacheImagesDirectory.listSync().fold<int>(
+                0,
+                (previousValue, element) =>
+                    previousValue += (element as File).lengthSync());
           }
 
           return byte2String(totalBytes.toDouble());
@@ -329,7 +372,6 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
       result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
-        allowCompression: false,
         compressionQuality: 0,
       );
     } on Exception catch (e) {
@@ -353,7 +395,8 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
 
     try {
       List list = await isolateService.jsonDecodeAsync(string);
-      List<CloudConfig> configs = list.map((e) => CloudConfig.fromJson(e)).toList();
+      List<CloudConfig> configs =
+          list.map((e) => CloudConfig.fromJson(e)).toList();
       for (CloudConfig config in configs) {
         await cloudConfigService.importConfig(config);
       }
@@ -377,7 +420,8 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
       return;
     }
 
-    String fileName = '${CloudConfigService.configFileName}-${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}.json';
+    String fileName =
+        '${CloudConfigService.configFileName}-${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}.json';
     if (GetPlatform.isMobile) {
       return _exportDataMobile(fileName, result);
     } else {
@@ -385,7 +429,8 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
     }
   }
 
-  Future<void> _exportDataMobile(String fileName, List<CloudConfigTypeEnum>? result) async {
+  Future<void> _exportDataMobile(
+      String fileName, List<CloudConfigTypeEnum>? result) async {
     if (_exportDataLoadingState == LoadingState.loading) {
       return;
     }
@@ -419,7 +464,8 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
     }
   }
 
-  Future<void> _exportDataDesktop(String fileName, List<CloudConfigTypeEnum>? result) async {
+  Future<void> _exportDataDesktop(
+      String fileName, List<CloudConfigTypeEnum>? result) async {
     if (_exportDataLoadingState == LoadingState.loading) {
       return;
     }
@@ -457,7 +503,8 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
       if (await file.exists()) {
         await file.create(recursive: true);
       }
-      await file.writeAsString(await isolateService.jsonEncodeAsync(uploadConfigs));
+      await file
+          .writeAsString(await isolateService.jsonEncodeAsync(uploadConfigs));
       log.info('Export data to $savedPath success');
       toast('success'.tr);
       setStateSafely(() => _exportDataLoadingState = LoadingState.success);

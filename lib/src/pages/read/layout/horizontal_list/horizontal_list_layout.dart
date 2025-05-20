@@ -12,7 +12,7 @@ import '../base/base_layout.dart';
 import 'horizontal_list_layout_logic.dart';
 
 class HorizontalListLayout extends BaseLayout {
-  HorizontalListLayout({Key? key}) : super(key: key);
+  HorizontalListLayout({super.key});
 
   @override
   final HorizontalListLayoutLogic logic = Get.put<HorizontalListLayoutLogic>(HorizontalListLayoutLogic(), permanent: true);

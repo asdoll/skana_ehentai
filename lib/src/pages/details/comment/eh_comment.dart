@@ -1,9 +1,11 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
@@ -18,6 +20,7 @@ import 'package:skana_ehentai/src/setting/preference_setting.dart';
 import 'package:skana_ehentai/src/utils/date_util.dart';
 import 'package:skana_ehentai/src/utils/eh_spider_parser.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_alert_dialog.dart';
 import 'package:skana_ehentai/src/widget/eh_comment_score_details_dialog.dart';
 import 'package:like_button/like_button.dart';
@@ -42,23 +45,24 @@ class EHComment extends StatefulWidget {
   final Function()? onBlockUser;
 
   const EHComment({
-    Key? key,
+    super.key,
     required this.comment,
     required this.inDetailPage,
     this.disableButtons = false,
     this.onVoted,
     this.handleTapUpdateCommentButton,
     this.onBlockUser,
-  }) : super(key: key);
+  });
 
   @override
-  _EHCommentState createState() => _EHCommentState();
+  State<EHComment> createState() => _EHCommentState();
 }
 
 class _EHCommentState extends State<EHComment> {
   @override
   Widget build(BuildContext context) {
     Widget child = Card(
+      color: context.moonTheme?.tokens.colors.gohan,
       elevation: 2,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -95,9 +99,9 @@ class _EHCommentState extends State<EHComment> {
 
     if (widget.inDetailPage && widget.onBlockUser != null) {
       child = GestureDetector(
-        child: child,
         onLongPress: widget.onBlockUser == null ? null : () => _handleBlockUser(context),
         onSecondaryTap: widget.onBlockUser == null ? null : () => _handleBlockUser(context),
+        child: child,
       );
     }
 
@@ -105,7 +109,7 @@ class _EHCommentState extends State<EHComment> {
   }
 
   Future<void> _handleBlockUser(BuildContext context) async {
-    bool? result = await showDialog(context: context, builder: (_) => EHDialog(title: 'blockUser'.tr + '?'));
+    bool? result = await showDialog(context: context, builder: (_) => EHDialog(title: '${'blockUser'.tr}?'));
     if (result == true) {
       widget.onBlockUser?.call();
     }
@@ -119,12 +123,11 @@ class _EHCommentHeader extends StatelessWidget {
   final bool fromMe;
 
   const _EHCommentHeader({
-    Key? key,
     required this.inDetailPage,
     required this.username,
     required this.commentTime,
     required this.fromMe,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -134,22 +137,18 @@ class _EHCommentHeader extends StatelessWidget {
         Text(
           (username ?? 'unknownUser'.tr) + (fromMe ? ' (${'you'.tr})' : ''),
           style: TextStyle(
-            fontSize: inDetailPage ? UIConfig.commentAuthorTextSizeInDetailPage : UIConfig.commentAuthorTextSizeInCommentPage,
-            fontWeight: FontWeight.bold,
             color: username == null
                 ? UIConfig.commentUnknownAuthorTextColor(context)
                 : fromMe
                     ? UIConfig.commentOwnAuthorTextColor(context)
                     : UIConfig.commentOtherAuthorTextColor(context),
           ),
-        ),
+        ).small(),
         Text(
           preferenceSetting.showUtcTime.isTrue ? commentTime : DateUtil.transformUtc2LocalTimeString(commentTime),
-          style: TextStyle(
-            fontSize: inDetailPage ? UIConfig.commentTimeTextSizeInDetailPage : UIConfig.commentTimeTextSizeInCommentPage,
-            color: UIConfig.commentTimeTextColor(context),
+          style: TextStyle(            color: UIConfig.commentTimeTextColor(context),
           ),
-        ),
+        ).xSmall(),
       ],
     );
   }
@@ -161,11 +160,10 @@ class _EHCommentTextBody extends StatelessWidget {
   final dom.Element element;
 
   const _EHCommentTextBody({
-    Key? key,
     required this.inDetailPage,
     this.onBlockUser,
     required this.element,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -176,10 +174,11 @@ class _EHCommentTextBody extends StatelessWidget {
           style: TextStyle(
             fontSize: inDetailPage ? UIConfig.commentBodyTextSizeInDetailPage : UIConfig.commentBodyTextSizeInCommentPage,
             color: UIConfig.commentBodyTextColor(context),
+            fontWeight: FontWeight.w400,
             height: 1.5,
           ),
           children: element.nodes.map((tag) => buildTag(context, tag)).toList(),
-        ),
+        ).small(),
         maxLines: inDetailPage ? 5 : null,
         overflow: inDetailPage ? TextOverflow.ellipsis : null,
       ),
@@ -290,7 +289,7 @@ class _EHCommentTextBody extends StatelessWidget {
                       return Center(child: UIConfig.loadingAnimation(context));
                     case LoadState.failed:
                       return Center(
-                        child: GestureDetector(child: const Icon(Icons.sentiment_very_dissatisfied), onTap: state.reLoadImage),
+                        child: GestureDetector(onTap: state.reLoadImage, child: const Icon(BootstrapIcons.emoji_frown)),
                       );
                     default:
                       return null;
@@ -454,7 +453,6 @@ class _EHCommentFooter extends StatefulWidget {
   final Function(bool isVotingUp, String score)? onVoted;
 
   const _EHCommentFooter({
-    Key? key,
     required this.inDetailPage,
     required this.commentId,
     this.lastEditTime,
@@ -466,7 +464,7 @@ class _EHCommentFooter extends StatefulWidget {
     required this.votedDown,
     this.onVoted,
     this.handleTapUpdateCommentButton,
-  }) : super(key: key);
+  });
 
   @override
   State<_EHCommentFooter> createState() => _EHCommentFooterState();
@@ -489,7 +487,7 @@ class _EHCommentFooterState extends State<_EHCommentFooter> with LoginRequiredMi
           Text(
             '${'lastEditedOn'.tr}: ${preferenceSetting.showUtcTime.isTrue ? widget.lastEditTime : DateUtil.transformUtc2LocalTimeString(widget.lastEditTime!)}',
             style: TextStyle(fontSize: UIConfig.commentLastEditTimeTextSize, color: UIConfig.commentFooterTextColor(context)),
-          ),
+          ).xSmall(),
         const Expanded(child: SizedBox()),
 
         /// can't vote for uploader or ourselves, and if we have commented, we can't vote for all of the comments
@@ -497,7 +495,7 @@ class _EHCommentFooterState extends State<_EHCommentFooter> with LoginRequiredMi
           LikeButton(
             size: widget.inDetailPage ? UIConfig.commentButtonSizeInDetailPage : UIConfig.commentButtonSizeInCommentPage,
             likeBuilder: (_) => Icon(
-              Icons.thumb_up,
+              widget.votedUp ? BootstrapIcons.hand_thumbs_up_fill : BootstrapIcons.hand_thumbs_up,
               size: UIConfig.commentButtonSizeInDetailPage,
               color: widget.votedUp ? UIConfig.commentButtonVotedColor(context) : UIConfig.commentButtonColor(context),
             ),
@@ -506,7 +504,7 @@ class _EHCommentFooterState extends State<_EHCommentFooter> with LoginRequiredMi
           LikeButton(
             size: widget.inDetailPage ? UIConfig.commentButtonSizeInDetailPage : UIConfig.commentButtonSizeInCommentPage,
             likeBuilder: (_) => Icon(
-              Icons.thumb_down,
+              widget.votedDown ? BootstrapIcons.hand_thumbs_down_fill: BootstrapIcons.hand_thumbs_down,
               size: UIConfig.commentButtonSizeInDetailPage,
               color: widget.votedDown ? UIConfig.commentButtonVotedColor(context) : UIConfig.commentButtonColor(context),
             ),
@@ -535,14 +533,14 @@ class _EHCommentFooterState extends State<_EHCommentFooter> with LoginRequiredMi
                         fontSize: widget.inDetailPage ? UIConfig.commentScoreSizeInDetailPage : UIConfig.commentScoreSizeInCommentPage,
                         color: UIConfig.commentFooterTextColor(context),
                       ),
-                    )
+                    ).xSmall()
                   : Text(
                       score,
                       style: TextStyle(
                         fontSize: widget.inDetailPage ? UIConfig.commentScoreSizeInDetailPage : UIConfig.commentScoreSizeInCommentPage,
                         color: UIConfig.commentFooterTextColor(context),
                       ),
-                    ),
+                    ).xSmall(),
             ),
           ),
         ),
@@ -597,7 +595,7 @@ class _EHCommentFooterState extends State<_EHCommentFooter> with LoginRequiredMi
     }
 
     setStateSafely(() {
-      score = newScore! >= 0 ? '+' + newScore.toString() : newScore.toString();
+      score = newScore! >= 0 ? '+$newScore' : newScore.toString();
     });
 
     widget.onVoted?.call(isVotingUp, score);

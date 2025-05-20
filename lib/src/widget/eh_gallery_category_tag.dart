@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 class EHGalleryCategoryTag extends StatelessWidget {
   final String category;
@@ -13,21 +15,24 @@ class EHGalleryCategoryTag extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final VoidCallback? onSecondaryTap;
+  final MoonButtonSize? size; 
 
   const EHGalleryCategoryTag({
-    Key? key,
+    super.key,
     required this.category,
     this.height,
     this.width,
-    this.borderRadius = 4,
+    this.borderRadius = 8,
     this.enabled = true,
     this.color,
-    this.padding = const EdgeInsets.only(top: 3, bottom: 4, left: 6, right: 6),
-    this.textStyle = const TextStyle(height: 1, fontSize: 15, color: UIConfig.galleryCategoryTagTextColor),
+    this.padding = const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+    this.textStyle =
+        const TextStyle(color: UIConfig.galleryCategoryTagTextColor),
     this.onTap,
     this.onLongPress,
     this.onSecondaryTap,
-  }) : super(key: key);
+    this.size = MoonButtonSize.sm
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +46,20 @@ class EHGalleryCategoryTag extends StatelessWidget {
         width: width,
         padding: padding,
         decoration: BoxDecoration(
-          color: enabled ? color ?? UIConfig.galleryCategoryColor[category] : UIConfig.galleryCategoryTagDisabledBackGroundColor(context),
+          color: enabled
+              ? color ?? UIConfig.galleryCategoryColor[category]
+              : UIConfig.galleryCategoryTagDisabledBackGroundColor(context),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
-        child: Text(category, style: enabled ? textStyle : textStyle.copyWith(color: UIConfig.galleryCategoryTagDisabledTextColor(context))),
+        child: Transform.translate(
+            offset: const Offset(0, -1),
+            child: Text(category,
+                    style: enabled
+                        ? textStyle
+                        : textStyle.copyWith(
+                            color: UIConfig.galleryCategoryTagDisabledTextColor(
+                                context)))
+                .of(size)),
       ),
     );
   }

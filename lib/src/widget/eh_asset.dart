@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 class EHAsset extends StatelessWidget {
   final int gpCount;
   final int creditCount;
 
-  const EHAsset({Key? key, required this.gpCount, required this.creditCount}) : super(key: key);
+  const EHAsset({super.key, required this.gpCount, required this.creditCount});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +15,9 @@ class EHAsset extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const _CircleAssetChip(str: 'C'),
-        Text(creditCount.toString(), style: const TextStyle(fontSize: 12)).marginOnly(left: 2),
+        Text(creditCount.toString()).small().marginOnly(left: 2),
         const _CircleAssetChip(str: 'G').marginOnly(left: 16),
-        Text(gpCount.toString(), style: const TextStyle(fontSize: 12)).marginOnly(left: 2),
+        Text(gpCount.toString()).small().marginOnly(left: 2),
       ],
     );
   }
@@ -25,7 +26,7 @@ class EHAsset extends StatelessWidget {
 class _CircleAssetChip extends StatelessWidget {
   final String str;
 
-  const _CircleAssetChip({Key? key, required this.str}) : super(key: key);
+  const _CircleAssetChip({required this.str});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class _CircleAssetChip extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(color: UIConfig.primaryColor(context), shape: BoxShape.circle),
       child: Center(
+        child: Transform.translate(offset: const Offset(0, 1),
         child: Text(
           str,
           style: TextStyle(
@@ -41,6 +43,7 @@ class _CircleAssetChip extends StatelessWidget {
             fontWeight: FontWeight.bold,
             height: 1,
           ),
+        ),
         ),
       ),
     );

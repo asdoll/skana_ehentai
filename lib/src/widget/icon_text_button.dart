@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:moon_design/moon_design.dart' show MoonTextButton;
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 class IconTextButton extends StatelessWidget {
   final double? height;
@@ -25,14 +27,11 @@ class IconTextButton extends StatelessWidget {
       width: width,
       child: GestureDetector(
         onLongPress: onLongPress,
-        child: IconButton(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          onPressed: onPressed,
-          icon: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [icon, text],
+        child: MoonTextButton(
+          onTap: onPressed,
+          label: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [icon.paddingBottom(2), text],
           ),
         ),
       ),

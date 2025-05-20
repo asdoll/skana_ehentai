@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/pages/search/mobile_v2/search_page_mobile_v2_logic.dart';
 import 'package:skana_ehentai/src/pages/search/mobile_v2/search_page_mobile_v2_state.dart';
-import 'package:skana_ehentai/src/routes/routes.dart';
 import 'package:skana_ehentai/src/setting/preference_setting.dart';
-import 'package:skana_ehentai/src/utils/route_util.dart';
 import 'package:skana_ehentai/src/utils/uuid_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../../base/base_page.dart';
 import '../mixin/search_page_mixin.dart';
@@ -18,7 +16,7 @@ class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMob
   final String tag = newUUID();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  SearchPageMobileV2({Key? key}) : super(key: key, showJumpButton: true, showScroll2TopButton: true) {
+  SearchPageMobileV2({super.key}) : super(showJumpButton: true, showScroll2TopButton: true) {
     logic = Get.put(SearchPageMobileV2Logic(), tag: tag);
     state = logic.state;
   }
@@ -51,18 +49,8 @@ class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMob
 
   @override
   AppBar? buildAppBar(BuildContext context) {
-    return AppBar(
-      leading: GestureDetector(
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => backRoute(currentRoute: Routes.mobileV2Search),
-        ),
-        onLongPress: () => untilRoute(currentRoute: Routes.mobileV2Search, predicate: (route) => route.isFirst),
-      ),
-      title: state.totalCount == null ? null : Text(state.totalCount!.toPrintString()),
-      titleSpacing: 0,
-      titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 16),
-      bottom: PreferredSize(child: buildSearchField(), preferredSize: const Size(double.infinity, UIConfig.mobileV2SearchBarHeight)),
+    return appBar(
+      title: state.totalCount?.toPrintString(),
       actions: buildActionButtons(visualDensity: const VisualDensity(horizontal: -4)),
     );
   }
@@ -71,6 +59,7 @@ class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMob
   Widget buildBody(BuildContext context) {
     return Column(
       children: [
+        buildSearchField().paddingAll(8),
         if (state.bodyType == SearchPageBodyType.suggestionAndHistory)
           GetBuilder<SearchPageMobileV2Logic>(
             id: logic.suggestionBodyId,

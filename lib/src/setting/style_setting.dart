@@ -12,25 +12,36 @@ import '../model/jh_layout.dart';
 
 StyleSetting styleSetting = StyleSetting();
 
-class StyleSetting with JHLifeCircleBeanWithConfigStorage implements JHLifeCircleBean {
+class StyleSetting
+    with JHLifeCircleBeanWithConfigStorage
+    implements JHLifeCircleBean {
   Rx<ThemeMode> themeMode = ThemeMode.system.obs;
   Rx<Color> lightThemeColor = UIConfig.defaultLightThemeColor.obs;
   Rx<Color> darkThemeColor = UIConfig.defaultDarkThemeColor.obs;
   Rx<ListMode> listMode = ListMode.listWithTags.obs;
   RxnInt crossAxisCountInWaterFallFlow = RxnInt(null);
+  RxBool crossAxisCountInWaterFallFlowMenu = false.obs;
   RxnInt crossAxisCountInGridDownloadPageForGroup = RxnInt(null);
+  RxBool crossAxisCountInGridDownloadPageForGroupMenu = false.obs;
   RxnInt crossAxisCountInGridDownloadPageForGallery = RxnInt(null);
+  RxBool crossAxisCountInGridDownloadPageForGalleryMenu = false.obs;
   RxnInt crossAxisCountInDetailPage = RxnInt(null);
+  RxBool crossAxisCountInDetailPageMenu = false.obs;
   RxMap<String, ListMode> pageListMode = <String, ListMode>{}.obs;
   RxBool moveCover2RightSide = false.obs;
-  Rx<LayoutMode> layout = PlatformDispatcher.instance.views.first.physicalSize.width / PlatformDispatcher.instance.views.first.devicePixelRatio < 600
-      ? LayoutMode.mobileV2.obs
-      : GetPlatform.isDesktop
-          ? LayoutMode.desktop.obs
-          : LayoutMode.tabletV2.obs;
+  Rx<LayoutMode> layout =
+      PlatformDispatcher.instance.views.first.physicalSize.width /
+                  PlatformDispatcher.instance.views.first.devicePixelRatio <
+              600
+          ? LayoutMode.mobileV2.obs
+          : GetPlatform.isDesktop
+              ? LayoutMode.desktop.obs
+              : LayoutMode.tabletV2.obs;
 
   bool get isInWaterFlowListMode =>
-      listMode.value == ListMode.waterfallFlowBig || listMode.value == ListMode.waterfallFlowSmall || listMode.value == ListMode.waterfallFlowMedium;
+      listMode.value == ListMode.waterfallFlowBig ||
+      listMode.value == ListMode.waterfallFlowSmall ||
+      listMode.value == ListMode.waterfallFlowMedium;
 
   Brightness currentBrightness() => themeMode.value == ThemeMode.system
       ? PlatformDispatcher.instance.platformBrightness
@@ -39,19 +50,27 @@ class StyleSetting with JHLifeCircleBeanWithConfigStorage implements JHLifeCircl
           : Brightness.dark;
 
   /// If the current window width is too small, App will degrade to mobile mode. Use [actualLayout] to indicate actual layout.
-  LayoutMode actualLayout = PlatformDispatcher.instance.views.first.physicalSize.width / PlatformDispatcher.instance.views.first.devicePixelRatio < 600
-      ? LayoutMode.mobileV2
-      : GetPlatform.isDesktop
-          ? LayoutMode.desktop
-          : LayoutMode.tabletV2;
+  LayoutMode actualLayout =
+      PlatformDispatcher.instance.views.first.physicalSize.width /
+                  PlatformDispatcher.instance.views.first.devicePixelRatio <
+              600
+          ? LayoutMode.mobileV2
+          : GetPlatform.isDesktop
+              ? LayoutMode.desktop
+              : LayoutMode.tabletV2;
 
-  bool get isInMobileLayout => actualLayout == LayoutMode.mobileV2 || actualLayout == LayoutMode.mobile;
+  bool get isInMobileLayout =>
+      actualLayout == LayoutMode.mobileV2 || actualLayout == LayoutMode.mobile;
 
-  bool get isInTabletLayout => actualLayout == LayoutMode.tabletV2 || actualLayout == LayoutMode.tablet;
+  bool get isInTabletLayout =>
+      actualLayout == LayoutMode.tabletV2 || actualLayout == LayoutMode.tablet;
 
-  bool get isInV1Layout => actualLayout == LayoutMode.mobile || actualLayout == LayoutMode.tablet;
+  bool get isInV1Layout =>
+      actualLayout == LayoutMode.mobile || actualLayout == LayoutMode.tablet;
 
-  bool get isInV2Layout => actualLayout == LayoutMode.mobileV2 || actualLayout == LayoutMode.tabletV2;
+  bool get isInV2Layout =>
+      actualLayout == LayoutMode.mobileV2 ||
+      actualLayout == LayoutMode.tabletV2;
 
   bool get isInDesktopLayout => actualLayout == LayoutMode.desktop;
 
@@ -63,20 +82,30 @@ class StyleSetting with JHLifeCircleBeanWithConfigStorage implements JHLifeCircl
     Map map = jsonDecode(configString);
 
     themeMode.value = ThemeMode.values[map['themeMode']];
-    lightThemeColor.value = Color(map['lightThemeColor'] ?? lightThemeColor.value.value);
-    darkThemeColor.value = Color(map['darkThemeColor'] ?? darkThemeColor.value.value);
+    lightThemeColor.value =
+        Color(map['lightThemeColor'] ?? lightThemeColor.value.value);
+    darkThemeColor.value =
+        Color(map['darkThemeColor'] ?? darkThemeColor.value.value);
     listMode.value = ListMode.values[map['listMode']];
     crossAxisCountInWaterFallFlow.value = map['crossAxisCountInWaterFallFlow'];
-    crossAxisCountInGridDownloadPageForGroup.value = map['crossAxisCountInGridDownloadPageForGroup'];
-    crossAxisCountInGridDownloadPageForGallery.value = map['crossAxisCountInGridDownloadPageForGallery'];
+    crossAxisCountInGridDownloadPageForGroup.value =
+        map['crossAxisCountInGridDownloadPageForGroup'];
+    crossAxisCountInGridDownloadPageForGallery.value =
+        map['crossAxisCountInGridDownloadPageForGallery'];
     crossAxisCountInDetailPage.value = map['crossAxisCountInDetailPage'];
-    pageListMode.value = Map.from(map['pageListMode']?.map((route, listModeIndex) => MapEntry(route, ListMode.values[listModeIndex])) ?? {});
-    moveCover2RightSide.value = map['moveCover2RightSide'] ?? moveCover2RightSide.value;
+    pageListMode.value = Map.from(map['pageListMode']?.map(
+            (route, listModeIndex) =>
+                MapEntry(route, ListMode.values[listModeIndex])) ??
+        {});
+    moveCover2RightSide.value =
+        map['moveCover2RightSide'] ?? moveCover2RightSide.value;
     layout.value = LayoutMode.values[map['layout'] ?? layout.value.index];
 
     /// old layout has been removed in v5.0.0
     if (isInV1Layout) {
-      layout = PlatformDispatcher.instance.views.first.physicalSize.width / PlatformDispatcher.instance.views.first.devicePixelRatio < 600
+      layout = PlatformDispatcher.instance.views.first.physicalSize.width /
+                  PlatformDispatcher.instance.views.first.devicePixelRatio <
+              600
           ? LayoutMode.mobileV2.obs
           : GetPlatform.isDesktop
               ? LayoutMode.desktop.obs
@@ -93,10 +122,13 @@ class StyleSetting with JHLifeCircleBeanWithConfigStorage implements JHLifeCircl
       'darkThemeColor': darkThemeColor.value.value,
       'listMode': listMode.value.index,
       'crossAxisCountInWaterFallFlow': crossAxisCountInWaterFallFlow.value,
-      'crossAxisCountInGridDownloadPageForGroup': crossAxisCountInGridDownloadPageForGroup.value,
-      'crossAxisCountInGridDownloadPageForGallery': crossAxisCountInGridDownloadPageForGallery.value,
+      'crossAxisCountInGridDownloadPageForGroup':
+          crossAxisCountInGridDownloadPageForGroup.value,
+      'crossAxisCountInGridDownloadPageForGallery':
+          crossAxisCountInGridDownloadPageForGallery.value,
       'crossAxisCountInDetailPage': crossAxisCountInDetailPage.value,
-      'pageListMode': pageListMode.map((route, listMode) => MapEntry(route, listMode.index)),
+      'pageListMode': pageListMode
+          .map((route, listMode) => MapEntry(route, listMode.index)),
       'moveCover2RightSide': moveCover2RightSide.value,
       'layout': layout.value.index,
     });
@@ -136,26 +168,39 @@ class StyleSetting with JHLifeCircleBeanWithConfigStorage implements JHLifeCircl
     await saveBeanConfig();
   }
 
-  Future<void> saveCrossAxisCountInWaterFallFlow(int? crossAxisCountInWaterFallFlow) async {
-    log.debug('saveCrossAxisCountInWaterFallFlow:$crossAxisCountInWaterFallFlow');
+  Future<void> saveCrossAxisCountInWaterFallFlow(
+      int? crossAxisCountInWaterFallFlow) async {
+    log.debug(
+        'saveCrossAxisCountInWaterFallFlow:$crossAxisCountInWaterFallFlow');
+    crossAxisCountInWaterFallFlowMenu.value = false;
     this.crossAxisCountInWaterFallFlow.value = crossAxisCountInWaterFallFlow;
     await saveBeanConfig();
   }
 
-  Future<void> saveCrossAxisCountInGridDownloadPageForGroup(int? crossAxisCountInGridDownloadPageForGroup) async {
-    log.debug('saveCrossAxisCountInGridDownloadPageForGroup:$crossAxisCountInGridDownloadPageForGroup');
-    this.crossAxisCountInGridDownloadPageForGroup.value = crossAxisCountInGridDownloadPageForGroup;
+  Future<void> saveCrossAxisCountInGridDownloadPageForGroup(
+      int? crossAxisCountInGridDownloadPageForGroup) async {
+    log.debug(
+        'saveCrossAxisCountInGridDownloadPageForGroup:$crossAxisCountInGridDownloadPageForGroup');
+    crossAxisCountInGridDownloadPageForGroupMenu.value = false;
+    this.crossAxisCountInGridDownloadPageForGroup.value =
+        crossAxisCountInGridDownloadPageForGroup;
     await saveBeanConfig();
   }
 
-  Future<void> saveCrossAxisCountInGridDownloadPageForGallery(int? crossAxisCountInGridDownloadPageForGallery) async {
-    log.debug('saveCrossAxisCountInGridDownloadPageForGallery:$crossAxisCountInGridDownloadPageForGallery');
-    this.crossAxisCountInGridDownloadPageForGallery.value = crossAxisCountInGridDownloadPageForGallery;
+  Future<void> saveCrossAxisCountInGridDownloadPageForGallery(
+      int? crossAxisCountInGridDownloadPageForGallery) async {
+    log.debug(
+        'saveCrossAxisCountInGridDownloadPageForGallery:$crossAxisCountInGridDownloadPageForGallery');
+    crossAxisCountInGridDownloadPageForGalleryMenu.value = false;
+    this.crossAxisCountInGridDownloadPageForGallery.value =
+        crossAxisCountInGridDownloadPageForGallery;
     await saveBeanConfig();
   }
 
-  Future<void> saveCrossAxisCountInDetailPage(int? crossAxisCountInDetailPage) async {
+  Future<void> saveCrossAxisCountInDetailPage(
+      int? crossAxisCountInDetailPage) async {
     log.debug('saveCrossAxisCountInDetailPage:$crossAxisCountInDetailPage');
+    crossAxisCountInDetailPageMenu.value = false;
     this.crossAxisCountInDetailPage.value = crossAxisCountInDetailPage;
     await saveBeanConfig();
   }

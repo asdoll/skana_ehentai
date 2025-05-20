@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/get_logic_extension.dart';
@@ -6,6 +7,7 @@ import 'package:skana_ehentai/src/mixin/scroll_to_top_logic_mixin.dart';
 import 'package:skana_ehentai/src/mixin/update_global_gallery_status_logic_mixin.dart';
 import 'package:skana_ehentai/src/service/super_resolution_service.dart';
 import 'package:skana_ehentai/src/setting/super_resolution_setting.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../../../../database/database.dart';
 import '../../../../enum/config_enum.dart';
@@ -22,7 +24,10 @@ import '../../../../widget/eh_download_dialog.dart';
 import '../basic/multi_select/multi_select_download_page_logic_mixin.dart';
 
 mixin GalleryDownloadPageLogicMixin on GetxController
-    implements Scroll2TopLogicMixin, MultiSelectDownloadPageLogicMixin<GalleryDownloadedData>, UpdateGlobalGalleryStatusLogicMixin {
+    implements
+        Scroll2TopLogicMixin,
+        MultiSelectDownloadPageLogicMixin<GalleryDownloadedData>,
+        UpdateGlobalGalleryStatusLogicMixin {
   final String bodyId = 'bodyId';
 
   final GalleryDownloadService downloadService = galleryDownloadService;
@@ -53,7 +58,8 @@ mixin GalleryDownloadPageLogicMixin on GetxController
   }
 
   Future<void> handleLongPressGroup(String oldGroup) async {
-    if (downloadService.galleryDownloadInfos.values.every((g) => g.group != oldGroup)) {
+    if (downloadService.galleryDownloadInfos.values
+        .every((g) => g.group != oldGroup)) {
       return handleDeleteGroup(oldGroup);
     }
     return handleRenameGroup(oldGroup);
@@ -86,7 +92,7 @@ mixin GalleryDownloadPageLogicMixin on GetxController
   }
 
   Future<void> handleDeleteGroup(String oldGroup) async {
-    bool? success = await Get.dialog(EHDialog(title: 'deleteGroup'.tr + '?'));
+    bool? success = await Get.dialog(EHDialog(title: '${'deleteGroup'.tr}?'));
     if (success == null || !success) {
       return;
     }
@@ -106,11 +112,12 @@ mixin GalleryDownloadPageLogicMixin on GetxController
   }
 
   @override
-  void handleLongPressOrSecondaryTapItem(GalleryDownloadedData item, BuildContext context) {
+  void handleLongPressOrSecondaryTapItem(
+      GalleryDownloadedData item, BuildContext context) {
     if (multiSelectDownloadPageState.inMultiSelectMode) {
       toggleSelectItem(item.gid);
     } else {
-      showBottomSheet(item, context);
+      showTrigger(item, context);
     }
   }
 
@@ -122,7 +129,8 @@ mixin GalleryDownloadPageLogicMixin on GetxController
     downloadService.pauseAllDownloadGallery();
   }
 
-  void handleRemoveItem(GalleryDownloadedData gallery, bool deleteImages, BuildContext context) async {
+  void handleRemoveItem(GalleryDownloadedData gallery, bool deleteImages,
+      BuildContext context) async {
     downloadService.update([downloadService.galleryCountChangedId]);
   }
 
@@ -136,10 +144,14 @@ mixin GalleryDownloadPageLogicMixin on GetxController
   }
 
   Future<void> goToReadPage(GalleryDownloadedData gallery) async {
-    if (readSetting.useThirdPartyViewer.isTrue && readSetting.thirdPartyViewerPath.value != null) {
-      openThirdPartyViewer(downloadService.computeGalleryDownloadAbsolutePath(gallery.title, gallery.gid));
+    if (readSetting.useThirdPartyViewer.isTrue &&
+        readSetting.thirdPartyViewerPath.value != null) {
+      openThirdPartyViewer(downloadService.computeGalleryDownloadAbsolutePath(
+          gallery.title, gallery.gid));
     } else {
-      String? string = await localConfigService.read(configKey: ConfigEnum.readIndexRecord, subConfigKey: gallery.gid.toString());
+      String? string = await localConfigService.read(
+          configKey: ConfigEnum.readIndexRecord,
+          subConfigKey: gallery.gid.toString());
       int readIndexRecord = (string == null ? 0 : (int.tryParse(string) ?? 0));
 
       toRoute(
@@ -153,93 +165,128 @@ mixin GalleryDownloadPageLogicMixin on GetxController
           initialIndex: readIndexRecord,
           readProgressRecordStorageKey: gallery.gid.toString(),
           pageCount: gallery.pageCount,
-          useSuperResolution: superResolutionService.get(gallery.gid, SuperResolutionType.gallery) != null,
+          useSuperResolution: superResolutionService.get(
+                  gallery.gid, SuperResolutionType.gallery) !=
+              null,
         ),
       );
     }
   }
 
-  void showBottomSheet(GalleryDownloadedData gallery, BuildContext context) {
-    showCupertinoModalPopup(
+  void showTrigger(GalleryDownloadedData gallery, BuildContext context) {
+    showDialog(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
+      builder: (BuildContext context) => moonAlertDialog(
+        context: context,
+        title: gallery.title,
+        columnActions: true,
+        actions: [
+          outlinedButton(
+            isFullWidth: true,
+            onPressed: backRoute,
+            label: 'cancel'.tr,
+          ),
           if (superResolutionSetting.modelDirectoryPath.value != null &&
-              downloadService.galleryDownloadInfos[gallery.gid]?.downloadProgress.downloadStatus == DownloadStatus.downloaded &&
-              (superResolutionService.get(gallery.gid, SuperResolutionType.gallery) == null ||
-                  superResolutionService.get(gallery.gid, SuperResolutionType.gallery)?.status == SuperResolutionStatus.paused))
-            CupertinoActionSheetAction(
-              child: Text('superResolution'.tr),
+              downloadService.galleryDownloadInfos[gallery.gid]
+                      ?.downloadProgress.downloadStatus ==
+                  DownloadStatus.downloaded &&
+              (superResolutionService.get(
+                          gallery.gid, SuperResolutionType.gallery) ==
+                      null ||
+                  superResolutionService
+                          .get(gallery.gid, SuperResolutionType.gallery)
+                          ?.status ==
+                      SuperResolutionStatus.paused))
+            filledButton(
+              label: 'superResolution'.tr,
               onPressed: () async {
                 backRoute();
 
-                if (superResolutionService.get(gallery.gid, SuperResolutionType.gallery) == null && gallery.downloadOriginalImage) {
-                  bool? result = await Get.dialog(EHDialog(title: 'attention'.tr + '!', content: 'superResolveOriginalImageHint'.tr));
+                if (superResolutionService.get(
+                            gallery.gid, SuperResolutionType.gallery) ==
+                        null &&
+                    gallery.downloadOriginalImage) {
+                  bool? result = await Get.dialog(EHDialog(
+                      title: '${'attention'.tr}!',
+                      content: 'superResolveOriginalImageHint'.tr));
                   if (result == false) {
                     return;
                   }
                 }
 
-                superResolutionService.superResolve(gallery.gid, SuperResolutionType.gallery);
+                superResolutionService.superResolve(
+                    gallery.gid, SuperResolutionType.gallery);
               },
             ),
-          if (superResolutionService.get(gallery.gid, SuperResolutionType.gallery)?.status == SuperResolutionStatus.running)
-            CupertinoActionSheetAction(
-              child: Text('stopSuperResolution'.tr),
+          if (superResolutionService
+                  .get(gallery.gid, SuperResolutionType.gallery)
+                  ?.status ==
+              SuperResolutionStatus.running)
+            filledButton(
+              label: 'stopSuperResolution'.tr,
               onPressed: () async {
                 backRoute();
-                superResolutionService.pauseSuperResolve(gallery.gid, SuperResolutionType.gallery).then((_) => toast("success".tr));
+                superResolutionService
+                    .pauseSuperResolve(gallery.gid, SuperResolutionType.gallery)
+                    .then((_) => toast("success".tr));
               },
             ),
-          if (superResolutionService.get(gallery.gid, SuperResolutionType.gallery)?.status == SuperResolutionStatus.paused ||
-              superResolutionService.get(gallery.gid, SuperResolutionType.gallery)?.status == SuperResolutionStatus.success)
-            CupertinoActionSheetAction(
-              child: Text('deleteSuperResolvedImage'.tr),
+          if (superResolutionService
+                      .get(gallery.gid, SuperResolutionType.gallery)
+                      ?.status ==
+                  SuperResolutionStatus.paused ||
+              superResolutionService
+                      .get(gallery.gid, SuperResolutionType.gallery)
+                      ?.status ==
+                  SuperResolutionStatus.success)
+            filledButton(
+              label: 'deleteSuperResolvedImage'.tr,
               onPressed: () async {
                 backRoute();
-                superResolutionService.deleteSuperResolve(gallery.gid, SuperResolutionType.gallery).then((_) => toast("success".tr));
+                superResolutionService
+                    .deleteSuperResolve(
+                        gallery.gid, SuperResolutionType.gallery)
+                    .then((_) => toast("success".tr));
               },
             ),
-          CupertinoActionSheetAction(
-            child: Text('changeGroup'.tr),
+          filledButton(
+            label: 'changeGroup'.tr,
             onPressed: () {
               backRoute();
               handleChangeGroup(gallery);
             },
           ),
-          CupertinoActionSheetAction(
-            child: Text('changePriority'.tr),
+          filledButton(
+            label: 'changePriority'.tr,
             onPressed: () {
               backRoute();
               showPrioritySheet(gallery, context);
             },
           ),
-          CupertinoActionSheetAction(
-            child: Text('reDownload'.tr),
+          filledButton(
+            label: 'reDownload'.tr,
             onPressed: () {
               backRoute();
               handleReDownloadItem(gallery);
             },
           ),
-          CupertinoActionSheetAction(
-            child: Text('deleteTask'.tr, style: TextStyle(color: UIConfig.alertColor(context))),
+          filledButton(
+            label: 'deleteTask'.tr,
+            color: UIConfig.alertColor(context),
             onPressed: () {
               backRoute();
               handleRemoveItem(gallery, false, context);
             },
           ),
-          CupertinoActionSheetAction(
-            child: Text('deleteTaskAndImages'.tr, style: TextStyle(color: UIConfig.alertColor(context))),
+          filledButton(
+            label: 'deleteTaskAndImages'.tr,
+            color: UIConfig.alertColor(context),
             onPressed: () {
               backRoute();
               handleRemoveItem(gallery, true, context);
             },
           ),
         ],
-        cancelButton: CupertinoActionSheetAction(
-          child: Text('cancel'.tr),
-          onPressed: backRoute,
-        ),
       ),
     );
   }
@@ -251,7 +298,9 @@ mixin GalleryDownloadPageLogicMixin on GetxController
         actions: [
           CupertinoActionSheetAction(
             child: Text('${'priority'.tr} : 1 (${'highest'.tr})'),
-            isDefaultAction: downloadService.galleryDownloadInfos[gallery.gid]?.priority == 1,
+            isDefaultAction:
+                downloadService.galleryDownloadInfos[gallery.gid]?.priority ==
+                    1,
             onPressed: () {
               handleAssignPriority(gallery, 1);
               backRoute();
@@ -260,7 +309,9 @@ mixin GalleryDownloadPageLogicMixin on GetxController
           ...[2, 3]
               .map((i) => CupertinoActionSheetAction(
                     child: Text('${'priority'.tr} : $i'),
-                    isDefaultAction: downloadService.galleryDownloadInfos[gallery.gid]?.priority == i,
+                    isDefaultAction: downloadService
+                            .galleryDownloadInfos[gallery.gid]?.priority ==
+                        i,
                     onPressed: () {
                       handleAssignPriority(gallery, i);
                       backRoute();
@@ -269,7 +320,9 @@ mixin GalleryDownloadPageLogicMixin on GetxController
               .toList(),
           CupertinoActionSheetAction(
             child: Text('${'priority'.tr} : 4 (${'default'.tr})'),
-            isDefaultAction: downloadService.galleryDownloadInfos[gallery.gid]?.priority == 4,
+            isDefaultAction:
+                downloadService.galleryDownloadInfos[gallery.gid]?.priority ==
+                    4,
             onPressed: () {
               handleAssignPriority(gallery, 4);
               backRoute();
@@ -277,7 +330,9 @@ mixin GalleryDownloadPageLogicMixin on GetxController
           ),
           CupertinoActionSheetAction(
             child: Text('${'priority'.tr} : 5'),
-            isDefaultAction: downloadService.galleryDownloadInfos[gallery.gid]?.priority == 5,
+            isDefaultAction:
+                downloadService.galleryDownloadInfos[gallery.gid]?.priority ==
+                    5,
             onPressed: () {
               handleAssignPriority(gallery, 5);
               backRoute();
@@ -346,12 +401,16 @@ mixin GalleryDownloadPageLogicMixin on GetxController
   }
 
   Future<void> handleMultiDelete() async {
-    bool isUpdatingDependent = multiSelectDownloadPageState.selectedGids.any(downloadService.isUpdatingDependent);
+    bool isUpdatingDependent = multiSelectDownloadPageState.selectedGids
+        .any(downloadService.isUpdatingDependent);
 
     bool? result = await Get.dialog(
       EHDialog(
         title: 'delete'.tr,
-        content: 'multiDeleteHint'.tr + (isUpdatingDependent ? '\n\n' + 'deleteUpdatingDependentHint'.tr : ''),
+        content: 'multiDeleteHint'.tr +
+            (isUpdatingDependent
+                ? '\n\n${'deleteUpdatingDependentHint'.tr}'
+                : ''),
       ),
     );
 
