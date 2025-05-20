@@ -12,7 +12,6 @@ JHRequest jhRequest = JHRequest();
 
 class JHRequest with JHLifeCircleBeanErrorCatch implements JHLifeCircleBean {
   late final Dio _dio;
-  late final JHCookieManager _cookieManager;
 
   @override
   List<JHLifeCircleBean> get initDependencies => super.initDependencies..add(ehRequest);
@@ -24,15 +23,23 @@ class JHRequest with JHLifeCircleBeanErrorCatch implements JHLifeCircleBean {
       receiveTimeout: Duration(milliseconds: networkSetting.receiveTimeout.value),
     ));
 
-    await _initCookieManager();
+    ever(networkSetting.connectTimeout, (_) {
+      setConnectTimeout(networkSetting.connectTimeout.value);
+    });
+    ever(networkSetting.receiveTimeout, (_) {
+      setReceiveTimeout(networkSetting.receiveTimeout.value);
+    });
   }
 
   @override
   Future<void> doAfterBeanReady() async {}
 
-  Future<void> _initCookieManager() async {
-    _cookieManager = JHCookieManager();
-    _dio.interceptors.add(_cookieManager);
+  void setConnectTimeout(int connectTimeout) {
+    _dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
+  }
+
+  void setReceiveTimeout(int receiveTimeout) {
+    _dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);
   }
 
   Future<T> requestAlive<T>({HtmlParser<T>? parser}) async {
@@ -90,6 +97,32 @@ class JHRequest with JHLifeCircleBeanErrorCatch implements JHLifeCircleBean {
       queryParameters: {
         'id': id,
       },
+    );
+
+    return _parseResponse(response, parser);
+  }
+
+  Future<T> requestGalleryImageHashes<T>({
+    required int gid,
+    required String token,
+    CancelToken? cancelToken,
+    HtmlParser<T>? parser,
+  }) async {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    Response response = await _dio.get(
+      '${JHConsts.serverAddress}/api/gallery/fetchImageHash',
+      queryParameters: {'gid': gid, 'token': token},
+      options: Options(
+        contentType: Headers.jsonContentType,
+        headers: {
+          JHConsts.APP_ID_HEADER: JHConsts.APP_ID,
+          JHConsts.TIMESTAMP_HEADER: timestamp,
+          JHConsts.NONCE_HEADER: timestamp,
+          JHConsts.SIGNATURE_HEADER: HmacUtil.hmacSha256(JHConsts.APP_ID + '-' + timestamp + '-' + timestamp, JHApiSecretConfig.secret),
+        },
+      ),
+      cancelToken: cancelToken,
     );
 
     return _parseResponse(response, parser);
