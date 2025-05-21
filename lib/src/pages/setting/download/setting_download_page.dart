@@ -68,7 +68,7 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
               _buildDownloadConcurrency(),
               _buildSpeedLimit(context),
               _buildDownloadAllGallerysOfSamePriority(),
-              _buildUseJH2UpdateGallery(),
+              //_buildUseJH2UpdateGallery(),
               _buildArchiveDownloadIsolateCount(),
               _buildManageArchiveDownloadConcurrency(),
               _buildDeleteArchiveFileAfterDownload(),
@@ -299,15 +299,15 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     );
   }
 
-  Widget _buildUseJH2UpdateGallery() {
-    return moonListTile(
-      title: 'useJH2UpdateGallery'.tr,
-      //subtitle: 'useJH2UpdateGalleryHint'.tr,
-      trailing: MoonSwitch(
-          value: downloadSetting.useJH2UpdateGallery.value,
-          onChanged: downloadSetting.saveUseJH2UpdateGallery),
-    );
-  }
+  // Widget _buildUseJH2UpdateGallery() {
+  //   return moonListTile(
+  //     title: 'useJH2UpdateGallery'.tr,
+  //     //subtitle: 'useJH2UpdateGalleryHint'.tr,
+  //     trailing: MoonSwitch(
+  //         value: downloadSetting.useJH2UpdateGallery.value,
+  //         onChanged: downloadSetting.saveUseJH2UpdateGallery),
+  //   );
+  // }
 
   Widget _buildArchiveDownloadIsolateCount() {
     return moonListTile(
