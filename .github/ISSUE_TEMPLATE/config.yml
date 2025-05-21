@@ -1,6 +1,6 @@
 blank_issues_enabled: false
 contact_links:
   - name: Others
-    url: https://github.com/jiangtian616/JHenTai/discussions/new/choose
+    url: https://github.com/asdoll/skana_ehentai/issues
     about: | 
-      其余问题请移步至讨论区 / Go to discussion for other questions
+      其余问题请移步至issues / Go to issues for other questions

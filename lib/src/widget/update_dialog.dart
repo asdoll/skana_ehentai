@@ -3,19 +3,21 @@ import 'package:get/get.dart';
 import 'package:skana_ehentai/src/enum/config_enum.dart';
 import 'package:skana_ehentai/src/service/local_config_service.dart';
 import 'package:skana_ehentai/src/utils/route_util.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class UpdateDialog extends StatelessWidget {
   final String currentVersion;
   final String latestVersion;
 
-  const UpdateDialog({Key? key, required this.currentVersion, required this.latestVersion}) : super(key: key);
+  const UpdateDialog({super.key, required this.currentVersion, required this.latestVersion});
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('availableUpdate'.tr),
-      content: Row(
+    return moonAlertDialog(
+      context: context,
+      title: 'availableUpdate'.tr,
+      contentWidget: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Column(
@@ -32,24 +34,23 @@ class UpdateDialog extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      ).paddingBottom(16),
       actions: [
-        TextButton(
-          child: Text('dismiss'.tr),
+        outlinedButton(
+          label: 'dismiss'.tr,
           onPressed: () {
             localConfigService.write(configKey: ConfigEnum.dismissVersion, value: latestVersion);
             backRoute();
           },
         ),
-        TextButton(
-          child: Text('check'.tr + ' ->'),
+        filledButton(
+          label: '${'check'.tr} ->',
           onPressed: () {
             backRoute();
-            launchUrlString('https://github.com/jiangtian616/JHenTai/releases', mode: LaunchMode.externalApplication);
+            launchUrlString('https://github.com/asdoll/skana_ehentai/releases', mode: LaunchMode.externalApplication);
           },
         )
-      ],
-      actionsPadding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
+      ]
     );
   }
 }

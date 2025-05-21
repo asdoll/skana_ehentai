@@ -38,8 +38,8 @@ body:
     attributes:
       label: 建议实现 / Suggested implemention
       description: |
-        在此处表述您建议的实现方式。你可以描述一种思路，或者给出示例代码，如果你有足够的精力，你也可以直接提交 [PR](https://github.com/jiangtian616/JHenTai/pulls)。
-        Provide your proposed implementation here. You can describe a conceptual approach, provide example code, and you can also submit a [PR](https://github.com/jiangtian616/JHenTai/pulls) directly.
+        在此处表述您建议的实现方式。你可以描述一种思路，或者给出示例代码，如果你有足够的精力，你也可以直接提交 [PR](https://github.com/asdoll/skana_ehentai/pulls)。
+        Provide your proposed implementation here. You can describe a conceptual approach, provide example code, and you can also submit a [PR](https://github.com/asdoll/skana_ehentai/pulls) directly.
     validations:
       required: true
 
