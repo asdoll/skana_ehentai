@@ -85,7 +85,9 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'downloadPath'.tr,
       subtitle: downloadSetting.downloadPath.value.breakWord,
-      trailing: changeDownloadPathState == LoadingState.loading ? UIConfig.loadingAnimation(Get.context!) : const SizedBox(width: 24),
+      trailing: changeDownloadPathState == LoadingState.loading
+          ? UIConfig.loadingAnimation(Get.context!)
+          : const SizedBox(width: 24),
       onTap: () {
         if (!GetPlatform.isIOS) {
           toast('changeDownloadPathHint'.tr, isShort: false);
@@ -107,7 +109,9 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'extraGalleryScanPath'.tr,
       subtitle: 'extraGalleryScanPathHint'.tr,
-      trailing: MoonEhButton.md(onTap: () => toRoute(Routes.extraGalleryScanPath), icon: BootstrapIcons.chevron_right),
+      trailing: MoonEhButton.md(
+          onTap: () => toRoute(Routes.extraGalleryScanPath),
+          icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.extraGalleryScanPath),
     );
   }
@@ -116,20 +120,26 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'singleImageSavePath'.tr,
       subtitle: downloadSetting.singleImageSavePath.value.breakWord,
-      trailing: GetPlatform.isMacOS ? null : MoonEhButton.md(onTap: _handleChangeSingleImageSavePath, icon: BootstrapIcons.chevron_right),
+      trailing: GetPlatform.isMacOS
+          ? null
+          : MoonEhButton.md(
+              onTap: _handleChangeSingleImageSavePath,
+              icon: BootstrapIcons.chevron_right),
     );
   }
 
   Widget _buildDownloadOriginalImage() {
     return moonListTile(
       title: 'downloadOriginalImageByDefault'.tr,
-      trailing: MoonSwitch(value: downloadSetting.downloadOriginalImageByDefault.value, onChanged: (value) {
-        if (!userSetting.hasLoggedIn()) {
-          toast('needLoginToOperate'.tr);
-          return;
-        }
-        downloadSetting.saveDownloadOriginalImageByDefault(value);
-      }),
+      trailing: MoonSwitch(
+          value: downloadSetting.downloadOriginalImageByDefault.value,
+          onChanged: (value) {
+            if (!userSetting.hasLoggedIn()) {
+              toast('needLoginToOperate'.tr);
+              return;
+            }
+            downloadSetting.saveDownloadOriginalImageByDefault(value);
+          }),
     );
   }
 
@@ -137,7 +147,8 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'defaultGalleryGroup'.tr,
       subtitle: 'longPress2Reset'.tr,
-      trailing: Text(downloadSetting.defaultGalleryGroup.value ?? '', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
+      trailing: Text(downloadSetting.defaultGalleryGroup.value ?? '',
+          style: UIConfig.settingPageListTileTrailingTextStyle(context)),
       onTap: () async {
         ({String group, bool downloadOriginalImage})? result = await showDialog(
           context: context,
@@ -160,11 +171,13 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
 
   Widget _buildDefaultArchiveGroup(BuildContext context) {
     return moonListTile(
-      title: 'defaultArchiveGroup'.tr,
-      subtitle: 'longPress2Reset'.tr,
-      trailing: Text(downloadSetting.defaultArchiveGroup.value ?? '', style: UIConfig.settingPageListTileTrailingTextStyle(context)),
-      onTap: () async {
-        ({String group, bool downloadOriginalImage})? result = await showDialog(
+        title: 'defaultArchiveGroup'.tr,
+        subtitle: 'longPress2Reset'.tr,
+        trailing: Text(downloadSetting.defaultArchiveGroup.value ?? '',
+            style: UIConfig.settingPageListTileTrailingTextStyle(context)),
+        onTap: () async {
+          ({String group, bool downloadOriginalImage})? result =
+              await showDialog(
             context: context,
             builder: (_) => EHDownloadDialog(
               title: 'chooseGroup'.tr,
@@ -177,9 +190,9 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
             downloadSetting.saveDefaultArchiveGroup(result.group);
           }
         },
-      onLongPress: () {
-        downloadSetting.saveDefaultArchiveGroup(null);
-      });
+        onLongPress: () {
+          downloadSetting.saveDefaultArchiveGroup(null);
+        });
   }
 
   Widget _buildDownloadConcurrency() {
@@ -187,7 +200,8 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
       title: 'downloadTaskConcurrency'.tr,
       trailing: popupMenuButton<int>(
         initialValue: downloadSetting.downloadTaskConcurrency.value,
-        onSelected: (int? newValue) => downloadSetting.saveDownloadTaskConcurrency(newValue!),
+        onSelected: (int? newValue) =>
+            downloadSetting.saveDownloadTaskConcurrency(newValue!),
         itemBuilder: (context) => [
           PopupMenuItem(value: 2, child: Text('2').small()),
           PopupMenuItem(value: 4, child: Text('4').small()),
@@ -209,7 +223,9 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'archiveBotSettings'.tr,
       subtitle: 'archiveBotSettingsHint'.tr,
-      trailing: MoonEhButton.md(onTap: () => toRoute(Routes.archiveBotSettings), icon: BootstrapIcons.chevron_right),
+      trailing: MoonEhButton.md(
+          onTap: () => toRoute(Routes.archiveBotSettings),
+          icon: BootstrapIcons.chevron_right),
       onTap: () => toRoute(Routes.archiveBotSettings),
     );
   }
@@ -242,14 +258,21 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
               ),
             ),
           ),
-          Text('${'images'.tr} ${'per'.tr}', style: UIConfig.settingPageListTileTrailingTextStyle(context)).small().marginSymmetric(horizontal: 8),
+          Text('${'images'.tr} ${'per'.tr}',
+                  style: UIConfig.settingPageListTileTrailingTextStyle(context))
+              .small()
+              .marginSymmetric(horizontal: 8),
           popupMenuButton<Duration>(
             initialValue: downloadSetting.period.value,
-            onSelected: (Duration? newValue) => downloadSetting.savePeriod(newValue!),
+            onSelected: (Duration? newValue) =>
+                downloadSetting.savePeriod(newValue!),
             itemBuilder: (context) => [
-              PopupMenuItem(value: Duration(seconds: 1), child: Text('1s').small()),
-              PopupMenuItem(value: Duration(seconds: 2), child: Text('2s').small()),
-              PopupMenuItem(value: Duration(seconds: 3), child: Text('3s').small()),
+              PopupMenuItem(
+                  value: Duration(seconds: 1), child: Text('1s').small()),
+              PopupMenuItem(
+                  value: Duration(seconds: 2), child: Text('2s').small()),
+              PopupMenuItem(
+                  value: Duration(seconds: 3), child: Text('3s').small()),
             ],
             child: IgnorePointer(
               child: filledButton(
@@ -266,18 +289,23 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
   Widget _buildDownloadAllGallerysOfSamePriority() {
     return moonListTile(
       title: 'downloadAllGallerysOfSamePriority'.tr,
-      subtitle: '${'downloadAllGallerysOfSamePriorityHint'.tr} | ${'needRestart'.tr}',
-      trailing: MoonSwitch(value: downloadSetting.downloadAllGallerysOfSamePriority.value, onChanged: (value) {
-        downloadSetting.saveDownloadAllGallerysOfSamePriority(value);
-      }),
+      subtitle:
+          '${'downloadAllGallerysOfSamePriorityHint'.tr} | ${'needRestart'.tr}',
+      trailing: MoonSwitch(
+          value: downloadSetting.downloadAllGallerysOfSamePriority.value,
+          onChanged: (value) {
+            downloadSetting.saveDownloadAllGallerysOfSamePriority(value);
+          }),
     );
   }
 
   Widget _buildUseJH2UpdateGallery() {
-    return SwitchListTile(
-      title: Text('useJH2UpdateGallery'.tr),
-      value: downloadSetting.useJH2UpdateGallery.value,
-      onChanged: downloadSetting.saveUseJH2UpdateGallery,
+    return moonListTile(
+      title: 'useJH2UpdateGallery'.tr,
+      //subtitle: 'useJH2UpdateGalleryHint'.tr,
+      trailing: MoonSwitch(
+          value: downloadSetting.useJH2UpdateGallery.value,
+          onChanged: downloadSetting.saveUseJH2UpdateGallery),
     );
   }
 
@@ -287,7 +315,8 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
       subtitle: 'archiveDownloadIsolateCountHint'.tr,
       trailing: popupMenuButton<int>(
         initialValue: downloadSetting.archiveDownloadIsolateCount.value,
-        onSelected: (int? newValue) => downloadSetting.saveArchiveDownloadIsolateCount(newValue!),
+        onSelected: (int? newValue) =>
+            downloadSetting.saveArchiveDownloadIsolateCount(newValue!),
         itemBuilder: (context) => [
           PopupMenuItem(value: 1, child: Text('1').small()),
           PopupMenuItem(value: 2, child: Text('2').small()),
@@ -314,14 +343,18 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'manageArchiveDownloadConcurrency'.tr,
       subtitle: 'manageArchiveDownloadConcurrencyHint'.tr,
-      trailing: MoonSwitch(value: downloadSetting.manageArchiveDownloadConcurrency.value, onChanged: downloadSetting.saveManageArchiveDownloadConcurrency),
+      trailing: MoonSwitch(
+          value: downloadSetting.manageArchiveDownloadConcurrency.value,
+          onChanged: downloadSetting.saveManageArchiveDownloadConcurrency),
     );
   }
 
   Widget _buildDeleteArchiveFileAfterDownload() {
     return moonListTile(
       title: 'deleteArchiveFileAfterDownload'.tr,
-      trailing: MoonSwitch(value: downloadSetting.deleteArchiveFileAfterDownload.value, onChanged: downloadSetting.saveDeleteArchiveFileAfterDownload),
+      trailing: MoonSwitch(
+          value: downloadSetting.deleteArchiveFileAfterDownload.value,
+          onChanged: downloadSetting.saveDeleteArchiveFileAfterDownload),
     );
   }
 
@@ -337,7 +370,9 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     return moonListTile(
       title: 'restoreTasksAutomatically'.tr,
       subtitle: 'restoreTasksAutomaticallyHint'.tr,
-      trailing: MoonSwitch(value: downloadSetting.restoreTasksAutomatically.value, onChanged: downloadSetting.saveRestoreTasksAutomatically),
+      trailing: MoonSwitch(
+          value: downloadSetting.restoreTasksAutomatically.value,
+          onChanged: downloadSetting.saveRestoreTasksAutomatically),
     );
   }
 
@@ -383,7 +418,10 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
         await _copyOldFiles(oldDownloadPath, newDownloadPath);
       } on Exception catch (e) {
         log.error('Copy files failed!', e);
-        log.uploadError(e, extraInfos: {'oldDownloadPath': oldDownloadPath, 'newDownloadPath': newDownloadPath});
+        log.uploadError(e, extraInfos: {
+          'oldDownloadPath': oldDownloadPath,
+          'newDownloadPath': newDownloadPath
+        });
         toast('internalError'.tr);
       }
 
@@ -403,12 +441,15 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
   }
 
   Future<void> _handleResetDownloadPath() {
-    return _handleChangeDownloadPath(newDownloadPath: downloadSetting.defaultDownloadPath);
+    return _handleChangeDownloadPath(
+        newDownloadPath: downloadSetting.defaultDownloadPath);
   }
 
-  Future<void> _copyOldFiles(String oldDownloadPath, String newDownloadPath) async {
+  Future<void> _copyOldFiles(
+      String oldDownloadPath, String newDownloadPath) async {
     io.Directory oldDownloadDir = io.Directory(oldDownloadPath);
-    List<io.FileSystemEntity> oldEntities = oldDownloadDir.listSync(recursive: true);
+    List<io.FileSystemEntity> oldEntities =
+        oldDownloadDir.listSync(recursive: true);
     List<io.Directory> oldDirs = oldEntities.whereType<io.Directory>().toList();
     List<io.File> oldFiles = oldEntities.whereType<io.File>().toList();
 
@@ -417,7 +458,8 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     /// copy directories first
     for (io.Directory oldDir in oldDirs) {
       if (FileUtil.isJHenTaiGalleryDirectory(oldDir)) {
-        io.Directory newDir = io.Directory(join(newDownloadPath, relative(oldDir.path, from: oldDownloadPath)));
+        io.Directory newDir = io.Directory(join(
+            newDownloadPath, relative(oldDir.path, from: oldDownloadPath)));
         futures.add(newDir.create(recursive: true));
       }
     }
@@ -427,7 +469,8 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
     /// then copy files
     for (io.File oldFile in oldFiles) {
       if (FileUtil.isJHenTaiFile(oldFile)) {
-        futures.add(oldFile.copy(join(newDownloadPath, relative(oldFile.path, from: oldDownloadPath))));
+        futures.add(oldFile.copy(join(
+            newDownloadPath, relative(oldFile.path, from: oldDownloadPath))));
       }
     }
     await Future.wait(futures);

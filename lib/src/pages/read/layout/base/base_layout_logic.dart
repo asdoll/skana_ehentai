@@ -390,7 +390,7 @@ abstract class BaseLayoutLogic extends GetxController with GetTickerProviderStat
   //   SaveResult saveResult = await SaverGallery.saveImage(
   //     imageData,
   //     name: fileName,
-  //     androidRelativePath: "Pictures/JHenTai",
+  //     androidRelativePath: "Pictures/SkanaEH",
   //     androidExistNotSave: false,
   //   );
 
@@ -405,7 +405,7 @@ abstract class BaseLayoutLogic extends GetxController with GetTickerProviderStat
     SaveResult saveResult = await SaverGallery.saveFile(
       file: filePath,
       name: fileName,
-      androidRelativePath: "Pictures/JHenTai",
+      androidRelativePath: "Pictures/SkanaEH",
       androidExistNotSave: false,
     );
 

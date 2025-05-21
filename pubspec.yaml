@@ -1,7 +1,6 @@
 name: skana_ehentai
 
 description: A flutter app for E-Hentai/EXHentai
-
 publish_to: 'none'
 version: 8.0.7+293
 
@@ -28,7 +27,6 @@ dependencies:
   flutter_rating_bar: 4.0.1
   waterfall_flow: ^3.1.1
   extended_image: ^10.0.1
-  font_awesome_flutter: ^10.8.0
   intl: 0.19.0
   collection: 1.19.0
   clipboard: 0.1.3

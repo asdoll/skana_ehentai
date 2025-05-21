@@ -5,6 +5,8 @@ import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/network/jh_request.dart';
 import 'package:skana_ehentai/src/utils/jh_spider_parser.dart';
 import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 
 import '../../../routes/routes.dart';
 import '../../../utils/route_util.dart';
@@ -37,7 +39,7 @@ class _SettingCloudPageState extends State<SettingCloudPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('cloud'.tr)),
+      appBar: appBar(title: 'cloud'.tr),
       body: ListView(
         padding: const EdgeInsets.only(top: 16),
         children: [
@@ -49,8 +51,8 @@ class _SettingCloudPageState extends State<SettingCloudPage> {
   }
 
   Widget _buildServerCondition() {
-    return ListTile(
-      title: Text('serverCondition'.tr),
+    return moonListTile(
+      title: 'serverCondition'.tr,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -65,10 +67,13 @@ class _SettingCloudPageState extends State<SettingCloudPage> {
   }
 
   Widget _buildConfigSync() {
-    return ListTile(
-      title: Text('configSync'.tr),
-      subtitle: Text('configSyncHint'.tr),
-      trailing: const Icon(Icons.keyboard_arrow_right),
+    return moonListTile(
+      title: 'configSync'.tr,
+      subtitle: 'configSyncHint'.tr,
+      trailing: MoonEhButton.md(
+        icon: BootstrapIcons.chevron_right,
+        onTap: () => toRoute(Routes.configSync),
+      ),
       onTap: () => toRoute(Routes.configSync),
     );
   }

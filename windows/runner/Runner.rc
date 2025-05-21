@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "top.jtmonster" "\0"
-            VALUE "FileDescription", "jhentai" "\0"
+            VALUE "FileDescription", "skana_ehentai" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "jhentai" "\0"
+            VALUE "InternalName", "skana_ehentai" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 top.jtmonster. All rights reserved." "\0"
-            VALUE "OriginalFilename", "jhentai.exe" "\0"
-            VALUE "ProductName", "jhentai" "\0"
+            VALUE "OriginalFilename", "skana_ehentai.exe" "\0"
+            VALUE "ProductName", "skana_ehentai" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

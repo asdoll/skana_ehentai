@@ -89,10 +89,11 @@ class SettingPage extends StatelessWidget {
               trailing: SizedBox(width: 25,height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}advanced'),
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.cloud),
-            //   title: Text('cloud'.tr),
-            //   onTap: () => toRoute(Routes.settingPrefix + 'cloud'),
+            // moonListTile(
+            //   leading: moonIcon(icon:BootstrapIcons.cloud),
+            //   title: 'cloud'.tr,
+            //   trailing: SizedBox(width: 25,height: 25),
+            //   onTap: () => toRoute('${Routes.settingPrefix}cloud'),
             // ),
             moonListTile(
               leading: moonIcon(icon:BootstrapIcons.fingerprint),

@@ -123,29 +123,27 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin,
       return const SizedBox();
     }
 
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      child: ListTile(
-        title: Text('openGallery'.tr),
-        subtitle: Text(
-            state.inputGalleryUrl?.url ?? state.inputGalleryImagePageUrl!.url,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis),
-        leading: const Icon(Icons.open_in_new),
-        onTap: () {
-          state.searchFieldFocusNode.unfocus();
+    return moonListTile(
+      title: 'openGallery'.tr,
+      subtitleWidget: Text(
+              state.inputGalleryUrl?.url ?? state.inputGalleryImagePageUrl!.url,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis)
+          .subHeader(),
+      leading: moonIcon(icon: BootstrapIcons.box_arrow_up_left),
+      onTap: () {
+        state.searchFieldFocusNode.unfocus();
 
-          if (state.inputGalleryUrl != null) {
-            toRoute(Routes.details,
-                arguments:
-                    DetailsPageArgument(galleryUrl: state.inputGalleryUrl!));
-          } else if (state.inputGalleryImagePageUrl != null) {
-            toRoute(Routes.imagePage,
-                arguments: GalleryImagePageArgument(
-                    galleryImagePageUrl: state.inputGalleryImagePageUrl!));
-          }
-        },
-      ),
+        if (state.inputGalleryUrl != null) {
+          toRoute(Routes.details,
+              arguments:
+                  DetailsPageArgument(galleryUrl: state.inputGalleryUrl!));
+        } else if (state.inputGalleryImagePageUrl != null) {
+          toRoute(Routes.imagePage,
+              arguments: GalleryImagePageArgument(
+                  galleryImagePageUrl: state.inputGalleryImagePageUrl!));
+        }
+      },
     );
   }
 
@@ -285,35 +283,36 @@ mixin SearchPageMixin<L extends SearchPageLogicMixin,
       sliver: SliverList.builder(
         itemBuilder: (context, index) => FadeIn(
           duration: const Duration(milliseconds: 400),
-          child: ListTile(
-            title: highlightRawTag(
-              context,
-              state.suggestions[index],
-              TextStyle(
-                  fontSize: UIConfig.searchPageSuggestionTitleTextSize,
-                  color: UIConfig.searchPageSuggestionTitleColor(context)),
-              const TextStyle(
-                  fontSize: UIConfig.searchPageSuggestionTitleTextSize,
-                  color: UIConfig.searchPageSuggestionHighlightColor),
-            ),
-            subtitle: state.suggestions[index].tagData.tagName == null
-                ? null
-                : highlightTranslatedTag(
-                    context,
-                    state.suggestions[index],
-                    TextStyle(
-                        fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
-                        color: UIConfig.searchPageSuggestionSubTitleColor(
-                            context)),
-                    const TextStyle(
-                        fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
-                        color: UIConfig.searchPageSuggestionHighlightColor),
-                  ),
-            leading: Icon(Icons.search,
+          child: moonListTileWidgets(
+            label: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              highlightRawTag(
+                context,
+                state.suggestions[index],
+                TextStyle(
+                    fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                    color: UIConfig.searchPageSuggestionTitleColor(context)),
+                const TextStyle(
+                    fontSize: UIConfig.searchPageSuggestionTitleTextSize,
+                    color: UIConfig.searchPageSuggestionHighlightColor),
+              ),
+              if (state.suggestions[index].tagData.tagName != null)
+                highlightTranslatedTag(
+                  context,
+                  state.suggestions[index],
+                  TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
+                      color:
+                          UIConfig.searchPageSuggestionSubTitleColor(context)),
+                  const TextStyle(
+                      fontSize: UIConfig.searchPageSuggestionSubTitleTextSize,
+                      color: UIConfig.searchPageSuggestionHighlightColor),
+                ),
+            ]),
+            leading: moonIcon(icon: BootstrapIcons.search,
                 color: UIConfig.searchPageSuggestionTitleColor(context)),
-            dense: true,
-            minLeadingWidth: 20,
-            visualDensity: const VisualDensity(vertical: -1),
             onTap: () {
               if (state.searchConfigInitCompleter.isCompleted) {
                 state.searchConfig.keyword =

@@ -1,5 +1,5 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
@@ -50,7 +50,7 @@ class LoadingStateIndicator extends StatelessWidget {
     this.errorTapCallback,
     this.noDataTapCallback,
     this.useCupertinoIndicator = false,
-    this.indicatorRadius = 12,
+    this.indicatorRadius = 16,
     this.indicatorColor,
     this.idleWidgetBuilder,
     this.loadingWidgetBuilder,
@@ -70,7 +70,8 @@ class LoadingStateIndicator extends StatelessWidget {
       case LoadingState.loading:
         child = loadingWidgetBuilder?.call() ??
             (useCupertinoIndicator
-                ? CupertinoActivityIndicator(radius: indicatorRadius, color: indicatorColor)
+                ? CupertinoActivityIndicator(
+                    radius: indicatorRadius, color: indicatorColor)
                 : Center(child: UIConfig.loadingAnimation(context)));
         break;
       case LoadingState.error:
@@ -79,17 +80,25 @@ class LoadingStateIndicator extends StatelessWidget {
                 ? idleWidgetBuilder!.call()
                 : GestureDetector(
                     onTap: errorTapCallback,
-                    child: Icon(FontAwesomeIcons.redoAlt, size: indicatorRadius * 2, color: UIConfig.loadingStateIndicatorButtonColor(context)),
+                    child: moonIcon(
+                        icon: BootstrapIcons.arrow_clockwise,
+                        size: indicatorRadius * 2,
+                        color:
+                            UIConfig.loadingStateIndicatorButtonColor(context)),
                   ));
         break;
       case LoadingState.idle:
         child = idleWidgetBuilder?.call() ??
             (useCupertinoIndicator
-                ? CupertinoActivityIndicator(radius: indicatorRadius, color: indicatorColor)
+                ? CupertinoActivityIndicator(
+                    radius: indicatorRadius, color: indicatorColor)
                 : Center(child: UIConfig.loadingAnimation(context)));
         break;
       case LoadingState.noMore:
-        child = noMoreWidget ?? Text('noMoreData'.tr, style: TextStyle(color: UIConfig.loadingStateIndicatorButtonColor(context)));
+        child = noMoreWidget ??
+            Text('noMoreData'.tr,
+                style: TextStyle(
+                    color: UIConfig.loadingStateIndicatorButtonColor(context))).subHeader();
         break;
       case LoadingState.success:
         if (successWidgetSameWithIdle == true) {
@@ -103,7 +112,12 @@ class LoadingStateIndicator extends StatelessWidget {
       case LoadingState.noData:
         child = GestureDetector(
           onTap: noDataTapCallback,
-          child: noDataWidget ?? Text('noData'.tr, style: TextStyle(color: UIConfig.loadingStateIndicatorButtonColor(context))).appHeader(),
+          child: noDataWidget ??
+              Text('noData'.tr,
+                      style: TextStyle(
+                          color: UIConfig.loadingStateIndicatorButtonColor(
+                              context)))
+                  .appHeader(),
         );
         break;
     }

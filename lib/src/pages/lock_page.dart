@@ -1,7 +1,9 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/mixin/window_widget_mixin.dart';
 import 'package:skana_ehentai/src/routes/routes.dart';
 import 'package:skana_ehentai/src/setting/security_setting.dart';
@@ -11,19 +13,21 @@ import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:local_auth_windows/local_auth_windows.dart';
-import 'package:pinput/pinput.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../config/ui_config.dart';
 
 class LockPage extends StatefulWidget {
-  const LockPage({Key? key}) : super(key: key);
+  const LockPage({super.key});
 
   @override
   State<LockPage> createState() => _LockPageState();
 }
 
-class _LockPageState extends State<LockPage> with WindowListener, WindowWidgetMixin {
+class _LockPageState extends State<LockPage>
+    with WindowListener, WindowWidgetMixin {
   String hintText = 'localizedReason'.tr;
 
   TextEditingController controller = TextEditingController();
@@ -48,38 +52,21 @@ class _LockPageState extends State<LockPage> with WindowListener, WindowWidgetMi
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (securitySetting.enablePasswordAuth.isTrue)
-                  Pinput(
-                    length: 4,
-                    controller: controller,
-                    pinAnimationType: PinAnimationType.fade,
+                  MoonAuthCode(
+                    authInputFieldCount: 4,
+                    textController: controller,
+                    validator: (value) {
+                      return null;
+                    },
+                    autoDismissKeyboard: false,
                     obscureText: true,
-                    preFilledWidget: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: UIConfig.lockPagePinCodeRegionWidth,
-                          height: UIConfig.lockPageCursorHeight,
-                          color: UIConfig.lockPageFilledDashColor(context),
-                        )
-                      ],
-                    ),
-                    cursor: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: UIConfig.lockPagePinCodeRegionWidth,
-                          height: UIConfig.lockPageCursorHeight,
-                          color: UIConfig.lockPageUnfilledDashColor(context),
-                        )
-                      ],
-                    ),
-                    defaultPinTheme: const PinTheme(
-                      width: UIConfig.lockPagePinCodeRegionWidth,
-                      height: UIConfig.lockPagePinCodeRegionWidth,
-                      textStyle: TextStyle(fontSize: 24),
-                    ),
+                    errorBuilder: (context, errorText) {
+                      return Text(errorText ?? '',
+                          style: const TextStyle(color: Colors.red));
+                    },
                     onCompleted: (String value) {
-                      if (keyToMd5(value) != securitySetting.encryptedPassword.value) {
+                      if (keyToMd5(value) !=
+                          securitySetting.encryptedPassword.value) {
                         setState(() {
                           controller.clear();
                           hintText = 'passwordErrorHint'.tr;
@@ -89,15 +76,18 @@ class _LockPageState extends State<LockPage> with WindowListener, WindowWidgetMi
 
                       unlock();
                     },
-                    closeKeyboardWhenCompleted: false,
                   ),
                 Container(
                   padding: const EdgeInsets.only(top: 32),
                   alignment: Alignment.center,
-                  child: Text(hintText),
+                  child: Text(hintText).subHeader(),
                 ),
                 if (securitySetting.enableBiometricAuth.isTrue)
-                  IconButton(onPressed: biometricAuth, icon: const Icon(Icons.fingerprint, size: 40)).marginOnly(top: 24),
+                  MoonEhButton.md(
+                          onTap: biometricAuth,
+                          icon: BootstrapIcons.fingerprint,
+                          size: 40)
+                      .marginOnly(top: 24),
               ],
             ),
           ),

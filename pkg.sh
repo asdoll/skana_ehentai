@@ -1,8 +1,8 @@
 version=$(head -n 5 pubspec.yaml | tail -n 1 | cut -d ' ' -f 2)
 
-flutter build macos --release -t lib/src/main.dart \
-&& hdiutil create -size 150m -fs HFS+ -volname JHenTai JHenTai.dmg \
-&& hdiutil attach JHenTai.dmg \
-&& cp -R build/macos/Build/Products/Release/jhentai.app /Volumes/JHenTai \
-&& pkgbuild --install-location /Applications/JHenTai.app --identifier top.jtmonster.jhentai --version ${version} --root /Volumes/JHenTai/jhentai.app build/macos/JHenTai-${version}.pkg \
-&& hdiutil detach /Volumes/JHenTai
+flutter build macos --release -t lib/main.dart \
+&& hdiutil create -size 150m -fs HFS+ -volname SkanaEH SkanaEH.dmg \
+&& hdiutil attach SkanaEH.dmg \
+&& cp -R build/macos/Build/Products/Release/skana_ehentai.app /Volumes/SkanaEH \
+&& pkgbuild --install-location /Applications/SkanaEH.app --identifier com.skanaone.skana_ehentai --version ${version} --root /Volumes/SkanaEH/skana_ehentai.app build/macos/SkanaEH-${version}.pkg \
+&& hdiutil detach /Volumes/SkanaEH

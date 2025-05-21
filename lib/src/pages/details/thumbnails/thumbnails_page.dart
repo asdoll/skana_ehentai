@@ -1,6 +1,6 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/mixin/scroll_to_top_page_mixin.dart';
 import 'package:skana_ehentai/src/pages/details/thumbnails/thumbnails_page_logic.dart';
@@ -8,6 +8,7 @@ import 'package:skana_ehentai/src/pages/details/thumbnails/thumbnails_page_state
 import 'package:skana_ehentai/src/service/gallery_download_service.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_image.dart';
+import 'package:skana_ehentai/src/widget/icons.dart';
 import 'package:skana_ehentai/src/widget/keep_alive.dart';
 
 import '../../../config/ui_config.dart';
@@ -29,7 +30,7 @@ class ThumbnailsPage extends StatelessWidget with Scroll2TopPageMixin {
   @override
   Scroll2TopStateMixin get scroll2TopState => state;
 
-  ThumbnailsPage({Key? key}) : super(key: key);
+  ThumbnailsPage({super.key});
 
   String get _mainTitleText =>
       logic.detailsPageState.gallery?.title ??
@@ -55,10 +56,9 @@ class ThumbnailsPage extends StatelessWidget with Scroll2TopPageMixin {
     return appBar(
       title: _mainTitleText,
       actions: [
-        IconButton(
-          icon: const Icon(FontAwesomeIcons.paperPlane, size: 21),
-          visualDensity: const VisualDensity(vertical: -2),
-          onPressed: logic.handleTapJumpButton,
+        MoonEhButton.md(
+          icon: BootstrapIcons.send,
+          onTap: logic.handleTapJumpButton,
         ),
       ],
       forceMaterialTransparency: true,

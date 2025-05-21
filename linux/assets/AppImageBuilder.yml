@@ -2,11 +2,11 @@ version: 1
 AppDir:
   path: ../../build/linux/AppDir
   app_info:
-    id: top.jtmonster.jhentai
-    name: JHenTai
-    icon: top.jtmonster.jhentai
+    id: com.skanaone.skana_ehentai
+    name: SkanaEH
+    icon: com.skanaone.skana_ehentai
     version: latest
-    exec: jhentai
+    exec: skana_ehentai
     exec_args: $@
   files:
     include:

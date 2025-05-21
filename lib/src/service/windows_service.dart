@@ -50,7 +50,7 @@ class WindowService with JHLifeCircleBeanErrorCatch implements JHLifeCircleBean 
         size: Size(windowWidth, windowHeight),
         backgroundColor: Colors.transparent,
         skipTaskbar: false,
-        title: 'JHenTai',
+        title: 'SkanaEH',
         titleBarStyle: GetPlatform.isWindows ? TitleBarStyle.hidden : TitleBarStyle.normal,
       );
 

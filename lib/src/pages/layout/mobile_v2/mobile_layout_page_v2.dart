@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:collection/collection.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -111,15 +112,25 @@ class MobileLayoutPageV2 extends StatelessWidget {
       builder: (_) => Theme(
         data: Theme.of(context).copyWith(splashColor: Colors.transparent),
         child: NavigationBar(
+          backgroundColor: UIConfig.downloadPageCardColor(context),
           selectedIndex: state.selectedNavigationIndex,
           onDestinationSelected: logic.handleTapNavigationBarButton,
+          height: 56,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          indicatorColor: UIConfig.primaryColor(context).withValues(alpha: 0.5),
           destinations: [
             NavigationDestination(
-                icon: const Icon(Icons.home), label: 'home'.tr),
+                selectedIcon: moonIcon(icon: BootstrapIcons.house_fill),
+                icon: moonIcon(icon: BootstrapIcons.house),
+                label: 'home'.tr),
             NavigationDestination(
-                icon: const Icon(Icons.download), label: 'download'.tr),
+                selectedIcon: moonIcon(icon: BootstrapIcons.download),
+                icon: moonIcon(icon: BootstrapIcons.download),
+                label: 'download'.tr),
             NavigationDestination(
-                icon: const Icon(Icons.settings), label: 'setting'.tr),
+                selectedIcon: moonIcon(icon: BootstrapIcons.gear_fill),
+                icon: moonIcon(icon: BootstrapIcons.gear),
+                label: 'setting'.tr),
           ],
         ),
       ),

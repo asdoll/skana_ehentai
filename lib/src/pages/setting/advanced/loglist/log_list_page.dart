@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_wheel_speed_controller.dart';
 import 'package:path/path.dart';
 
@@ -11,10 +12,10 @@ import '../../../../routes/routes.dart';
 import '../../../../utils/route_util.dart';
 
 class LogListPage extends StatefulWidget {
-  const LogListPage({Key? key}) : super(key: key);
+  const LogListPage({super.key});
 
   @override
-  _LogListPageState createState() => _LogListPageState();
+  State<LogListPage> createState() => _LogListPageState();
 }
 
 class _LogListPageState extends State<LogListPage> {
@@ -51,7 +52,7 @@ class _LogListPageState extends State<LogListPage> {
           controller: scrollController,
           children: logs
               .map(
-                (log) => ListTile(title: Text(basename(log.path)), onTap: () => toRoute(Routes.log, arguments: log)),
+                (log) => moonListTile(title: basename(log.path), onTap: () => toRoute(Routes.log, arguments: log)),
               )
               .toList(),
         ).withListTileTheme(context).enableMouseDrag(withScrollBar: true),

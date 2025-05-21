@@ -797,7 +797,7 @@ class UIConfig {
 
   /// auth dialog
   static const double authDialogPinWidth = 300;
-  static const double authDialogPinHeight = 120;
+  static const double authDialogPinHeight = 90;
   static const double authDialogPinCodeRegionWidth = 60;
   static const double authDialogCursorHeight = 2;
 

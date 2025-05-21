@@ -1,16 +1,16 @@
 # flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
-  image_path: "assets/icon/JHenTai.png"
+  image_path: "assets/icon/skanaEH.png"
   
   android: "launcher_icon"
-  image_path_android: "assets/icon/JHenTai.png"
+  image_path_android: "assets/icon/skanaEH.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
-  adaptive_icon_background: "#e6e623"
-  adaptive_icon_foreground: "assets/icon/JHenTai-foreground.png"
+  adaptive_icon_background: "#728d6c"
+  adaptive_icon_foreground: "assets/icon/skanaEH_fg.png"
 #   adaptive_icon_monochrome: "assets/icon/monochrome.png"
 
   ios: true
-  image_path_ios: "assets/icon/JHenTai-square.png"
+  image_path_ios: "assets/icon/skanaEH_sq.png"
   remove_alpha_ios: true
   # image_path_ios_dark_transparent: "assets/icon/icon_dark.png"
   # image_path_ios_tinted_grayscale: "assets/icon/icon_tinted.png"
@@ -21,9 +21,9 @@ flutter_launcher_icons:
 
   windows:
     generate: true
-    image_path: "assets/icon/JHenTai.png"
+    image_path: "assets/icon/skanaEH.png"
     icon_size: 256
 
   macos:
     generate: true
-    image_path: "assets/icon/JHenTai.png"
+    image_path: "assets/icon/skanaEH.png"

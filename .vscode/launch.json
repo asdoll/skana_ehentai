@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "JHenTai",
+            "name": "SkanaEH",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "JHenTai (profile mode)",
+            "name": "SkanaEH (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "JHenTai (release mode)",
+            "name": "SkanaEH (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(jhentai LANGUAGES CXX)
+project(skana_ehentai LANGUAGES CXX)
 
-set(BINARY_NAME "jhentai")
+set(BINARY_NAME "skana_ehentai")
 
 cmake_policy(SET CMP0063 NEW)
 

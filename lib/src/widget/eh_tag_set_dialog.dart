@@ -1,9 +1,11 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/extension/dio_exception_extension.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
+import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 
 import '../config/ui_config.dart';
 import '../exception/eh_site_exception.dart';
@@ -37,37 +39,45 @@ class _EHTagSetDialogState extends State<EHTagSetDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      contentPadding: const EdgeInsets.only(top: 16, left: 12, right: 12, bottom: 16),
-      title: Text('chooseTagSet'.tr),
-      children: [
-        if (_loadingState == LoadingState.loading) SizedBox(height: 24, child: Center(child: UIConfig.loadingAnimation(context))),
-        if (_loadingState == LoadingState.error)
-          GestureDetector(
-            onTap: _getTagSet,
-            child: Icon(FontAwesomeIcons.redoAlt, size: 24, color: UIConfig.loadingStateIndicatorButtonColor(context)),
-          ),
-        if (_loadingState == LoadingState.success)
-          ..._tagSets
-              .map(
-                (tagSet) => ListTile(
-                  title: Text(tagSet.name),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                  onTap: () => backRoute(result: (tagSetNo: tagSet.number, remember: remember)),
-                ),
-              )
-              .toList(),
-        if (_loadingState == LoadingState.success && preferenceSetting.enableDefaultTagSet.isTrue)
-          ListTile(
-            dense: true,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-            visualDensity: const VisualDensity(vertical: -2, horizontal: -4),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [Text('asYourDefault'.tr), Checkbox(value: remember, onChanged: (value) => setState(() => remember = value!))],
+    return moonAlertDialog(
+      context: context,
+      title: 'chooseTagSet'.tr,
+      contentWidget: Column(
+        children: [
+          if (_loadingState == LoadingState.loading)
+            SizedBox(
+                height: 24,
+                child: Center(child: UIConfig.loadingAnimation(context))),
+          if (_loadingState == LoadingState.error)
+            GestureDetector(
+              onTap: _getTagSet,
+              child: moonIcon(
+                  icon: BootstrapIcons.arrow_clockwise,
+                  size: 24,
+                  color: UIConfig.loadingStateIndicatorButtonColor(context)),
             ),
-          )
-      ],
+          if (_loadingState == LoadingState.success)
+            ..._tagSets.map(
+              (tagSet) => moonListTile(
+                title: tagSet.name,
+                onTap: () => backRoute(
+                    result: (tagSetNo: tagSet.number, remember: remember)),
+              ),
+            ),
+          if (_loadingState == LoadingState.success &&
+              preferenceSetting.enableDefaultTagSet.isTrue)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('asYourDefault'.tr).small(),
+                SizedBox(width: 4),
+                MoonCheckbox(
+                    value: remember,
+                    onChanged: (value) => setState(() => remember = value!))
+              ],
+            ),
+        ],
+      ),
     );
   }
 
@@ -76,7 +86,13 @@ class _EHTagSetDialogState extends State<EHTagSetDialog> {
       _loadingState = LoadingState.loading;
     });
 
-    ({List<({int number, String name})> tagSets, bool tagSetEnable, Color? tagSetBackgroundColor, List<WatchedTag> tags, String apikey}) pageInfo;
+    ({
+      List<({int number, String name})> tagSets,
+      bool tagSetEnable,
+      Color? tagSetBackgroundColor,
+      List<WatchedTag> tags,
+      String apikey
+    }) pageInfo;
     try {
       pageInfo = await ehRequest.requestMyTagsPage(
         parser: EHSpiderParser.myTagsPage2TagSetNamesAndTagSetsAndApikey,

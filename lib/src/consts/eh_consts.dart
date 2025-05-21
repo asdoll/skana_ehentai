@@ -1,7 +1,7 @@
 import 'package:skana_ehentai/src/setting/eh_setting.dart';
 
 class EHConsts {
-  static const String appName = "JHenTai";
+  static const String appName = "SkanaEH";
 
   static String get EIndex => ehSetting.site.value == 'EH' ? EHIndex : EXIndex;
 
