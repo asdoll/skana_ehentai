@@ -70,8 +70,8 @@ jobs:
       - name: Setup Android keystore
         if: matrix.target == 'Android'
         run: |
-          echo "${{ secrets.ENCODED_KEYSTORE }}" | base64 -di > android/app/key.jks
-          echo "${{ secrets.KEY_PROPERTIES }}" > android/key.properties
+          echo "${{ secrets.KEY_BASE64 }}" | base64 -di > android/app/key.jks
+          echo "${{ secrets.KEY_PROPERTIES_BASE64 }}" | base64 -di > android/key.properties
       # # Add SkanaEH api serret
       # - name: Setup SkanaEH API Secret
       #   run: |
