@@ -104,8 +104,8 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
                   physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   scrollBehavior: UIConfig.scrollBehaviourWithScrollBarWithMouse,
                   slivers: <Widget>[
-                    SliverToBoxAdapter(child: SizedBox(height: 4)),
                     buildPullDownIndicator(),
+                    SliverToBoxAdapter(child: SizedBox(height: 4)),
                     buildGalleryCollection(context),
                     buildLoadMoreIndicator(),
                   ],
