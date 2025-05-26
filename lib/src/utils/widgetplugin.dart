@@ -632,13 +632,6 @@ Widget buildRefreshIndicator(
     1.0,
   );
 
-  // Place the indicator at the top of the sliver that opens up. We're using a
-  // Stack/Positioned widget because the CupertinoActivityIndicator does some
-  // internal translations based on the current size (which grows as the user drags)
-  // that makes Padding calculations difficult. Rather than be reliant on the
-  // internal implementation of the activity indicator, the Positioned widget allows
-  // us to be explicit where the widget gets placed. The indicator should appear
-  // over the top of the dragged widget, hence the use of Clip.none.
   return Center(
     child: Stack(
       clipBehavior: Clip.none,
@@ -665,9 +658,6 @@ Widget _buildIndicatorForRefreshState(
 ) {
   switch (refreshState) {
     case RefreshIndicatorMode.drag:
-      // While we're dragging, we draw individual ticks of the spinner while simultaneously
-      // easing the opacity in. The opacity curve values here were derived using
-      // Xcode through inspecting a native app running on iOS 13.5.
       const Curve opacityCurve = Interval(0.0, 0.35, curve: Curves.easeInOut);
       return Opacity(
         opacity: opacityCurve.transform(percentageComplete),
@@ -679,19 +669,16 @@ Widget _buildIndicatorForRefreshState(
       );
     case RefreshIndicatorMode.armed:
     case RefreshIndicatorMode.refresh:
-      // Once we're armed or performing the refresh, we just show the normal spinner.
       return progressIndicator(
         Get.context!,
         size: radius,
       );
     case RefreshIndicatorMode.done:
-      // When the user lets go, the standard transition is to shrink the spinner.
       return progressIndicator(
         Get.context!,
         size: radius * percentageComplete,
       );
     case RefreshIndicatorMode.inactive:
-      // Anything else doesn't show anything.
       return const SizedBox.shrink();
   }
 }

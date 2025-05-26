@@ -110,19 +110,21 @@ class _EHTagState extends State<EHTag> with AnimationMixin {
     if (widget.showTagStatus &&
         widget.tag.tagStatus != EHTagStatus.confidence) {
       child = DottedBorder(
-        customPath: (size) {
-          return Path()
-            ..moveTo(0, size.height)
-            ..lineTo(size.width, size.height);
-        },
-        color: UIConfig.ehTagUnderLineColor(context),
-        dashPattern: widget.tag.tagStatus == EHTagStatus.skepticism
-            ? const <double>[3, 4]
-            : const <double>[1, 2],
-        padding: EdgeInsets.zero,
-        strokeCap: widget.tag.tagStatus == EHTagStatus.skepticism
-            ? StrokeCap.round
-            : StrokeCap.butt,
+        options: CustomPathDottedBorderOptions(
+          customPath: (size) {
+            return Path()
+              ..moveTo(0, size.height)
+              ..lineTo(size.width, size.height);
+          },
+          color: UIConfig.ehTagUnderLineColor(context),
+          dashPattern: widget.tag.tagStatus == EHTagStatus.skepticism
+              ? const <double>[3, 4]
+              : const <double>[1, 2],
+          padding: EdgeInsets.zero,
+          strokeCap: widget.tag.tagStatus == EHTagStatus.skepticism
+              ? StrokeCap.round
+              : StrokeCap.butt,
+        ),
         child: child,
       );
     }

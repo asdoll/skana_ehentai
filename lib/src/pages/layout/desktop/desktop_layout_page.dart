@@ -16,7 +16,7 @@ class DesktopLayoutPage extends StatelessWidget {
   final DesktopLayoutPageLogic logic = Get.put(DesktopLayoutPageLogic(), permanent: true);
   final DesktopLayoutPageState state = Get.find<DesktopLayoutPageLogic>().state;
 
-  DesktopLayoutPage({Key? key}) : super(key: key);
+  DesktopLayoutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -104,19 +104,21 @@ class DesktopLayoutPage extends StatelessWidget {
         children: [
           ResizableChild(
             child: _leftColumn(),
-            size: ResizableSize.ratio(windowService.leftColumnWidthRatio),
-            minSize: 100,
+            size: ResizableSize.ratio(windowService.leftColumnWidthRatio, min: 100),
+            divider: ResizableDivider(
+              thickness: 1.5,
+              color: UIConfig.layoutDividerColor(context),
+            ),
           ),
           ResizableChild(
             child: _rightColumn(),
-            size: ResizableSize.ratio(1 - windowService.leftColumnWidthRatio),
-            minSize: 100,
+            size: ResizableSize.ratio(1 - windowService.leftColumnWidthRatio, min: 100),
+            divider: ResizableDivider(
+              thickness: 1.5,
+              color: UIConfig.layoutDividerColor(context),
+            ),
           ),
         ],
-        divider: ResizableDivider(
-          thickness: 1.5,
-          color: UIConfig.layoutDividerColor(context),
-        ),
       ),
     );
   }
