@@ -18,7 +18,8 @@ import '../../widget/loading_state_indicator.dart';
 import 'base_page_logic.dart';
 import 'base_page_state.dart';
 
-abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extends StatelessWidget with Scroll2TopPageMixin {
+abstract class BasePage<L extends BasePageLogic, S extends BasePageState>
+    extends StatelessWidget with Scroll2TopPageMixin {
   /// For mobile layout v2
   final bool showMenuButton;
   final bool showJumpButton;
@@ -53,10 +54,14 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
       global: false,
       init: logic,
       builder: (_) => Scaffold(
-        backgroundColor: UIConfig.backGroundColor(context),
-        appBar: showFilterButton || showJumpButton || showMenuButton || showTitle ? buildAppBar(context) : null,
-        body: SafeArea(child: buildBody(context)),
-        floatingActionButton: showScroll2TopButton ? buildFloatingActionButton() : null,
+        backgroundColor: UIConfig.opaqueBackGroundColor(context),
+        appBar:
+            showFilterButton || showJumpButton || showMenuButton || showTitle
+                ? buildAppBar(context)
+                : null,
+        body: buildBody(context),
+        floatingActionButton:
+            showScroll2TopButton ? buildFloatingActionButton() : null,
       ),
     );
   }
@@ -78,8 +83,11 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
   List<Widget> buildAppBarActions() {
     return [
       if (showJumpButton && state.gallerys.isNotEmpty)
-        MoonEhButton.md(onTap: logic.handleTapJumpButton, icon: BootstrapIcons.send),
-      if (showFilterButton) MoonEhButton.md(onTap: logic.handleTapFilterButton, icon: BootstrapIcons.funnel),
+        MoonEhButton.md(
+            onTap: logic.handleTapJumpButton, icon: BootstrapIcons.send),
+      if (showFilterButton)
+        MoonEhButton.md(
+            onTap: logic.handleTapFilterButton, icon: BootstrapIcons.funnel),
     ];
   }
 
@@ -92,26 +100,29 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
       id: logic.bodyId,
       global: false,
       init: logic,
-      builder: (_) => state.gallerys.isEmpty && state.loadingState != LoadingState.idle
-          ? buildCenterStatusIndicator()
-          : NotificationListener<UserScrollNotification>(
-              onNotification: logic.onUserScroll,
-              child: EHWheelSpeedController(
-                controller: state.scrollController,
-                child: CustomScrollView(
-                  key: state.pageStorageKey,
-                  controller: state.scrollController,
-                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                  scrollBehavior: UIConfig.scrollBehaviourWithScrollBarWithMouse,
-                  slivers: <Widget>[
-                    buildPullDownIndicator(),
-                    SliverToBoxAdapter(child: SizedBox(height: 4)),
-                    buildGalleryCollection(context),
-                    buildLoadMoreIndicator(),
-                  ],
+      builder: (_) =>
+          state.gallerys.isEmpty && state.loadingState != LoadingState.idle
+              ? buildCenterStatusIndicator()
+              : NotificationListener<UserScrollNotification>(
+                  onNotification: logic.onUserScroll,
+                  child: EHWheelSpeedController(
+                    controller: state.scrollController,
+                    child: CustomScrollView(
+                      key: state.pageStorageKey,
+                      controller: state.scrollController,
+                      physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()),
+                      scrollBehavior:
+                          UIConfig.scrollBehaviourWithScrollBarWithMouse,
+                      slivers: <Widget>[
+                        buildPullDownIndicator(),
+                        SliverToBoxAdapter(child: SizedBox(height: 4)),
+                        buildGalleryCollection(context),
+                        buildLoadMoreIndicator(),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
     );
   }
 
@@ -170,11 +181,14 @@ abstract class BasePage<L extends BasePageLogic, S extends BasePageState> extend
         key: state.galleryCollectionKey,
         context: context,
         gallerys: state.gallerys,
-        listMode: styleSetting.pageListMode[state.route] ?? styleSetting.listMode.value,
+        listMode: styleSetting.pageListMode[state.route] ??
+            styleSetting.listMode.value,
         loadingState: state.loadingState,
         handleTapCard: logic.handleTapGalleryCard,
-        handleLongPressCard: (gallery) => logic.handleLongPressCard(context, gallery),
-        handleSecondaryTapCard: (gallery) => logic.handleSecondaryTapCard(context, gallery),
+        handleLongPressCard: (gallery) =>
+            logic.handleLongPressCard(context, gallery),
+        handleSecondaryTapCard: (gallery) =>
+            logic.handleSecondaryTapCard(context, gallery),
         handleLoadMore: logic.loadMore,
       ),
     );

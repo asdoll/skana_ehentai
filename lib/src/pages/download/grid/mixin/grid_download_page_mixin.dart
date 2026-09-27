@@ -74,8 +74,14 @@ mixin GridBasePage on StatelessWidget implements Scroll2TopPageMixin {
               () => DraggableGridViewBuilder(
                 key: PageStorageKey(state.currentGroup),
                 controller: state.scrollController,
-                padding: const EdgeInsets.only(
-                    top: 8, left: 12, right: 16, bottom: 24),
+                padding: EdgeInsets.only(
+                  top: 8,
+                  left: 12,
+                  right: 16,
+                  // Explicit padding, so the space the transparent navigation bar
+                  // takes up has to be added by hand.
+                  bottom: 24 + UIConfig.mobileBottomBarHeight(context),
+                ),
                 children: getChildren(context),
                 dragFeedback: (List<DraggableGridItem> list, int index) {
                   return SizedBox(

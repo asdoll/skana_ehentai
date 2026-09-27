@@ -34,6 +34,14 @@ class MobileLayoutPageV2 extends StatelessWidget {
       () => WillPopInterceptor(
         child: Scaffold(
           key: MobileLayoutPageV2State.scaffoldKey,
+          // The bar below is transparent, so instead of leaving an empty strip
+          // under it the body is allowed to run all the way down: the tab content
+          // then scrolls underneath the bar exactly like it does on the details
+          // page, which has no bar at all.
+          extendBody: true,
+          // Only visible where the content above has not reached yet, e.g. under
+          // a short list; it has to match what the pages paint for that.
+          backgroundColor: UIConfig.opaqueBackGroundColor(context),
           drawerEdgeDragWidth:
               preferenceSetting.drawerGestureEdgeWidth.value.toDouble(),
           drawer: buildLeftDrawer(context),
@@ -112,7 +120,6 @@ class MobileLayoutPageV2 extends StatelessWidget {
       builder: (_) => Theme(
         data: Theme.of(context).copyWith(splashColor: Colors.transparent),
         child: NavigationBar(
-          backgroundColor: UIConfig.downloadPageCardColor(context),
           selectedIndex: state.selectedNavigationIndex,
           onDestinationSelected: logic.handleTapNavigationBarButton,
           height: 56,

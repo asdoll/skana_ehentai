@@ -1,8 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/setting/download_setting.dart';
+import 'package:skana_ehentai/src/utils/directory_util.dart';
 import 'package:skana_ehentai/src/utils/string_uril.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/eh_alert_dialog.dart';
@@ -26,9 +26,8 @@ class ExtraGalleryScanPathPage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 16),
           children: downloadSetting.extraGalleryScanPath
               .map(
-                (path) => moonListTile(
-                    title: path,
-                    onTap: () => _handleDelete(path)),
+                (path) =>
+                    moonListTile(title: path, onTap: () => _handleDelete(path)),
               )
               .toList(),
         ),
@@ -41,7 +40,7 @@ class ExtraGalleryScanPathPage extends StatelessWidget {
 
     String? newPath;
     try {
-      newPath = await FilePicker.platform.getDirectoryPath();
+      newPath = await pickUsableDirectoryPath();
     } on Exception catch (e) {
       log.error('Pick extra path failed', e);
     }

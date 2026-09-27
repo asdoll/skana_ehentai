@@ -17,13 +17,23 @@ mixin MultiSelectDownloadPageMixin on StatelessWidget {
       id: multiSelectDownloadPageLogic.bottomAppbarId,
       init: multiSelectDownloadPageLogic,
       global: false,
-      builder: (_) => FadeSlideWidget(
-        show: multiSelectDownloadPageState.inMultiSelectMode,
-        axis: Axis.vertical,
-        child: BottomAppBar(
-          color: UIConfig.downloadPageCardColor(Get.context!),
-          child: Row(
-            children: buildBottomAppBarButtons(),
+      builder: (_) => Builder(
+        builder: (context) => FadeSlideWidget(
+          show: multiSelectDownloadPageState.inMultiSelectMode,
+          axis: Axis.vertical,
+          child: Padding(
+            // The mobile layout's navigation bar is transparent and the page runs
+            // under it, so this bar has to be lifted above it by hand - otherwise
+            // the two are drawn on top of each other. 0 on the other layouts,
+            // which have no such bar.
+            padding: EdgeInsets.only(
+                bottom: UIConfig.mobileBottomBarHeight(context)),
+            child: BottomAppBar(
+              color: UIConfig.downloadPageCardColor(Get.context!),
+              child: Row(
+                children: buildBottomAppBarButtons(),
+              ),
+            ),
           ),
         ),
       ),

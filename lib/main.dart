@@ -1,4 +1,5 @@
 import 'package:desktop_webview_window/desktop_webview_window.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -51,6 +52,7 @@ import 'package:skana_ehentai/src/service/log.dart';
 
 import 'src/config/theme_config.dart';
 import 'src/network/archive_bot_request.dart';
+import 'src/utils/platform_util.dart';
 
 List<JHLifeCircleBean> lifeCircleBeans = [
   ehRequest,
@@ -103,11 +105,30 @@ void main(List<String> args) async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  if (isOhos) {
+    // file_picker's Dart side is federated: `FilePicker.platform` is a `late`
+    // field that only the generated plugin registrant ever assigns. No platform
+    // implementation is registered for OHOS, so reading it - which every call
+    // site does - throws LateInitializationError, and since that is an Error
+    // rather than an Exception it even escapes the `on Exception` guards around
+    // those calls. The OHOS native plugin itself is present (vendored as
+    // file_picker_ohos) and speaks the same
+    // miguelruivo.flutter.plugins.filepicker channel as FilePickerIO, so wiring
+    // the IO implementation up by hand is all that is needed.
+    FilePicker.platform = FilePickerIO();
+  }
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarDividerColor: Colors.transparent,
     statusBarColor: Colors.transparent,
   ));
+
+  // OHOS: the system navigation (gesture) bar is drawn under the layout's own
+  // bottom bar and reads as an extra strip there, so it stays hidden app-wide.
+  // The window already exists when this runs (FlutterAbility.onWindowStageCreate
+  // calls initWindow() before loadContent()).
+  showStatusBarOnly();
 
   lifeCircleBeans = topologicalSort(lifeCircleBeans);
   for (JHLifeCircleBean bean in lifeCircleBeans) {

@@ -11,12 +11,14 @@ import '../mixin/search_page_mixin.dart';
 import '../mixin/search_page_state_mixin.dart';
 import '../quick_search/quick_search_page.dart';
 
-class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMobileV2State>
+class SearchPageMobileV2
+    extends BasePage<SearchPageMobileV2Logic, SearchPageMobileV2State>
     with SearchPageMixin<SearchPageMobileV2Logic, SearchPageMobileV2State> {
   final String tag = newUUID();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  SearchPageMobileV2({super.key}) : super(showJumpButton: true, showScroll2TopButton: true) {
+  SearchPageMobileV2({super.key})
+      : super(showJumpButton: true, showScroll2TopButton: true) {
     logic = Get.put(SearchPageMobileV2Logic(), tag: tag);
     state = logic.state;
   }
@@ -36,10 +38,12 @@ class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMob
         () => Scaffold(
           key: scaffoldKey,
           appBar: buildAppBar(context),
-          drawerEdgeDragWidth: preferenceSetting.drawerGestureEdgeWidth.value.toDouble(),
+          drawerEdgeDragWidth:
+              preferenceSetting.drawerGestureEdgeWidth.value.toDouble(),
           endDrawer: Drawer(width: 278, child: QuickSearchPage()),
-          endDrawerEnableOpenDragGesture: preferenceSetting.enableQuickSearchDrawerGesture.isTrue,
-          body: SafeArea(child: buildBody(context)),
+          endDrawerEnableOpenDragGesture:
+              preferenceSetting.enableQuickSearchDrawerGesture.isTrue,
+          body: buildBody(context),
           floatingActionButton: buildFloatingActionButton(),
           resizeToAvoidBottomInset: false,
         ),
@@ -51,7 +55,8 @@ class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMob
   AppBar? buildAppBar(BuildContext context) {
     return appBar(
       title: state.totalCount?.toPrintString(),
-      actions: buildActionButtons(visualDensity: const VisualDensity(horizontal: -4)),
+      actions: buildActionButtons(
+          visualDensity: const VisualDensity(horizontal: -4)),
     );
   }
 
@@ -65,7 +70,8 @@ class SearchPageMobileV2 extends BasePage<SearchPageMobileV2Logic, SearchPageMob
             id: logic.suggestionBodyId,
             global: false,
             init: logic,
-            builder: (_) => state.inputGalleryUrl == null && state.inputGalleryImagePageUrl == null
+            builder: (_) => state.inputGalleryUrl == null &&
+                    state.inputGalleryImagePageUrl == null
                 ? Expanded(child: buildSuggestionAndHistoryBody(context))
                 : buildOpenGalleryArea(),
           )

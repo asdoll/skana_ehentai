@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-typedef ContextMenuBuilder = Widget Function(BuildContext context, Offset offset);
+typedef ContextMenuBuilder = Widget Function(
+    BuildContext context, Offset offset);
 
 /// Shows and hides the context menu based on user gestures.
 ///
@@ -33,6 +34,9 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
       case TargetPlatform.iOS:
+      // OHOS is a touch platform too: long-press opens the context menu,
+      // secondary tap is not available there.
+      case TargetPlatform.ohos:
         return true;
       case TargetPlatform.macOS:
       case TargetPlatform.fuchsia:

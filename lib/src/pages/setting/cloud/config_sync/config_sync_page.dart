@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +16,7 @@ import 'package:skana_ehentai/src/network/jh_request.dart';
 import 'package:skana_ehentai/src/service/cloud_service.dart';
 import 'package:skana_ehentai/src/setting/user_setting.dart';
 import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/directory_util.dart';
 import 'package:skana_ehentai/src/utils/snack_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
@@ -191,7 +191,7 @@ class _ConfigSyncPageState extends State<ConfigSyncPage> {
 
     String? path;
     try {
-      path = await FilePicker.platform.getDirectoryPath();
+      path = await pickUsableDirectoryPath();
     } on Exception catch (e) {
       log.error('Pick download config path failed', e);
     }

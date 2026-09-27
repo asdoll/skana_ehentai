@@ -6,6 +6,7 @@ import 'package:skana_ehentai/src/routes/routes.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/icons.dart';
 import '../../setting/user_setting.dart';
+import '../../config/ui_config.dart';
 import '../../utils/route_util.dart';
 
 class SettingPage extends StatelessWidget {
@@ -16,6 +17,9 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Same colour as the other tabs and as the mobile v2 scaffold behind the
+      // transparent bottom bar, so that strip does not read as a separate band.
+      backgroundColor: UIConfig.opaqueBackGroundColor(context),
       appBar: appBar(
         title: 'setting'.tr,
         leading: showMenuButton
@@ -26,67 +30,71 @@ class SettingPage extends StatelessWidget {
       ),
       body: Obx(
         () => ListView(
-          padding: const EdgeInsets.only(top: 12),
+          // This list sets its own padding, so it does not get the bottom inset
+          // that the transparent navigation bar adds to the scroll views below
+          // it for free. Without it the last tile ends up behind the bar.
+          padding: EdgeInsets.only(
+              top: 12, bottom: UIConfig.mobileBottomBarHeight(context)),
           children: [
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.person),
+              leading: moonIcon(icon: BootstrapIcons.person),
               title: 'account'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}account'),
             ),
             if (userSetting.hasLoggedIn())
               moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.emoji_laughing),
+                leading: moonIcon(icon: BootstrapIcons.emoji_laughing),
                 title: 'EH'.tr,
-                trailing: SizedBox(width: 25,height: 25),
+                trailing: SizedBox(width: 25, height: 25),
                 onTap: () => toRoute('${Routes.settingPrefix}EH'),
               ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.phone),
+              leading: moonIcon(icon: BootstrapIcons.phone),
               title: 'style'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}style'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.book),
+              leading: moonIcon(icon: BootstrapIcons.book),
               title: 'read'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}read'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.star),
+              leading: moonIcon(icon: BootstrapIcons.star),
               title: 'preference'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}preference'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.wifi),
+              leading: moonIcon(icon: BootstrapIcons.wifi),
               title: 'network'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}network'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.download),
+              leading: moonIcon(icon: BootstrapIcons.download),
               title: 'download'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}download'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.lightning_charge),
+              leading: moonIcon(icon: BootstrapIcons.lightning_charge),
               title: 'performance'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}performance'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.mouse),
+              leading: moonIcon(icon: BootstrapIcons.mouse),
               title: 'mouseWheel'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}mouse_wheel'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.gear_wide),
+              leading: moonIcon(icon: BootstrapIcons.gear_wide),
               title: 'advanced'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}advanced'),
             ),
             // moonListTile(
@@ -96,15 +104,15 @@ class SettingPage extends StatelessWidget {
             //   onTap: () => toRoute('${Routes.settingPrefix}cloud'),
             // ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.fingerprint),
+              leading: moonIcon(icon: BootstrapIcons.fingerprint),
               title: 'security'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}security'),
             ),
             moonListTile(
-              leading: moonIcon(icon:BootstrapIcons.info),
+              leading: moonIcon(icon: BootstrapIcons.info),
               title: 'about'.tr,
-              trailing: SizedBox(width: 25,height: 25),
+              trailing: SizedBox(width: 25, height: 25),
               onTap: () => toRoute('${Routes.settingPrefix}about'),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io' as io;
 import 'dart:io';
 
@@ -31,6 +32,7 @@ import 'package:skana_ehentai/src/service/path_service.dart';
 import 'package:skana_ehentai/src/service/log.dart';
 import 'package:path/path.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
+import 'package:sqlite3/open.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import '../model/gallery.dart';
@@ -73,7 +75,8 @@ class AppDb extends _$AppDb {
   MigrationStrategy get migration {
     return MigrationStrategy(
       beforeOpen: (OpeningDetails details) async {
-        log.info('Database version before: ${details.versionBefore}, now: ${details.versionNow}');
+        log.info(
+            'Database version before: ${details.versionBefore}, now: ${details.versionNow}');
       },
       onUpgrade: (Migrator m, int from, int to) async {
         log.warning('Database version: $from -> $to');
@@ -87,22 +90,28 @@ class AppDb extends _$AppDb {
               await m.alterTable(TableMigration(image));
             }
             if (from < 3) {
-              await m.addColumn(galleryDownloadedOld, galleryDownloadedOld.downloadOriginalImage);
+              await m.addColumn(galleryDownloadedOld,
+                  galleryDownloadedOld.downloadOriginalImage);
             }
             if (from < 4) {
-              await m.addColumn(galleryDownloadedOld, galleryDownloadedOld.priority);
+              await m.addColumn(
+                  galleryDownloadedOld, galleryDownloadedOld.priority);
             }
             if (from < 5) {
-              await m.addColumn(galleryDownloadedOld, galleryDownloadedOld.groupName);
-              await m.addColumn(archiveDownloadedOld, archiveDownloadedOld.groupName);
+              await m.addColumn(
+                  galleryDownloadedOld, galleryDownloadedOld.groupName);
+              await m.addColumn(
+                  archiveDownloadedOld, archiveDownloadedOld.groupName);
               await _updateArchive(m);
             }
             if (from < 6) {
               await _updateHistory(m);
             }
             if (5 <= from && from < 7) {
-              await m.addColumn(galleryDownloadedOld, galleryDownloadedOld.groupName);
-              await m.addColumn(archiveDownloadedOld, archiveDownloadedOld.groupName);
+              await m.addColumn(
+                  galleryDownloadedOld, galleryDownloadedOld.groupName);
+              await m.addColumn(
+                  archiveDownloadedOld, archiveDownloadedOld.groupName);
             }
             if (from < 8) {
               await _createGroupTable(m);
@@ -114,9 +123,11 @@ class AppDb extends _$AppDb {
               await _deleteImageSizeColumn(m);
             }
             if (from < 11) {
-              await m.addColumn(galleryDownloadedOld, galleryDownloadedOld.sortOrder);
+              await m.addColumn(
+                  galleryDownloadedOld, galleryDownloadedOld.sortOrder);
               await m.addColumn(galleryGroup, galleryGroup.sortOrder);
-              await m.addColumn(archiveDownloadedOld, archiveDownloadedOld.sortOrder);
+              await m.addColumn(
+                  archiveDownloadedOld, archiveDownloadedOld.sortOrder);
               await m.addColumn(archiveGroup, archiveGroup.sortOrder);
             }
             if (from < 13) {
@@ -148,8 +159,14 @@ class AppDb extends _$AppDb {
               await m.createTable(blockRule);
             }
             if (17 <= from && from < 21) {
-              await m.alterTable(TableMigration(galleryDownloaded, newColumns: [galleryDownloaded.tags, galleryDownloaded.tagRefreshTime]));
-              await m.alterTable(TableMigration(archiveDownloaded, newColumns: [archiveDownloaded.tags, archiveDownloaded.tagRefreshTime]));
+              await m.alterTable(TableMigration(galleryDownloaded, newColumns: [
+                galleryDownloaded.tags,
+                galleryDownloaded.tagRefreshTime
+              ]));
+              await m.alterTable(TableMigration(archiveDownloaded, newColumns: [
+                archiveDownloaded.tags,
+                archiveDownloaded.tagRefreshTime
+              ]));
             }
             if (from < 21) {
               await m.createIndex(gIdxTagRefreshTime).ignoreDuplicateIndex();
@@ -160,7 +177,8 @@ class AppDb extends _$AppDb {
               await m.createTable(localConfig);
             }
             if (17 <= from && from < 23) {
-              await m.alterTable(TableMigration(archiveDownloaded, newColumns: [archiveDownloaded.parseSource]));
+              await m.alterTable(TableMigration(archiveDownloaded,
+                  newColumns: [archiveDownloaded.parseSource]));
             }
           });
         } on Exception catch (e) {
@@ -174,7 +192,8 @@ class AppDb extends _$AppDb {
 
   Future<void> _updateArchive(Migrator m) async {
     try {
-      List<ArchiveDownloadedOldData> archives = await ArchiveDao.selectOldArchives();
+      List<ArchiveDownloadedOldData> archives =
+          await ArchiveDao.selectOldArchives();
 
       await appDb.transaction(() async {
         for (ArchiveDownloadedOldData a in archives) {
@@ -197,7 +216,10 @@ class AppDb extends _$AppDb {
       await m.createTable(galleryHistory);
 
       if (Get.isRegistered<StorageService>()) {
-        List<Gallery>? gallerys = storageService.read<List>(ConfigEnum.oldGalleryHistory.key)?.map((e) => Gallery.fromJson(e)).toList();
+        List<Gallery>? gallerys = storageService
+            .read<List>(ConfigEnum.oldGalleryHistory.key)
+            ?.map((e) => Gallery.fromJson(e))
+            .toList();
 
         List<GalleryHistoryModel>? historyModels = gallerys
             ?.map(
@@ -212,7 +234,9 @@ class AppDb extends _$AppDb {
                 uploader: g.uploader ?? '',
                 publishTime: g.publishTime,
                 isExpunged: g.isExpunged,
-                tags: g.tags.values.flattened.map((tag) => '${tag.tagData.namespace}:${tag.tagData.key}').toList(),
+                tags: g.tags.values.flattened
+                    .map((tag) => '${tag.tagData.namespace}:${tag.tagData.key}')
+                    .toList(),
               ),
             )
             .toList();
@@ -245,18 +269,24 @@ class AppDb extends _$AppDb {
       await m.createTable(galleryGroup);
       await m.createTable(archiveGroup);
 
-      Set<String> galleryGroups = (await GalleryDao.selectOldGallerys()).map((g) => g.groupName ?? 'default'.tr).toSet();
-      Set<String> archiveGroups = (await ArchiveDao.selectOldArchives()).map((g) => g.groupName ?? 'default'.tr).toSet();
+      Set<String> galleryGroups = (await GalleryDao.selectOldGallerys())
+          .map((g) => g.groupName ?? 'default'.tr)
+          .toSet();
+      Set<String> archiveGroups = (await ArchiveDao.selectOldArchives())
+          .map((g) => g.groupName ?? 'default'.tr)
+          .toSet();
 
       log.info('Migrate gallery groups: $galleryGroups');
       log.info('Migrate archive groups: $archiveGroups');
 
       await appDb.transaction(() async {
         for (String groupName in galleryGroups) {
-          await GalleryGroupDao.insertGalleryGroup(GalleryGroupData(groupName: groupName, sortOrder: 0));
+          await GalleryGroupDao.insertGalleryGroup(
+              GalleryGroupData(groupName: groupName, sortOrder: 0));
         }
         for (String groupName in archiveGroups) {
-          await ArchiveGroupDao.insertArchiveGroup(ArchiveGroupData(groupName: groupName, sortOrder: 0));
+          await ArchiveGroupDao.insertArchiveGroup(
+              ArchiveGroupData(groupName: groupName, sortOrder: 0));
         }
       });
     } on Exception catch (e) {
@@ -280,7 +310,8 @@ class AppDb extends _$AppDb {
     try {
       await m.createTable(superResolutionInfo);
 
-      List<OldSuperResolutionInfoData> oldSuperResolutionInfo = await SuperResolutionInfoDao.selectAllOldSuperResolutionInfo();
+      List<OldSuperResolutionInfoData> oldSuperResolutionInfo =
+          await SuperResolutionInfoDao.selectAllOldSuperResolutionInfo();
 
       await appDb.transaction(() async {
         for (OldSuperResolutionInfoData old in oldSuperResolutionInfo) {
@@ -306,7 +337,8 @@ class AppDb extends _$AppDb {
       await m.createTable(galleryDownloaded);
       await m.createTable(archiveDownloaded);
 
-      List<GalleryDownloadedOldData> gallerys = await GalleryDao.selectOldGallerys();
+      List<GalleryDownloadedOldData> gallerys =
+          await GalleryDao.selectOldGallerys();
       await appDb.transaction(() async {
         for (GalleryDownloadedOldData g in gallerys) {
           await GalleryDao.insertGallery(
@@ -332,7 +364,8 @@ class AppDb extends _$AppDb {
         }
       });
 
-      List<ArchiveDownloadedOldData> archives = await ArchiveDao.selectOldArchives();
+      List<ArchiveDownloadedOldData> archives =
+          await ArchiveDao.selectOldArchives();
       await appDb.transaction(() async {
         for (ArchiveDownloadedOldData a in archives) {
           await ArchiveDao.insertArchive(
@@ -369,21 +402,43 @@ class AppDb extends _$AppDb {
   }
 
   Future<void> _migrateArchiveStatus(Migrator m) async {
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.none.index, ArchiveStatus.unlocking.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.needReUnlock.index, ArchiveStatus.needReUnlock.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.paused.index, ArchiveStatus.paused.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.unlocking.index, ArchiveStatus.unlocking.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.parsingDownloadPageUrl.index, ArchiveStatus.parsingDownloadPageUrl.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.parsingDownloadUrl.index, ArchiveStatus.parsingDownloadUrl.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.downloading.index, ArchiveStatus.downloading.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.downloaded.index, ArchiveStatus.downloaded.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.unpacking.index, ArchiveStatus.unpacking.code);
-    await ArchiveDao.updateArchiveStatus(OldArchiveStatus.completed.index, ArchiveStatus.completed.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.none.index, ArchiveStatus.unlocking.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.needReUnlock.index, ArchiveStatus.needReUnlock.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.paused.index, ArchiveStatus.paused.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.unlocking.index, ArchiveStatus.unlocking.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.parsingDownloadPageUrl.index,
+        ArchiveStatus.parsingDownloadPageUrl.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.parsingDownloadUrl.index,
+        ArchiveStatus.parsingDownloadUrl.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.downloading.index, ArchiveStatus.downloading.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.downloaded.index, ArchiveStatus.downloaded.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.unpacking.index, ArchiveStatus.unpacking.code);
+    await ArchiveDao.updateArchiveStatus(
+        OldArchiveStatus.completed.index, ArchiveStatus.completed.code);
   }
 }
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
+    if (Platform.isOhos) {
+      // package:sqlite3 only knows how to locate libsqlite3 on Android, Linux,
+      // iOS, macOS and Windows; on OHOS its _defaultOpen() falls through to
+      // `throw UnsupportedError`. The library itself is present - the OHOS fork
+      // of sqlite3_flutter_libs ships it into the app's libs/ - so it only has
+      // to be named. This has to happen before the `sqlite3` getter is first
+      // touched, because that getter is what resolves the library.
+      open.overrideForAll(() => DynamicLibrary.open('libsqlite3.so'));
+    }
+
     final file = io.File(join(pathService.getVisibleDir().path, 'db.sqlite'));
 
     if (Platform.isAndroid) {
@@ -403,7 +458,8 @@ extension _MigragateDuplicateIndexErrorCache on Future<void> {
     try {
       await this;
     } on SqliteException catch (e) {
-      if (e.resultCode == SqlError.SQLITE_ERROR && RegExp(r'index \S+ already exists').hasMatch(e.message)) {
+      if (e.resultCode == SqlError.SQLITE_ERROR &&
+          RegExp(r'index \S+ already exists').hasMatch(e.message)) {
         log.warning('Ignore duplicate index error: ${e.message}');
       } else {
         rethrow;

@@ -118,14 +118,33 @@ class _ReadPageState extends State<ReadPage>
       ),
     );
 
-    return GetBuilder<ReadPageLogic>(
-      id: logic.pageId,
-      builder: (_) {
-        if (readSetting.enableImmersiveMode.isFalse) {
-          return buildWindow(child: child);
+    return PopScope(
+      // Runs while the pop is being handled, i.e. before this route starts
+      // animating away. Bringing the system bars back here rather than from the
+      // controller's onClose() means the page revealed underneath has already
+      // been laid out with the status bar inset by the time it becomes visible.
+      // Restoring afterwards made that page jump once the transition had
+      // settled: the engine reports a zero top inset while the bars are hidden,
+      // so every Scaffold/SafeArea/AppBar below re-lays-out the moment they
+      // return.
+      //
+      // canPop keeps its default of true, so this never blocks a pop. On Android
+      // the app-level WillPopInterceptor already intercepts system back, and this
+      // callback then simply receives didPop == false and does nothing.
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) {
+          logic.restoreImmersiveMode();
         }
-        return child;
       },
+      child: GetBuilder<ReadPageLogic>(
+        id: logic.pageId,
+        builder: (_) {
+          if (readSetting.enableImmersiveMode.isFalse) {
+            return buildWindow(child: child);
+          }
+          return child;
+        },
+      ),
     );
   }
 

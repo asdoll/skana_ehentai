@@ -1,0 +1,27 @@
+name: file_picker_ohos
+description: >-
+  HarmonyOS implementation of file_picker, vendored from the CPF-Flutter /
+  openharmony-sig port (branch br_v10.3.8_ohos) into third_party/ so the OHOS
+  native plugin can be shipped without pulling the fork's Dart copy, its extra
+  image_picker dependency, or its 10.3.8 copies of the other platforms into this
+  project. Only the ohos platform is declared, so nothing else changes.
+  It contains no Dart code: the official file_picker package talks to it over the
+  miguelruivo.flutter.plugins.filepicker channel, and the only thing the app has
+  to do is point FilePicker.platform at FilePickerIO() on OHOS - see main.dart.
+version: 10.3.8
+publish_to: none
+homepage: https://gitcode.com/openharmony-sig/fluttertpc_file_picker
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      ohos:
+        pluginClass: FilePickerPlugin

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'
+    show SystemChrome, SystemUiMode, SystemUiOverlay;
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/model/gallery_image_page_url.dart';
 import 'package:skana_ehentai/src/model/gallery_url.dart';
@@ -43,7 +45,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowListener, WindowWidgetMixin {
+class _HomePageState extends State<HomePage>
+    with LoginRequiredMixin, WindowListener, WindowWidgetMixin {
   StreamSubscription? _intentDataStreamSubscription;
   String? _lastDetectedText;
 
@@ -55,7 +58,6 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
     initToast(context);
     _initSharingIntent();
     _handleUrlInClipBoard();
-
     _listener = AppLifecycleListener(onResume: _handleUrlInClipBoard);
   }
 
@@ -72,7 +74,8 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
       child: LayoutBuilder(
         builder: (_, __) => Obx(
           () {
-            if (styleSetting.layout.value == LayoutMode.mobileV2 || styleSetting.layout.value == LayoutMode.mobile) {
+            if (styleSetting.layout.value == LayoutMode.mobileV2 ||
+                styleSetting.layout.value == LayoutMode.mobile) {
               styleSetting.actualLayout = LayoutMode.mobileV2;
               return MobileLayoutPageV2();
             }
@@ -84,7 +87,8 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
               return MobileLayoutPageV2();
             }
 
-            if (styleSetting.layout.value == LayoutMode.tabletV2 || styleSetting.layout.value == LayoutMode.tablet) {
+            if (styleSetting.layout.value == LayoutMode.tabletV2 ||
+                styleSetting.layout.value == LayoutMode.tablet) {
               styleSetting.actualLayout = LayoutMode.tabletV2;
               return TabletLayoutPageV2();
             }
@@ -110,7 +114,8 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
         }
 
         SharedMediaFile file = files.first;
-        if (file.type != SharedMediaType.url && file.type != SharedMediaType.text) {
+        if (file.type != SharedMediaType.url &&
+            file.type != SharedMediaType.text) {
           return;
         }
 
@@ -125,11 +130,13 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
           return;
         }
 
-        GalleryImagePageUrl? galleryImagePageUrl = GalleryImagePageUrl.tryParse(file.path);
+        GalleryImagePageUrl? galleryImagePageUrl =
+            GalleryImagePageUrl.tryParse(file.path);
         if (galleryImagePageUrl != null) {
           toRoute(
             Routes.imagePage,
-            arguments: GalleryImagePageArgument(galleryImagePageUrl: galleryImagePageUrl),
+            arguments: GalleryImagePageArgument(
+                galleryImagePageUrl: galleryImagePageUrl),
             offAllBefore: false,
           );
           return;
@@ -141,20 +148,24 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
       ReceiveSharingIntent.instance.reset();
     });
 
-    _intentDataStreamSubscription = ReceiveSharingIntent.instance.getMediaStream().listen(
+    _intentDataStreamSubscription =
+        ReceiveSharingIntent.instance.getMediaStream().listen(
       (List<SharedMediaFile> files) {
         if (files.isEmpty) {
           return;
         }
 
         SharedMediaFile file = files.first;
-        if (file.type != SharedMediaType.url && file.type != SharedMediaType.text) {
+        if (file.type != SharedMediaType.url &&
+            file.type != SharedMediaType.text) {
           return;
         }
 
         GalleryUrl? galleryUrl = GalleryUrl.tryParse(file.path);
         if (galleryUrl != null) {
-          untilRoute(currentRoute: Routes.details, predicate: (route) => route.settings.name != Routes.read);
+          untilRoute(
+              currentRoute: Routes.details,
+              predicate: (route) => route.settings.name != Routes.read);
           toRoute(
             Routes.details,
             arguments: DetailsPageArgument(galleryUrl: galleryUrl),
@@ -164,12 +175,16 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
           return;
         }
 
-        GalleryImagePageUrl? galleryImagePageUrl = GalleryImagePageUrl.tryParse(file.path);
+        GalleryImagePageUrl? galleryImagePageUrl =
+            GalleryImagePageUrl.tryParse(file.path);
         if (galleryImagePageUrl != null) {
-          untilRoute(currentRoute: Routes.details, predicate: (route) => route.settings.name != Routes.read);
+          untilRoute(
+              currentRoute: Routes.details,
+              predicate: (route) => route.settings.name != Routes.read);
           toRoute(
             Routes.imagePage,
-            arguments: GalleryImagePageArgument(galleryImagePageUrl: galleryImagePageUrl),
+            arguments: GalleryImagePageArgument(
+                galleryImagePageUrl: galleryImagePageUrl),
             offAllBefore: false,
           );
           return;
@@ -190,7 +205,8 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
 
     String rawText = await FlutterClipboard.paste();
     GalleryUrl? galleryUrl = GalleryUrl.tryParse(rawText);
-    GalleryImagePageUrl? galleryImagePageUrl = GalleryImagePageUrl.tryParse(rawText);
+    GalleryImagePageUrl? galleryImagePageUrl =
+        GalleryImagePageUrl.tryParse(rawText);
 
     if (galleryUrl == null && galleryImagePageUrl == null) {
       return;
@@ -231,7 +247,8 @@ class _HomePageState extends State<HomePage> with LoginRequiredMixin, WindowList
           }
           toRoute(
             Routes.imagePage,
-            arguments: GalleryImagePageArgument(galleryImagePageUrl: galleryImagePageUrl),
+            arguments: GalleryImagePageArgument(
+                galleryImagePageUrl: galleryImagePageUrl),
             offAllBefore: false,
           );
         },

@@ -1,7 +1,6 @@
 import 'dart:io' as io;
 
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +11,7 @@ import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/service/local_gallery_service.dart';
 import 'package:skana_ehentai/src/setting/download_setting.dart';
 import 'package:skana_ehentai/src/setting/user_setting.dart';
+import 'package:skana_ehentai/src/utils/directory_util.dart';
 import 'package:skana_ehentai/src/utils/file_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
@@ -391,7 +391,7 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
 
     /// choose new download path
     try {
-      newDownloadPath ??= await FilePicker.platform.getDirectoryPath();
+      newDownloadPath ??= await pickUsableDirectoryPath();
     } on Exception catch (e) {
       log.error('Pick download path failed', e);
     }
@@ -482,7 +482,7 @@ class _SettingDownloadPageState extends State<SettingDownloadPage> {
 
     /// choose new path
     try {
-      newPath = await FilePicker.platform.getDirectoryPath();
+      newPath = await pickUsableDirectoryPath();
     } on Exception catch (e) {
       log.error('Pick single image save path failed', e);
     }

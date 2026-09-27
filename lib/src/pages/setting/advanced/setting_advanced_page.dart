@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moon_design/moon_design.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/model/config.dart';
 import 'package:skana_ehentai/src/network/eh_request.dart';
@@ -17,6 +18,8 @@ import 'package:skana_ehentai/src/service/cloud_service.dart';
 import 'package:skana_ehentai/src/setting/advanced_setting.dart';
 import 'package:skana_ehentai/src/service/path_service.dart';
 import 'package:skana_ehentai/src/service/log.dart';
+import 'package:skana_ehentai/src/utils/platform_util.dart';
+import 'package:skana_ehentai/src/utils/screen_size_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/icons.dart';
@@ -422,10 +425,59 @@ class _SettingAdvancedPageState extends State<SettingAdvancedPage> {
 
     String fileName =
         '${CloudConfigService.configFileName}-${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}.json';
+    if (isOhos) {
+      return _exportDataOhos(fileName, result);
+    }
     if (GetPlatform.isMobile) {
       return _exportDataMobile(fileName, result);
     } else {
       return _exportDataDesktop(fileName, result);
+    }
+  }
+
+  /// OHOS export.
+  ///
+  /// [FilePicker.platform.saveFile] cannot be used here: the OHOS port implements
+  /// it as "copy the files that were just picked somewhere else" and refuses to
+  /// run unless a preceding pick filled its byte cache, so handing it the encoded
+  /// bytes directly is never accepted. Writing the document into the app sandbox
+  /// and offering it through the system share sheet does the same job - the share
+  /// sheet is where the destination gets chosen.
+  Future<void> _exportDataOhos(
+      String fileName, List<CloudConfigTypeEnum>? result) async {
+    if (_exportDataLoadingState == LoadingState.loading) {
+      return;
+    }
+    setStateSafely(() => _exportDataLoadingState = LoadingState.loading);
+
+    try {
+      List<CloudConfig> uploadConfigs = [];
+      for (CloudConfigTypeEnum type in result!) {
+        CloudConfig? config = await cloudConfigService.getLocalConfig(type);
+        if (config != null) {
+          uploadConfigs.add(config);
+        }
+      }
+
+      File file = File(join(pathService.tempDir.path, fileName));
+      await file.writeAsBytes(
+        utf8.encode(await isolateService.jsonEncodeAsync(uploadConfigs)),
+        flush: true,
+      );
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: fileName,
+        sharePositionOrigin:
+            Rect.fromLTWH(0, 0, fullScreenWidth, screenHeight * 2 / 3),
+      );
+
+      toast('success'.tr);
+      setStateSafely(() => _exportDataLoadingState = LoadingState.success);
+    } on Exception catch (e) {
+      log.error('Export data failed', e);
+      toast('internalError'.tr);
+      setStateSafely(() => _exportDataLoadingState = LoadingState.error);
     }
   }
 

@@ -22,6 +22,7 @@ import 'package:skana_ehentai/src/service/local_config_service.dart';
 import 'package:skana_ehentai/src/service/super_resolution_service.dart';
 import 'package:skana_ehentai/src/service/volume_service.dart';
 import 'package:skana_ehentai/src/utils/eh_executor.dart';
+import 'package:skana_ehentai/src/utils/platform_util.dart';
 import 'package:retry/retry.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -56,13 +57,14 @@ class ReadPageLogic extends GetxController {
 
   ReadPageState state = ReadPageState();
 
-  BaseLayoutLogic get layoutLogic => readSetting.readDirection.value == ReadDirection.top2bottomList
-      ? Get.find<VerticalListLayoutLogic>()
-      : readSetting.isInListReadDirection
-          ? Get.find<HorizontalListLayoutLogic>()
-          : readSetting.isInDoubleColumnReadDirection
-              ? Get.find<HorizontalDoubleColumnLayoutLogic>()
-              : Get.find<HorizontalPageLayoutLogic>();
+  BaseLayoutLogic get layoutLogic =>
+      readSetting.readDirection.value == ReadDirection.top2bottomList
+          ? Get.find<VerticalListLayoutLogic>()
+          : readSetting.isInListReadDirection
+              ? Get.find<HorizontalListLayoutLogic>()
+              : readSetting.isInDoubleColumnReadDirection
+                  ? Get.find<HorizontalDoubleColumnLayoutLogic>()
+                  : Get.find<HorizontalPageLayoutLogic>();
 
   late Timer refreshCurrentTimeAndBatteryLevelTimer;
   late Timer flushReadProgressTimer;
@@ -82,7 +84,8 @@ class ReadPageLogic extends GetxController {
     concurrency: 100,
     rate: const Rate(10, Duration(milliseconds: 1000)),
   );
-  final Throttling _thr = Throttling(duration: const Duration(milliseconds: 200));
+  final Throttling _thr =
+      Throttling(duration: const Duration(milliseconds: 200));
 
   final int normalPriority = 10000;
 
@@ -107,13 +110,16 @@ class ReadPageLogic extends GetxController {
     updateDeviceOrientation();
 
     /// Listen to turn page by volume key change
-    toggleTurnPageByVolumeKeyLister = ever(readSetting.enablePageTurnByVolumeKeys, (_) => listen2VolumeKeys());
+    toggleTurnPageByVolumeKeyLister = ever(
+        readSetting.enablePageTurnByVolumeKeys, (_) => listen2VolumeKeys());
 
     /// Listen to immersive mode change
-    toggleCurrentImmersiveModeLister = ever(readSetting.enableImmersiveMode, (_) => applyCurrentImmersiveMode());
+    toggleCurrentImmersiveModeLister = ever(
+        readSetting.enableImmersiveMode, (_) => applyCurrentImmersiveMode());
 
     /// Listen to device orientation change
-    toggleDeviceOrientationLister = ever(readSetting.deviceDirection, (_) => updateDeviceOrientation());
+    toggleDeviceOrientationLister =
+        ever(readSetting.deviceDirection, (_) => updateDeviceOrientation());
 
     /// Listen to read direction change
     readDirectionLister = ever(readSetting.readDirection, (_) {
@@ -126,7 +132,8 @@ class ReadPageLogic extends GetxController {
       updateSafely([layoutId]);
     });
 
-    displayFirstPageAloneListener = ever(readSetting.displayFirstPageAlone, (value) {
+    displayFirstPageAloneListener =
+        ever(readSetting.displayFirstPageAlone, (value) {
       if (state.displayFirstPageAlone != value) {
         state.displayFirstPageAlone = value;
         layoutLogic.toggleDisplayFirstPageAlone();
@@ -152,17 +159,21 @@ class ReadPageLogic extends GetxController {
       },
     );
 
-    flushReadProgressTimer = Timer.periodic(const Duration(seconds: 5), (_) => _flushReadProgress());
+    flushReadProgressTimer =
+        Timer.periodic(const Duration(seconds: 5), (_) => _flushReadProgress());
 
-    if (readSetting.keepScreenAwakeWhenReading.isTrue) {
+    if (readSetting.keepScreenAwakeWhenReading.isTrue && !isOhos) {
+      // wakelock_plus has no OHOS implementation; keeping the screen awake while
+      // reading is unavailable there (the system setting still applies).
       WakelockPlus.enable();
     }
 
-    if (GetPlatform.isMobile && readSetting.enableCustomReadBrightness.isTrue) {
+    if (isMobileOrOhos && readSetting.enableCustomReadBrightness.isTrue) {
       applyCurrentBrightness();
     }
-    enableCustomBrightnessListener = ever(readSetting.enableCustomReadBrightness, (_) {
-      if (GetPlatform.isMobile && readSetting.enableCustomReadBrightness.isTrue) {
+    enableCustomBrightnessListener =
+        ever(readSetting.enableCustomReadBrightness, (_) {
+      if (isMobileOrOhos && readSetting.enableCustomReadBrightness.isTrue) {
         applyCurrentBrightness();
       } else {
         resetBrightness();
@@ -173,7 +184,12 @@ class ReadPageLogic extends GetxController {
     });
 
     preloadListener = everAll(
-      [readSetting.preloadPageCountLocal, readSetting.preloadPageCount, readSetting.preloadDistanceLocal, readSetting.preloadDistance],
+      [
+        readSetting.preloadPageCountLocal,
+        readSetting.preloadPageCount,
+        readSetting.preloadDistanceLocal,
+        readSetting.preloadDistance
+      ],
       (_) => updateSafely([layoutId]),
     );
 
@@ -217,7 +233,9 @@ class ReadPageLogic extends GetxController {
 
     executor.close();
 
-    WakelockPlus.disable();
+    if (!isOhos) {
+      WakelockPlus.disable();
+    }
   }
 
   void beginToParseImageHref(int index) {
@@ -233,7 +251,8 @@ class ReadPageLogic extends GetxController {
   }
 
   Future<void> parseImageHref(int index) async {
-    log.trace('Begin to load Thumbnail $index with page size: ${state.thumbnailsCountPerPage}');
+    log.trace(
+        'Begin to load Thumbnail $index with page size: ${state.thumbnailsCountPerPage}');
 
     int requestPageIndex = index ~/ state.thumbnailsCountPerPage;
 
@@ -247,7 +266,8 @@ class ReadPageLogic extends GetxController {
         ),
         maxAttempts: 3,
         retryIf: (e) => e is DioException,
-        onRetry: (e) => log.error('Get thumbnails error!', (e as DioException).errorMsg),
+        onRetry: (e) =>
+            log.error('Get thumbnails error!', (e as DioException).errorMsg),
       );
     } on DioException catch (_) {
       state.parseImageHrefErrorMsg = 'parsePageFailed'.tr;
@@ -265,11 +285,15 @@ class ReadPageLogic extends GetxController {
 
     /// some gallery's [thumbnailsCountPerPage] is not equal to default setting, we need to compute and update it.
     /// For example, default setting is 40, but some gallerys' thumbnails has only high quality thumbnails, which results in 20.
-    bool thumbnailsCountPerPageChanged = state.thumbnailsCountPerPage != detailPageInfo.thumbnailsCountPerPage;
+    bool thumbnailsCountPerPageChanged =
+        state.thumbnailsCountPerPage != detailPageInfo.thumbnailsCountPerPage;
     state.thumbnailsCountPerPage = detailPageInfo.thumbnailsCountPerPage;
 
-    for (int i = detailPageInfo.imageNoFrom; i <= detailPageInfo.imageNoTo; i++) {
-      state.thumbnails[i] = detailPageInfo.thumbnails[i - detailPageInfo.imageNoFrom];
+    for (int i = detailPageInfo.imageNoFrom;
+        i <= detailPageInfo.imageNoTo;
+        i++) {
+      state.thumbnails[i] =
+          detailPageInfo.thumbnails[i - detailPageInfo.imageNoFrom];
     }
 
     /// If we changed profile setting in EH site and have cached in JHenTai, we need to remove the cache to get the latest page info before re-parsing
@@ -277,7 +301,8 @@ class ReadPageLogic extends GetxController {
       log.download(
         'Parse image hrefs error, thumbnails count per page is not equal to default setting, parse again. Thumbnails count per page: ${detailPageInfo.thumbnailsCountPerPage}, changed: $thumbnailsCountPerPageChanged',
       );
-      await ehRequest.removeCacheByGalleryUrlAndPage(state.readPageInfo.galleryUrl!, requestPageIndex);
+      await ehRequest.removeCacheByGalleryUrlAndPage(
+          state.readPageInfo.galleryUrl!, requestPageIndex);
       return beginToParseImageHref(index);
     }
 
@@ -292,7 +317,8 @@ class ReadPageLogic extends GetxController {
     state.parseImageUrlStates[index] = LoadingState.loading;
     updateSafely(['$parseImageUrlStateId::$index']);
 
-    executor.scheduleTask(normalPriority, () => parseImageUrl(index, reParse, reloadKey));
+    executor.scheduleTask(
+        normalPriority, () => parseImageUrl(index, reParse, reloadKey));
   }
 
   Future<void> parseImageUrl(int index, bool reParse, String? reloadKey) async {
@@ -302,7 +328,9 @@ class ReadPageLogic extends GetxController {
         () => requestImage(index, reParse, reloadKey),
         maxAttempts: 3,
         retryIf: (e) => e is DioException,
-        onRetry: (e) => log.error('Parse gallery image failed, index: ${index.toString()}', (e as DioException).errorMsg),
+        onRetry: (e) => log.error(
+            'Parse gallery image failed, index: ${index.toString()}',
+            (e as DioException).errorMsg),
       );
     } on DioException catch (_) {
       state.parseImageUrlStates[index] = LoadingState.error;
@@ -326,7 +354,8 @@ class ReadPageLogic extends GetxController {
     updateSafely(['$onlineImageId::$index']);
   }
 
-  Future<GalleryImage> requestImage(int index, bool reParse, String? reloadKey) {
+  Future<GalleryImage> requestImage(
+      int index, bool reParse, String? reloadKey) {
     return ehRequest.requestImagePage(
       state.thumbnails[index]!.replacedMPVHref(index + 1),
       reloadKey: reloadKey,
@@ -354,7 +383,8 @@ class ReadPageLogic extends GetxController {
         layoutLogic.toNext();
       }
     });
-    volumeService.setInterceptVolumeEvent(readSetting.enablePageTurnByVolumeKeys.value);
+    volumeService
+        .setInterceptVolumeEvent(readSetting.enablePageTurnByVolumeKeys.value);
   }
 
   void restoreVolumeListener() {
@@ -364,6 +394,9 @@ class ReadPageLogic extends GetxController {
 
   /// If [immersiveMode], switch to [SystemUiMode.immersiveSticky], otherwise reset to [SystemUiMode.edgeToEdge]
   void applyCurrentImmersiveMode() {
+    if (isOhos) {
+      return;
+    }
     if (GetPlatform.isWindows) {
       clearImageContainerSized();
       updateSafely([pageId]);
@@ -376,20 +409,37 @@ class ReadPageLogic extends GetxController {
     }
   }
 
+  /// Brings the bars back after [applyCurrentImmersiveMode] hid them.
+  ///
+  /// Must include OHOS: [applyCurrentImmersiveMode] hides them there exactly as it
+  /// does on Android, and the OHOS engine un-hides them through
+  /// `setWindowSystemBarEnable` (PlatformPlugin.ets). Guarding on
+  /// `GetPlatform.isMobile` alone - which is Android/iOS only - left the whole app
+  /// stuck in full screen after the first visit to the reader.
   void restoreImmersiveMode() {
+    if (isOhos) {
+      // `SystemUiMode.edgeToEdge` would bring the navigation bar back as well;
+      // this app wants the status bar only there, same as at startup.
+      showStatusBarOnly();
+      return;
+    }
+
     if (GetPlatform.isMobile) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
   }
 
   void applyCurrentBrightness() {
-    if (GetPlatform.isMobile && readSetting.enableCustomReadBrightness.isTrue) {
-      ScreenBrightness().setScreenBrightness(readSetting.customBrightness.value.toDouble() / 100);
+    /// isMobileOrOhos, not isMobile: screen_brightness ships a working OHOS
+    /// implementation, so the same setting applies there.
+    if (isMobileOrOhos && readSetting.enableCustomReadBrightness.isTrue) {
+      ScreenBrightness().setScreenBrightness(
+          readSetting.customBrightness.value.toDouble() / 100);
     }
   }
 
   void resetBrightness() {
-    if (GetPlatform.isMobile) {
+    if (isMobileOrOhos) {
       ScreenBrightness().resetScreenBrightness();
     }
   }
@@ -403,10 +453,12 @@ class ReadPageLogic extends GetxController {
       restoreDeviceOrientation();
     }
     if (readSetting.deviceDirection.value == DeviceDirection.landscape) {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+      SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     }
     if (readSetting.deviceDirection.value == DeviceDirection.portrait) {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+      SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     }
   }
 
@@ -545,7 +597,8 @@ class ReadPageLogic extends GetxController {
     }
 
     /// No more thumbnails, do not scroll more
-    if (lastThumbnailIndex == state.readPageInfo.pageCount - 1 && targetImageIndex > firstThumbnailIndex) {
+    if (lastThumbnailIndex == state.readPageInfo.pageCount - 1 &&
+        targetImageIndex > firstThumbnailIndex) {
       return;
     }
 
@@ -574,8 +627,11 @@ class ReadPageLogic extends GetxController {
 
   String getSuperResolutionProgress() {
     int gid = state.readPageInfo.gid!;
-    SuperResolutionType type = state.readPageInfo.mode == ReadMode.downloaded ? SuperResolutionType.gallery : SuperResolutionType.archive;
-    SuperResolutionInfo? superResolutionInfo = superResolutionService.get(gid, type);
+    SuperResolutionType type = state.readPageInfo.mode == ReadMode.downloaded
+        ? SuperResolutionType.gallery
+        : SuperResolutionType.archive;
+    SuperResolutionInfo? superResolutionInfo =
+        superResolutionService.get(gid, type);
 
     if (superResolutionInfo == null) {
       return '';
@@ -593,13 +649,17 @@ class ReadPageLogic extends GetxController {
   }
 
   List<ItemPosition> getCurrentVisibleThumbnails() {
-    return filterAndSortItems(state.thumbnailPositionsListener.itemPositions.value);
+    return filterAndSortItems(
+        state.thumbnailPositionsListener.itemPositions.value);
   }
 
   /// for some reason like slow loading of some image, [ItemPositions] may be not in index order, and even some of
   /// them are not in viewport
   List<ItemPosition> filterAndSortItems(Iterable<ItemPosition> positions) {
-    positions = positions.where((item) => !(item.itemTrailingEdge < 0 || item.itemLeadingEdge > 1)).toList();
+    positions = positions
+        .where(
+            (item) => !(item.itemTrailingEdge < 0 || item.itemLeadingEdge > 1))
+        .toList();
     (positions as List<ItemPosition>).sort((a, b) => a.index - b.index);
     return positions;
   }
@@ -618,6 +678,7 @@ class ReadPageLogic extends GetxController {
   }
 
   void clearImageContainerSized() {
-    state.imageContainerSizes = List.generate(state.readPageInfo.pageCount, (_) => null);
+    state.imageContainerSizes =
+        List.generate(state.readPageInfo.pageCount, (_) => null);
   }
 }

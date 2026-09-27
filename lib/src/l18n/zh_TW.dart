@@ -84,8 +84,10 @@ class zh_TW {
       'refreshIgneousFailed': '重新整理Igneous失敗',
 
       /// request
-      'sadPanda': 'Sad Panda(無響應資料). 解決參考Github Wiki: https://github.com/jiangtian616/JHenTai/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98',
-      'sadPandaReferLink': 'https://github.com/jiangtian616/JHenTai/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98',
+      'sadPanda':
+          'Sad Panda(無響應資料). 解決參考Github Wiki: https://github.com/jiangtian616/JHenTai/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98',
+      'sadPandaReferLink':
+          'https://github.com/jiangtian616/JHenTai/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98',
 
       /// gallery card
       'filtered': '已過濾',
@@ -157,7 +159,8 @@ class zh_TW {
       'score': '分數',
       'NotOnTheList': '未上榜',
       'getGalleryArchiveFailed': '獲取歸檔資料失敗',
-      'parseGalleryArchiveFailed': '解析錯誤，確保你e站的[Archiver Settings]設定的是[Manual Select, Manual Start (Default)]',
+      'parseGalleryArchiveFailed':
+          '解析錯誤，確保你e站的[Archiver Settings]設定的是[Manual Select, Manual Start (Default)]',
       'original': '原圖',
       'resample': '壓縮',
       'beginToDownloadArchive': '開始下載歸檔',
@@ -213,7 +216,8 @@ class zh_TW {
       'paused': '已暫停',
       'exceedImageLimits': "超出圖片配額限制",
       'ehServerError': 'E站伺服器發生錯誤，請稍後重試',
-      'unsupportedImagePageStyle': "JHenTai目前不支援Multi-Page Viewer(MPV)多頁查看，請在e-hentai.org更換為預設風格",
+      'unsupportedImagePageStyle':
+          "JHenTai目前不支援Multi-Page Viewer(MPV)多頁查看，請在e-hentai.org更換為預設風格",
       'toNext': '下一頁',
       'toPrev': '上一頁',
       'back': '返回',
@@ -421,7 +425,8 @@ class zh_TW {
       'deleteSuperResolvedImage': '刪除圖片超解析度後的圖片',
       'superResolveOriginalImageHint': '處理原圖會耗費更多的時間、空間和性能，確定繼續？',
       'verityAppLinks4Android12': '驗證應用程式連結（安卓12+）',
-      'verityAppLinks4Android12Hint': '對於Android 12+，您需要手動新增連結到已驗證連結才能在其他程式中喚起JHenTai',
+      'verityAppLinks4Android12Hint':
+          '對於Android 12+，您需要手動新增連結到已驗證連結才能在其他程式中喚起JHenTai',
       'noImageMode': '無圖模式',
       'exportData': '匯出資料',
       'exportDataHint': '匯出設定、隱藏規則與歷史記錄',
@@ -553,8 +558,10 @@ class zh_TW {
       'reUnlock': '重新解鎖',
       'reUnlockHint': '注意！重新解鎖需要重新購買此歸檔！',
       'downloadHelpInfo': '如果發現無法下載，在日誌中發現了資料庫表不存在等問題，移除目前app重裝即可。',
-      'localGalleryHelpInfo': '載入那些不是由JHenTai下載的畫廊(當做本機閱覽器)。在下載設定-額外的畫廊掃描路徑中設定，之後重新整理即可',
-      'localGalleryHelpInfo4iOSAndMacOS': '載入那些不是由JHenTai下載的畫廊(當做本機閱覽器)。將你的畫廊放在預設下載路徑下，之後重新整理即可',
+      'localGalleryHelpInfo':
+          '載入那些不是由JHenTai下載的畫廊(當做本機閱覽器)。在下載設定-額外的畫廊掃描路徑中設定，之後重新整理即可',
+      'localGalleryHelpInfo4iOSAndMacOS':
+          '載入那些不是由JHenTai下載的畫廊(當做本機閱覽器)。將你的畫廊放在預設下載路徑下，之後重新整理即可',
       'deleteLocalGalleryHint': '刪除您的本機文件',
       'priority': '優先度',
       'highest': '最高',
@@ -584,7 +591,8 @@ class zh_TW {
       'peakHoursHint': '尖峰時段下載原圖需要耗費GP，由於你的GP不足，下載已自動停止。',
       'oldGalleryHint': '部分畫廊下載原圖需要耗費GP，由於你的GP不足，下載已自動停止。',
       'exceedLimitHint': '圖片配額已耗盡，由於你的GP不足，下載已自動停止。',
-      'deleteUpdatingDependentHint': '有其他畫廊的更新依賴目前畫廊，此時刪除會影響其他畫廊的更新速度，推薦在更新完畢後再執行刪除操作。',
+      'deleteUpdatingDependentHint':
+          '有其他畫廊的更新依賴目前畫廊，此時刪除會影響其他畫廊的更新速度，推薦在更新完畢後再執行刪除操作。',
       'migrateToDownload': '遷移至「下載」',
       'refresh': '重新整理',
 
@@ -625,7 +633,8 @@ class zh_TW {
       'pageAtLeast': '頁數至少',
       'pageAtMost': '頁數最多',
       'pagesBetween': '頁數範圍',
-      'pageRangeSelectHint': 'min <= 1000, max >= 10\nmin/max <= 0.8, max-min >= 20',
+      'pageRangeSelectHint':
+          'min <= 1000, max >= 10\nmin/max <= 0.8, max-min >= 20',
       'to': '到',
       'minimumRating': '最低評分',
       'disableFilterForLanguage': '停用語言過濾',
@@ -674,7 +683,8 @@ favnote：配對收藏備註
 
       /// download setting page
       'downloadPath': '下載路徑',
-      'changeDownloadPathHint': '長按來改變下載路徑(請不要使用SD卡或系統路徑)。會自動複製已下載的畫廊到新路徑，並保留原文件。如果你遇到相關錯誤，請嘗試重設路徑',
+      'changeDownloadPathHint':
+          '長按來改變下載路徑(請不要使用SD卡或系統路徑)。會自動複製已下載的畫廊到新路徑，並保留原文件。如果你遇到相關錯誤，請嘗試重設路徑',
       'resetDownloadPath': '重設下載路徑',
       'singleImageSavePath': '單張圖片儲存路徑',
       'extraGalleryScanPath': '額外的畫廊掃描路徑',
@@ -691,6 +701,7 @@ favnote：配對收藏備註
       'always': '總是',
       'needPermissionToChangeDownloadPath': '需要權限來改變下載路徑',
       'invalidPath': '無效的路徑。避免使用系統路徑、根路徑或sd卡。',
+      'ohosAppDirectoryOnly': '鴻蒙上只能使用應用自己的目錄，已使用：',
       'downloadTaskConcurrency': '同時下載圖片數量',
       'needRestart': '需要重啟',
       'downloadTimeout': '單次下載超時時間',
@@ -699,7 +710,8 @@ favnote：配對收藏備註
       'per': '每',
       'images': '圖片',
       'downloadAllGallerysOfSamePriority': '同一優先度時同時下載所有畫廊',
-      'downloadAllGallerysOfSamePriorityHint': '預設情況下依優先度下載畫廊，且每個優先度下只會同時下載一個畫廊',
+      'downloadAllGallerysOfSamePriorityHint':
+          '預設情況下依優先度下載畫廊，且每個優先度下只會同時下載一個畫廊',
       'alwaysUseDefaultGroup': '總是使用預設分組',
       'restoreDownloadTasks': '復原下載任務',
       'enableStoreMetadataForRestore': '允許儲存下載的中繼資料用來復原下載記錄',

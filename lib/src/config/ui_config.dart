@@ -149,6 +149,26 @@ class UIConfig {
           .withValues(alpha: 0.5) ??
       Theme.of(context).colorScheme.surface;
 
+  /// [backGroundColor] with its translucent layer already composited over the
+  /// scaffold background, so it fully covers whatever is behind it.
+  ///
+  /// The mobile layout's bottom bar is transparent and the scaffold lets its
+  /// body run under that bar, so pages that paint [backGroundColor] and the
+  /// scaffold behind them have to agree on the same opaque value.
+  static Color opaqueBackGroundColor(BuildContext context) => Color.alphaBlend(
+      backGroundColor(context), Theme.of(context).scaffoldBackgroundColor);
+
+  /// Height of the mobile layout's bottom navigation bar, system gesture inset
+  /// included - 0 on every other layout, which has no such bar.
+  ///
+  /// Because MobileLayoutPageV2 sets `extendBody: true`, this is exactly what
+  /// `MediaQuery.padding.bottom` resolves to for everything inside its body.
+  /// Scroll views with a `null` padding pick that up by themselves, but widgets
+  /// that pass an explicit `padding`, and pages that lay out a bottom bar of
+  /// their own, have to stay clear of the bar by adding it here.
+  static double mobileBottomBarHeight(BuildContext context) =>
+      styleSetting.isInMobileLayout ? MediaQuery.paddingOf(context).bottom : 0;
+
   static Color onBackGroundColor(BuildContext context) =>
       context.moonTheme?.menuItemTheme.colors.contentTextColor ??
       Theme.of(context).colorScheme.onSurface;
@@ -263,7 +283,7 @@ class UIConfig {
       onPrimaryColor(context);
 
   static Color loginPageBackgroundColor(BuildContext context) =>
-  context.moonTheme?.tokens.colors.gohan ??
+      context.moonTheme?.tokens.colors.gohan ??
       Theme.of(context).colorScheme.surface;
 
   static Color loginPageFormIconColor(BuildContext context) =>

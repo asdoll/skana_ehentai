@@ -1,0 +1,49 @@
+name: flex_color_picker
+description: A customizable Flutter primary, accent and custom color picker. Includes an optional HSV wheel color picker.
+version: 3.7.1
+homepage: https://github.com/rydmike/flex_color_picker
+repository: https://github.com/rydmike/flex_color_picker
+issue_tracker: https://github.com/rydmike/flex_color_picker/issues
+documentation: https://github.com/rydmike/flex_color_picker/blob/master/README.md
+screenshots:
+  - description: 'Home screen of the FlexColorPicker web demo.'
+    path: example/screenshots/wed_demo_home.png
+  - description: 'Picking a primary swatch color with FlexColorPicker.'
+    path: example/screenshots/primary_swatch_picker.png
+  - description: 'Picking a custom swatch color with FlexColorPicker.'
+    path: example/screenshots/custom_swatch_picker.png
+  - description: 'Picking an arbitrary color with FlexColorPicker, you can also enter its hex-code.'
+    path: example/screenshots/wheel_picker_light.png
+  - description: 'Picking an arbitrary color with FlexColorPicker, in dark mode.'
+    path: example/screenshots/wheel_picker_dark.png
+topics:
+  - colorpicker
+  - color
+  - material
+  - hct
+  - rgb
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.27.0'
+
+dependencies:
+  # FlexSeedScheme package, by Mike Rydstrom, rydmike.com (@rydmike).
+  # https://pub.dev/packages/flex_seed_scheme
+  flex_seed_scheme: ^3.5.0
+
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  collection:
+  coverage: ^1.11.1
+  flutter_test:
+    sdk: flutter
+  patrol_finders: 2.6.0
+  test:
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

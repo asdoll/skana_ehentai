@@ -7,6 +7,7 @@ import 'package:moon_design/moon_design.dart';
 import 'package:skana_ehentai/src/mixin/window_widget_mixin.dart';
 import 'package:skana_ehentai/src/routes/routes.dart';
 import 'package:skana_ehentai/src/setting/security_setting.dart';
+import 'package:skana_ehentai/src/utils/platform_util.dart';
 import 'package:skana_ehentai/src/utils/route_util.dart';
 import 'package:skana_ehentai/src/utils/string_uril.dart';
 import 'package:local_auth/local_auth.dart';
@@ -97,6 +98,15 @@ class _LockPageState extends State<LockPage>
   }
 
   Future<void> biometricAuth() async {
+    // local_auth cannot be overridden for OHOS: every OHOS branch of it pins intl
+    // to a range that clashes with this app's intl ^0.20.2, and intl is pinned by
+    // flutter_localizations, so it cannot be downgraded either. On OHOS
+    // securitySetting.supportBiometricAuth therefore stays false and the setting
+    // that leads here is not shown at all; this guard only covers a stray call.
+    if (isOhos) {
+      return;
+    }
+
     bool success = await LocalAuthentication().authenticate(
       /**
        * @see [local_auth_windows example](https://github.com/flutter/packages/blob/main/packages/local_auth/local_auth_windows/example/lib/main.dart)

@@ -39,6 +39,7 @@ dependencies:
   retry: 3.1.2
   path: ^1.9.1
   drift: ^2.26.0
+  sqlite3: ^2.4.6
   sqlite3_flutter_libs: ^0.5.33
   path_provider: ^2.1.5
   flutter_widget_from_html: ^0.16.0
@@ -61,6 +62,16 @@ dependencies:
     git: https://github.com/jiangtian616/zoom_view
   package_info_plus: ^8.3.0
   file_picker: ^10.1.8
+  # HarmonyOS implementation of file_picker. It is a separate package rather than
+  # a replacement for `file_picker` because the OHOS port renames itself
+  # (`file_picker_ohos`), and ohpm rejects a plugin whose har name does not match
+  # the name the Flutter tooling keys the dependency by. Keeping it apart also
+  # means Android/iOS keep the exact file_picker version this project pins, and
+  # the port's own Dart copy (plus its extra image_picker dependency) is never
+  # pulled in. See third_party/file_picker_ohos and the FilePicker.platform
+  # hand-off in main.dart.
+  file_picker_ohos:
+    path: third_party/file_picker_ohos
   local_auth: ^2.3.0
   blur: ^4.0.2
   flutter_windowmanager_plus: 1.0.1
@@ -84,6 +95,9 @@ dependencies:
   simple_animations: ^5.1.0
   animated_flip_counter: ^0.3.4
   saver_gallery: ^3.0.6
+  # Used only on OHOS, where saver_gallery has no implementation at all; see the
+  # override below and lib/src/utils/gallery_util.dart.
+  image_gallery_saver_plus: ^5.1.1
   system_network_proxy: 
     git: 
       url: https://github.com/jiangtian616/system_network_proxy
@@ -100,7 +114,12 @@ dependencies:
   flutter_displaymode: 0.6.0
   pinput: ^5.0.1
   wakelock_plus: ^1.3.1
-  flex_color_picker: ^3.7.0
+  # Vendored so the ohos case can be added to the two exhaustive
+  # TargetPlatform switches in it; upstream 3.7.1 - and current master/4.0.0 -
+  # still omit it, so the package cannot compile against the OHOS Flutter fork.
+  # See third_party/flex_color_picker.
+  flex_color_picker:
+    path: third_party/flex_color_picker
   zoom_widget: 2.0.1
   android_intent_plus: 5.3.0
   integral_isolates: ^0.5.1
@@ -115,9 +134,19 @@ dependencies:
   uuid: 4.4.0
   xml: 6.5.0
   telegram: 0.0.9
-  google_fonts: ^6.2.1
+  # 6.2.1 declares its FontWeight -> weight-parts map as `const`; Dart cannot
+  # constant-evaluate that without a primitive `FontWeight ==`, which fails on
+  # this SDK. 8.x declares the same map `final` (the only API used here,
+  # GoogleFonts.notoSansTextTheme / notoSans, is unchanged).
+  google_fonts: ^8.2.1
   flutter_spinkit: ^5.2.1
-  moon_design: ^1.1.0
+  # Moon's published 1.1.0 switches exhaustively over TargetPlatform with no
+  # ohos case, so it does not compile against the OHOS Flutter fork.
+  # asdoll/moon_flutter is upstream plus that one fix.
+  moon_design:
+    git:
+      url: https://github.com/asdoll/moon_flutter.git
+      ref: 8974e53129f823b89e076c2369c37cba961618d4
   bootstrap_icons: ^1.11.3
   custom_refresh_indicator: ^4.0.1
   calendar_date_picker2: ^2.0.0
@@ -135,7 +164,95 @@ dependency_overrides:
       ref: append-mode
   collection: 1.19.0
   file_picker: 10.1.4
-    
+
+  # ---------------------------------------------------------------------------
+  # OHOS (HarmonyOS) platform implementations.
+  #
+  # These live under dependency_overrides rather than dependencies on purpose: a
+  # hosted package such as drift, get_storage or share_plus requires path_provider
+  # *from pub.dev*, and pub refuses to resolve one package name from two different
+  # sources at once. dependency_overrides is the only place pub lets a different
+  # source be forced for an existing package name.
+  #
+  # They are whole-package forks (the fork carries an `ohos/` directory next to
+  # android/ and ios/), not the `*_ohos` federated packages on pub.dev - those are
+  # standalone native implementations with their own Dart API and are not wired
+  # into their parent package, so the parent's Dart calls would still miss.
+  #
+  # Everything below is a fork of the *same* package the app already uses, so the
+  # Android/iOS/desktop builds keep working off the fork's copies.
+  # ---------------------------------------------------------------------------
+
+  # OpenHarmony TPC mirror of flutter/packages.
+  url_launcher:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/url_launcher/url_launcher
+      ref: url_launcher_v6.3.2-ohos-1.0.2
+  path_provider:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/path_provider/path_provider
+      ref: provider-v2.1.5-ohos-1.0.1
+  webview_flutter:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/webview_flutter/webview_flutter
+      ref: webview_flutter-v4.13.1-ohos-1.0.2
+  # local_auth is deliberately NOT overridden: every OHOS branch of it drags in a
+  # local_auth_ohos that pins `intl: >=0.17.0 <0.19.0` (the 3.0.1 branch is even
+  # narrower), which cannot coexist with this app's intl ^0.20.2 - and intl is
+  # pinned by flutter_localizations, so it cannot be downgraded either. OHOS
+  # therefore keeps the hosted local_auth and the biometric-lock feature is
+  # unavailable there; see the guards in lock_page.dart / security_setting.dart.
+
+  # OpenHarmony SIG mirror of fluttercommunity/plus_plugins. Each fork's har is
+  # named after the plugin, which is what the Flutter tooling keys local
+  # dependencies by.
+  share_plus:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_plus_plugins.git
+      path: packages/share_plus/share_plus
+      ref: br_share_plus-v12.0.1_ohos
+  package_info_plus:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_plus_plugins.git
+      path: packages/package_info_plus/package_info_plus
+      ref: br_package_info_plus_v8.3.0_ohos
+  device_info_plus:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_plus_plugins.git
+      path: packages/device_info_plus/device_info_plus
+      ref: br_device_info_plus_v11.4.0_ohos
+  battery_plus:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_plus_plugins.git
+      path: packages/battery_plus/battery_plus
+      ref: br_battery_plus-v6.1.0_ohos
+
+  # HarmonyOS carrier for the native libsqlite3 shared library. The matching
+  # `sqlite3` port from the same repository is deliberately NOT used: it is
+  # pinned at upstream 2.4.7, while drift 2.26 requires `sqlite3: ^2.6.0` (it
+  # calls `sqlite3.jsonb`). dependency_overrides bypasses that constraint
+  # silently, so the build only fails later, during kernel compilation, with
+  # "Undefined name 'jsonb'". The one thing the port actually changes is how
+  # libsqlite3 is located; this app does that at runtime instead - see
+  # _openConnection() in lib/src/database/database.dart.
+  sqlite3_flutter_libs:
+    git:
+      url: https://github.com/SageMik/sqlite3-ohos.dart.git
+      path: sqlite3_flutter_libs
+      ref: sqlite3_flutter_libs-0.5.25-ohos
+
+  # HarmonyOS port of image_gallery_saver_plus. saver_gallery has no OHOS port at
+  # all, so on OHOS lib/src/utils/gallery_util.dart routes the save through this
+  # package instead. br_3.41_dev is the branch built against this project's
+  # Flutter SDK (the repo has no 5.1.1 tag).
+  image_gallery_saver_plus:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_image_gallery_saver_plus.git
+      ref: br_3.41_dev
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

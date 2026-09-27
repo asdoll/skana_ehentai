@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: deprecated_member_use
-
 part of 'database.dart';
 
 // ignore_for_file: type=lint
@@ -8229,7 +8227,7 @@ final class $$GalleryDownloadedTableReferences extends BaseReferences<_$AppDb,
 
   $$ImageTableProcessedTableManager get imageRefs {
     final manager = $$ImageTableTableManager($_db, $_db.image)
-        .filter((f) => f.gid.gid($_item.gid));
+        .filter((f) => f.gid.gid.sqlEquals($_itemColumn<int>('gid')!));
 
     final cache = $_typedResult.readTableOrNull(_imageRefsTable($_db));
     return ProcessedTableManager(
@@ -8584,7 +8582,8 @@ class $$GalleryDownloadedTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (imageRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<GalleryDownloadedData,
+                            $GalleryDownloadedTable, ImageData>(
                         currentTable: table,
                         referencedTable: $$GalleryDownloadedTableReferences
                             ._imageRefsTable(db),
@@ -9098,10 +9097,12 @@ final class $$ImageTableReferences
       db.galleryDownloaded.createAlias(
           $_aliasNameGenerator(db.image.gid, db.galleryDownloaded.gid));
 
-  $$GalleryDownloadedTableProcessedTableManager? get gid {
+  $$GalleryDownloadedTableProcessedTableManager get gid {
+    final $_column = $_itemColumn<int>('gid')!;
+
     final manager =
         $$GalleryDownloadedTableTableManager($_db, $_db.galleryDownloaded)
-            .filter((f) => f.gid($_item.gid));
+            .filter((f) => f.gid.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_gidTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(

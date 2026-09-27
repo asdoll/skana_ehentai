@@ -1,11 +1,11 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skana_ehentai/src/config/ui_config.dart';
 import 'package:skana_ehentai/src/extension/widget_extension.dart';
 import 'package:skana_ehentai/src/setting/preference_setting.dart';
+import 'package:skana_ehentai/src/utils/directory_util.dart';
 import 'package:skana_ehentai/src/utils/toast_util.dart';
 import 'package:skana_ehentai/src/utils/widgetplugin.dart';
 import 'package:skana_ehentai/src/widget/icons.dart';
@@ -58,7 +58,7 @@ class SettingSuperResolutionPage extends StatelessWidget {
       onTap: () async {
         String? result;
         try {
-          result = await FilePicker.platform.getDirectoryPath();
+          result = await pickUsableDirectoryPath();
         } on Exception catch (e) {
           log.error('Pick executable file path failed', e);
           log.uploadError(e);
@@ -79,8 +79,11 @@ class SettingSuperResolutionPage extends StatelessWidget {
       title: 'modelType'.tr,
       subtitleWidget: GetBuilder<SuperResolutionService>(
         id: SuperResolutionService.downloadId,
-        builder: (superResolutionService) => superResolutionService.downloadState == LoadingState.loading
-            ? Text('${'downloading'.tr} ${superResolutionService.downloadProgress}').subHeader()
+        builder: (superResolutionService) => superResolutionService
+                    .downloadState ==
+                LoadingState.loading
+            ? Text('${'downloading'.tr} ${superResolutionService.downloadProgress}')
+                .subHeader()
             : superResolutionService.downloadState == LoadingState.success
                 ? Text('downloaded'.tr).subHeader()
                 : const SizedBox(),
@@ -90,18 +93,24 @@ class SettingSuperResolutionPage extends StatelessWidget {
         children: [
           GetBuilder<SuperResolutionService>(
             id: SuperResolutionService.downloadId,
-            builder: (superResolutionService) => superResolutionService.downloadState == LoadingState.loading
-                ? IconButton(icon: UIConfig.loadingAnimation(Get.context!), onPressed: () {}, enableFeedback: false)
-                : IconButton(
-                    icon: moonIcon(icon: BootstrapIcons.download),
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      if (superResolutionService.downloadState == LoadingState.loading) {
-                        return;
-                      }
-                      superResolutionService.downloadModelFile(superResolutionSetting.model.value);
-                    },
-                  ),
+            builder: (superResolutionService) =>
+                superResolutionService.downloadState == LoadingState.loading
+                    ? IconButton(
+                        icon: UIConfig.loadingAnimation(Get.context!),
+                        onPressed: () {},
+                        enableFeedback: false)
+                    : IconButton(
+                        icon: moonIcon(icon: BootstrapIcons.download),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          if (superResolutionService.downloadState ==
+                              LoadingState.loading) {
+                            return;
+                          }
+                          superResolutionService.downloadModelFile(
+                              superResolutionSetting.model.value);
+                        },
+                      ),
           ),
           const SizedBox(width: 8),
           popupMenuButton<ModelType>(
@@ -113,11 +122,18 @@ class SettingSuperResolutionPage extends StatelessWidget {
             ),
             initialValue: superResolutionSetting.model.value,
             itemBuilder: (context) => [
-              PopupMenuItem(value: ModelType.CUGAN, child: Text(ModelType.CUGAN.subType).small()),
-              PopupMenuItem(value: ModelType.ESRGAN, child: Text(ModelType.ESRGAN.subType).small()),
-              PopupMenuItem(value: ModelType.ESRGAN_ANIME, child: Text(ModelType.ESRGAN_ANIME.subType).small()),
+              PopupMenuItem(
+                  value: ModelType.CUGAN,
+                  child: Text(ModelType.CUGAN.subType).small()),
+              PopupMenuItem(
+                  value: ModelType.ESRGAN,
+                  child: Text(ModelType.ESRGAN.subType).small()),
+              PopupMenuItem(
+                  value: ModelType.ESRGAN_ANIME,
+                  child: Text(ModelType.ESRGAN_ANIME.subType).small()),
             ],
-            onSelected: (ModelType? newValue) => superResolutionSetting.saveModel(newValue!),
+            onSelected: (ModelType? newValue) =>
+                superResolutionSetting.saveModel(newValue!),
           )
         ],
       ),
@@ -129,7 +145,8 @@ class SettingSuperResolutionPage extends StatelessWidget {
       title: 'GPU-id'.tr,
       trailing: popupMenuButton<int>(
         initialValue: superResolutionSetting.gpuId.value,
-        onSelected: (int? newValue) => superResolutionSetting.saveGpuId(newValue!),
+        onSelected: (int? newValue) =>
+            superResolutionSetting.saveGpuId(newValue!),
         itemBuilder: (context) => [
           PopupMenuItem(value: -1, child: Text('-1').small()),
           PopupMenuItem(value: 0, child: Text('0').small()),

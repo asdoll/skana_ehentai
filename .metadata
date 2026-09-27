@@ -1,11 +1,11 @@
 # This file tracks properties of this Flutter project.
 # Used by Flutter tool to assess capabilities and perform upgrades etc.
 #
-# This file should be version controlled.
+# This file should be version controlled and should not be manually edited.
 
 version:
-  revision: ffccd96b62ee8cec7740dab303538c5fc26ac543
-  channel: stable
+  revision: "1e739cc468931caa9ad24b1b6c7c2facc3237adf"
+  channel: "[user-branch]"
 
 project_type: app
 
@@ -13,11 +13,11 @@ project_type: app
 migration:
   platforms:
     - platform: root
-      create_revision: ffccd96b62ee8cec7740dab303538c5fc26ac543
-      base_revision: ffccd96b62ee8cec7740dab303538c5fc26ac543
-    - platform: windows
-      create_revision: ffccd96b62ee8cec7740dab303538c5fc26ac543
-      base_revision: ffccd96b62ee8cec7740dab303538c5fc26ac543
+      create_revision: 1e739cc468931caa9ad24b1b6c7c2facc3237adf
+      base_revision: 1e739cc468931caa9ad24b1b6c7c2facc3237adf
+    - platform: ohos
+      create_revision: 1e739cc468931caa9ad24b1b6c7c2facc3237adf
+      base_revision: 1e739cc468931caa9ad24b1b6c7c2facc3237adf
 
   # User provided section
 

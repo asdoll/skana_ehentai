@@ -39,7 +39,7 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
-      body: buildBody(),
+      body: buildBody(context),
       floatingActionButton: buildFloatingActionButton(),
     );
   }
@@ -105,7 +105,7 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
     );
   }
 
-  Widget buildBody() {
+  Widget buildBody(BuildContext context) {
     return GetBuilder<LocalGalleryService>(
       id: localGalleryService.galleryCountChangedId,
       builder: (_) => GetBuilder<LocalGalleryListPageLogic>(
@@ -119,7 +119,10 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
               controller: state.scrollController,
               child: ListView.builder(
                 controller: state.scrollController,
-                padding: const EdgeInsets.only(bottom: 80),
+                // Explicit padding, so the space the transparent navigation bar
+                // takes up has to be added by hand.
+                padding: EdgeInsets.only(
+                    bottom: 80 + UIConfig.mobileBottomBarHeight(context)),
                 itemCount: logic.computeItemCount(),
                 itemBuilder: (context, index) {
                   if (logic.isAtRootPath) {
@@ -167,8 +170,8 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: logic.backRoute,
-      child:
-          _buildDirectory(context, '/..', BootstrapIcons.arrow_return_left).marginAll(5),
+      child: _buildDirectory(context, '/..', BootstrapIcons.arrow_return_left)
+          .marginAll(5),
     );
   }
 
@@ -207,7 +210,8 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
                 child: Center(child: moonIcon(icon: iconData))),
             Expanded(
                 child: Text(logic.transformDisplayPath(displayPath),
-                    maxLines: 1, overflow: TextOverflow.ellipsis).subHeader())
+                        maxLines: 1, overflow: TextOverflow.ellipsis)
+                    .subHeader())
           ],
         ),
       ),
@@ -223,7 +227,8 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
       onLongPress: () => logic.showBottomSheet(gallery, context),
       child: FadeSlideWidget(
         show: !state.removedGalleryTitles.contains(gallery.title),
-        child: _buildGallery(gallery, context).marginSymmetric(horizontal: 5,vertical: 2),
+        child: _buildGallery(gallery, context)
+            .marginSymmetric(horizontal: 5, vertical: 2),
         afterAnimation: (bool show, bool isInit) {
           if (!show && !isInit) {
             Get.engine.addPostFrameCallback(
@@ -265,7 +270,7 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
     return EHImage(
       galleryImage: gallery.cover,
       borderRadius:
-                BorderRadius.circular(UIConfig.downloadPageCardBorderRadius),
+          BorderRadius.circular(UIConfig.downloadPageCardBorderRadius),
       containerWidth: UIConfig.downloadPageCoverWidth,
       containerHeight: UIConfig.downloadPageCoverHeight,
       fit: BoxFit.fitWidth,
@@ -279,10 +284,11 @@ class LocalGalleryListPage extends StatelessWidget with Scroll2TopPageMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(gallery.title,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-                fontSize: UIConfig.downloadPageCardTitleSize, height: 1.2)).subHeader(),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontSize: UIConfig.downloadPageCardTitleSize, height: 1.2))
+            .subHeader(),
       ],
     ).paddingOnly(left: 6, right: 10, top: 8, bottom: 5);
   }
